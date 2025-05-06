@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לומדה - האות א</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #f0f9ff, #a5b4fc);
+        }
+        .letter {
+            font-size: 10rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .bounce {
+            animation: bounce 0.3s ease;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center">
+    <header class="text-center mb-8">
+        <h1 class="text-5xl font-bold text-indigo-600">לומדה - האות א</h1>
+        <p class="text-xl text-gray-700 mt-2">בואו ללמוד את האות א בצורה כיפית!</p>
+    </header>
+
+    <main class="flex flex-col items-center space-y-8">
+        <!-- Letter Display -->
+        <div id="letter" class="letter text-yellow-400 cursor-pointer hover:text-yellow-500 transition duration-300">א</div>
+
+        <!-- Image and Word -->
+        <div class="flex flex-col items-center">
+            <img id="pineapple" src="https://cdn.pixabay.com/photo/2015/03/10/17/23/pineapple-667077_1280.jpg" alt="אננס" class="w-48 h-48 object-cover rounded-lg shadow-lg cursor-pointer hover:scale-105 transition duration-300">
+            <p class="text-3xl font-semibold text-indigo-700 mt-4">אננס</p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="space-x-4">
+            <button id="playSound" class="bg-green-500 text-white font-bold py-3 px-6 rounded-full hover:bg-green-600 transition duration-300 text-xl">השמע צליל</button>
+            <button id="next" class="bg-blue-500 text-white font-bold py-3 px-6 rounded-full hover:bg-blue-600 transition duration-300 text-xl">המשך</button>
+        </div>
+    </main>
+
+    <footer class="mt-12 text-gray-600">
+        <p>© 2025 לומדה לילדים - ללמוד אותיות בכיף!</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
