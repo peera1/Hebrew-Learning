@@ -58,6 +58,14 @@
     window.speechSynthesis.onvoiceschanged = loadVoices;
     loadVoices();
 
+    function speakLetterAndWords(idx) {
+      if (idx < 0 || idx >= letters.length) return;
+      const l = letters[idx];
+      const words = l.examples.join(', ');
+      const text = `האות היא: ${l.name}. מילים שמתחילות באות ${l.name} הן: ${words}.`;
+      speak(text);
+    }
+
     function speak(text) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
@@ -86,7 +94,7 @@
         <div class="letter">${l.letter}</div>
         <div class="emoji">${l.emoji}</div>
         <div class="name">${l.name}</div>
-        <button class="sound-btn" onclick="speak('${l.sound}')">🔊 שמע צליל</button>
+        <button class="sound-btn" onclick="speakLetterAndWords(${currentIndex})">🔊 שמע צליל</button>
         <div class="examples">
           ${l.examples.map(word => `<span onclick="speak('${word}')">${word}</span>`).join('')}
         </div>
@@ -99,7 +107,10 @@
     function nextLetter() { if(currentIndex<letters.length){currentIndex++;render();} }
     function prevLetter() { if(currentIndex>0){currentIndex--;render();} }
     function restartGame() { currentIndex = 0; render(); }
-    window.speak = speak; window.nextLetter = nextLetter; window.prevLetter = prevLetter; window.restartGame = restartGame;
+    window.speak = speak;
+    window.speakLetterAndWords = speakLetterAndWords;
+    window.nextLetter = nextLetter;
+    window.prevLetter = prevLetter;
+    window.restartGame = restartGame;
     render();
   </script>
-</body>
