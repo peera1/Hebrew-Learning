@@ -1,74 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome - My Website</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .hero-bg {
-            background: linear-gradient(to right, #4f46e5, #7c3aed);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>HEBREW LEARNING - אינדקס ניווט</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      direction: rtl;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #f0e9ff 0%, #e0e7ff 100%);
+      margin: 0;
+      min-height: 100vh;
+      color: #22223b;
+    }
+    header {
+      background: #7c3aed;
+      color: #fff;
+      padding: 32px 0 24px 0;
+      text-align: center;
+      border-radius: 0 0 32px 32px;
+      box-shadow: 0 4px 24px #a78bfa55;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.7rem;
+      letter-spacing: 2px;
+    }
+    main {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 4px 24px #a78bfa33;
+      padding: 32px 24px;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    h2 {
+      color: #7c3aed;
+      font-size: 2rem;
+      margin-bottom: 18px;
+      border-right: 6px solid #a78bfa;
+      padding-right: 12px;
+      display: inline-block;
+      background: linear-gradient(90deg, #ede9fe 60%, #fff 100%);
+      border-radius: 0 16px 16px 0;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    li {
+      margin-bottom: 16px;
+    }
+    a {
+      display: inline-block;
+      text-decoration: none;
+      color: #4f46e5;
+      background: #ede9fe;
+      padding: 12px 28px;
+      border-radius: 18px;
+      font-size: 1.18rem;
+      font-weight: 500;
+      box-shadow: 0 2px 8px #a78bfa22;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+    a:hover {
+      background: #a78bfa;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+    }
+    .coming-soon {
+      color: #aaa;
+      font-size: 1.1rem;
+      margin-top: 8px;
+      margin-bottom: 0;
+    }
+    @media (max-width: 700px) {
+      main { padding: 18px 4vw; }
+      header h1 { font-size: 2rem; }
+      h2 { font-size: 1.3rem; }
+      a { font-size: 1rem; padding: 10px 16px; }
+    }
+  </style>
 </head>
-<body class="bg-gray-100">
-    <!-- Navigation Bar -->
-    <nav class="bg-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <span class="text-2xl font-bold text-indigo-600">MySite</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="#home" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
-                    <a href="#about" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">About</a>
-                    <a href="#contact" class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">Contact</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero-bg text-white py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Welcome to My Website</h1>
-            <p class="text-lg md:text-xl mb-8">A modern, responsive site built to showcase your work and ideas.</p>
-            <button id="cta-button" class="bg-white text-indigo-600 font-semibold py-2 px-6 rounded-full hover:bg-indigo-100 transition duration-300">Get Started</button>
-        </div>
+<body>
+  <header>
+    <h1>HEBREW LEARNING - אינדקס ניווט</h1>
+    <div style="font-size:1.2rem; margin-top:10px;">בחרו סקשן ולחצו על הקישור כדי להתחיל ללמוד</div>
+  </header>
+  <main>
+    <section>
+      <h2>גן חובה</h2>
+      <ul>
+        <li>
+          <a href="GanHova/Learn Letters.html" target="_blank">לימוד אותיות א-ב</a>
+        </li>
+        <li>
+          <a href="GanHova/letter_a.html" target="_blank">אות א</a>
+        </li>
+        <li>
+          <a href="GanHova/letter_b.html" target="_blank">אות ב</a>
+        </li>
+      </ul>
     </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">About Us</h2>
-            <p class="text-gray-600 leading-relaxed">This is a sample website template designed to be clean, modern, and easy to customize. Whether you're showcasing a portfolio, a business, or a personal project, this template provides a solid foundation.</p>
-        </div>
+    <section>
+      <h2>כיתה א</h2>
+      <p class="coming-soon">בקרוב...</p>
     </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-16 bg-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6">Get in Touch</h2>
-            <p class="text-gray-600 mb-8">Have questions or want to collaborate? Reach out to us!</p>
-            <a href="mailto:example@email.com" class="bg-indigo-600 text-white font-semibold py-2 px-6 rounded-full hover:bg-indigo-700 transition duration-300">Contact Us</a>
-        </div>
+    <section>
+      <h2>כיתה ב</h2>
+      <p class="coming-soon">בקרוב...</p>
     </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p>&copy; 2025 MySite. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- JavaScript for Button Interaction -->
-    <script>
-        document.getElementById('cta-button').addEventListener('click', () => {
-            alert('Ready to explore? Let’s build something great!');
-        });
-    </script>
-</body>
-</html>
+    <!-- אפשר להוסיף כאן סקשנים נוספים בעתיד -->
+  </main>
