@@ -243,6 +243,24 @@
       }
     }
 
+    function waitForSpeechEnd(callback) {
+      if (!('speechSynthesis' in window)) {
+        setTimeout(callback, 1200);
+        return;
+      }
+      const synth = window.speechSynthesis;
+      if (!synth.speaking) {
+        callback();
+        return;
+      }
+      const interval = setInterval(() => {
+        if (!synth.speaking) {
+          clearInterval(interval);
+          callback();
+        }
+      }, 100);
+    }
+
     function askQuestion(playAudio = true) {
       locked = false;
       const w = gameWords[current];
@@ -277,7 +295,7 @@
       if (letter === w.letter) {
         btn.classList.add('correct');
         speak("כל הכבוד! איזה אלוף!");
-        setTimeout(() => showWord(), 900);
+        waitForSpeechEnd(() => showWord());
       } else {
         btn.classList.add('wrong');
         speak("נסה שנית, אתה יכול!");
