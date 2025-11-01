@@ -51,18 +51,29 @@
     section {
       margin-bottom: 38px;
     }
-    h2 {
-      color: #7c3aed;
-      font-size: 1.5rem;
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       margin-bottom: 18px;
-      border-right: 5px solid #a78bfa;
-      padding-right: 12px;
-      display: inline-block;
-      background: linear-gradient(90deg, #ede9fe 60%, #fff 100%);
-      border-radius: 0 14px 14px 0;
+      font-size: 1.35rem;
       font-family: 'Varela Round', 'Segoe UI', Arial, sans-serif;
-      font-weight: 600;
+      font-weight: 700;
+      color: #7c3aed;
+      background: linear-gradient(90deg, #ede9fe 60%, #fff 100%);
+      border-radius: 18px;
+      padding: 8px 22px 8px 12px;
+      width: fit-content;
+      box-shadow: 0 2px 8px #a78bfa11;
+      border: none;
+      position: relative;
       letter-spacing: 1px;
+    }
+    .section-title .icon {
+      font-size: 1.3em;
+      margin-left: 4px;
+      margin-right: 0;
+      opacity: 0.7;
     }
     ul {
       list-style: none;
@@ -135,7 +146,7 @@
       main { padding: 12px 2vw 18px 2vw; border-radius: 14px; }
       header h1 { font-size: 1.4rem; }
       .header-sub { font-size: 1rem; }
-      h2 { font-size: 1.1rem; padding-right: 7px; border-right-width: 3px; }
+      .section-title { font-size: 1rem; padding: 6px 12px 6px 8px; border-radius: 10px; }
       a { font-size: 1rem; padding: 12px 0; border-radius: 14px; }
       ul { gap: 10px; }
       li { min-width: 120px; }
@@ -154,7 +165,7 @@
   </header>
   <main>
     <section>
-      <h2>גן חובה</h2>
+      <div class="section-title"><span class="icon">🎒</span>גן חובה</div>
       <ul>
         <li>
           <a href="GanHova/Learn Letters.html" target="_blank">לימוד אותיות א-ב</a>
@@ -168,11 +179,11 @@
       </ul>
     </section>
     <section>
-      <h2>כיתה א</h2>
+      <div class="section-title"><span class="icon">🅰️</span>כיתה א</div>
       <p class="coming-soon">בקרוב...</p>
     </section>
     <section>
-      <h2>כיתה ב</h2>
+      <div class="section-title"><span class="icon">🅱️</span>כיתה ב</div>
       <p class="coming-soon">בקרוב...</p>
     </section>
     <!-- אפשר להוסיף כאן סקשנים נוספים בעתיד -->
