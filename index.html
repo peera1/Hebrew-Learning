@@ -1,118 +1,200 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-  <meta charset="UTF-8">
-  <title>HEBREW LEARNING - אינדקס ניווט</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      direction: rtl;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: linear-gradient(135deg, #f0e9ff 0%, #e0e7ff 100%);
-      margin: 0;
-      min-height: 100vh;
-      color: #22223b;
-    }
-    header {
-      background: #7c3aed;
-      color: #fff;
-      padding: 32px 0 24px 0;
-      text-align: center;
-      border-radius: 0 0 32px 32px;
-      box-shadow: 0 4px 24px #a78bfa55;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.7rem;
-      letter-spacing: 2px;
-    }
-    main {
-      max-width: 600px;
-      margin: 40px auto;
-      background: #fff;
-      border-radius: 24px;
-      box-shadow: 0 4px 24px #a78bfa33;
-      padding: 32px 24px;
-    }
-    section {
-      margin-bottom: 40px;
-    }
-    h2 {
-      color: #7c3aed;
-      font-size: 2rem;
-      margin-bottom: 18px;
-      border-right: 6px solid #a78bfa;
-      padding-right: 12px;
-      display: inline-block;
-      background: linear-gradient(90deg, #ede9fe 60%, #fff 100%);
-      border-radius: 0 16px 16px 0;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    li {
-      margin-bottom: 16px;
-    }
-    a {
-      display: inline-block;
-      text-decoration: none;
-      color: #4f46e5;
-      background: #ede9fe;
-      padding: 12px 28px;
-      border-radius: 18px;
-      font-size: 1.18rem;
-      font-weight: 500;
-      box-shadow: 0 2px 8px #a78bfa22;
-      transition: background 0.2s, color 0.2s, transform 0.15s;
-    }
-    a:hover {
-      background: #a78bfa;
-      color: #fff;
-      transform: translateY(-2px) scale(1.04);
-    }
-    .coming-soon {
-      color: #aaa;
-      font-size: 1.1rem;
-      margin-top: 8px;
-      margin-bottom: 0;
-    }
-    @media (max-width: 700px) {
-      main { padding: 18px 4vw; }
-      header h1 { font-size: 2rem; }
-      h2 { font-size: 1.3rem; }
-      a { font-size: 1rem; padding: 10px 16px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEBREW LEARNING - אינדקס ניווט</title>
+    <meta name="description" content="אינדקס ניווט לכל משחקי הלמידה בעברית - אותיות, קריאה, וחשבון. מותאם לילדים, חינמי, צבעוני ומזמין.">
+    <meta name="keywords" content="עברית, אותיות, לימוד, משחקים, גן חובה, כיתה א, כיתה ב, אינדקס, ניווט, ילדים, חינם, משחקי לימוד">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient-start: #7c3aed;
+            --primary-gradient-end: #a78bfa;
+            --secondary-color: #facc15;
+            --section-bg: #f8fafc;
+            --button-shadow: rgba(124, 58, 237, 0.13);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Varela Round', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+            min-height: 100vh;
+            margin: 0;
+            direction: rtl;
+            color: #22223b;
+            overflow-x: hidden;
+        }
+        .background-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255,255,255,0.13);
+            z-index: 1;
+            pointer-events: none;
+        }
+        .container {
+            background: #fff;
+            border-radius: 32px;
+            box-shadow: 0 18px 48px var(--button-shadow);
+            padding: 44px 28px 32px 28px;
+            text-align: center;
+            width: 95%;
+            max-width: 650px;
+            margin: 40px auto 30px auto;
+            position: relative;
+            z-index: 2;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(to right, var(--primary-gradient-start), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+        }
+        .intro-text {
+            font-size: 1.15rem;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-gradient-start);
+            background: linear-gradient(90deg, #ede9fe 60%, #fff 100%);
+            border-radius: 18px;
+            padding: 8px 22px 8px 12px;
+            width: fit-content;
+            margin: 0 auto 18px auto;
+            box-shadow: 0 2px 8px #a78bfa11;
+            border: none;
+            letter-spacing: 1px;
+        }
+        .section-title .icon {
+            font-size: 1.3em;
+            margin-left: 4px;
+            opacity: 0.7;
+        }
+        .grade-section {
+            margin-bottom: 36px;
+            padding: 24px 10px 18px 10px;
+            border-radius: 18px;
+            background: var(--section-bg);
+            border: 2px dashed var(--primary-gradient-end);
+            transition: all 0.3s;
+            box-shadow: 0 2px 12px #a78bfa11;
+        }
+        .grade-section:hover {
+            background: #f3f0ff;
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 24px #a78bfa22;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+        }
+        li {
+            margin: 0;
+            flex: 1 1 100%;
+            min-width: 180px;
+            max-width: 100%;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #fff;
+            background: linear-gradient(90deg, #a78bfa 0%, #f472b6 100%);
+            padding: 16px 0;
+            border-radius: 20px;
+            font-size: 1.18rem;
+            font-weight: 600;
+            box-shadow: 0 2px 12px #a78bfa22;
+            transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
+            margin-bottom: 0;
+            border: none;
+            outline: none;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        .nav-link::before {
+            content: "🔗";
+            margin-left: 10px;
+            font-size: 1.2em;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .nav-link:hover, .nav-link:focus {
+            background: linear-gradient(90deg, #7c3aed 0%, #f472b6 100%);
+            color: #fff;
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 4px 18px #a78bfa44;
+        }
+        .coming-soon {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-top: 8px;
+            margin-bottom: 0;
+            text-align: right;
+            padding-right: 10px;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 18px 2vw 14px 2vw; border-radius: 14px; }
+            h1 { font-size: 1.5rem; }
+            .intro-text { font-size: 1rem; }
+            .section-title { font-size: 1rem; padding: 6px 12px 6px 8px; border-radius: 10px; }
+            .grade-section { padding: 12px 2vw 10px 2vw; }
+            .nav-link { font-size: 1rem; padding: 12px 0; border-radius: 14px; }
+            ul { gap: 10px; }
+            li { min-width: 120px; }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>HEBREW LEARNING - אינדקס ניווט</h1>
-    <div style="font-size:1.2rem; margin-top:10px;">בחרו סקשן ולחצו על הקישור כדי להתחיל ללמוד</div>
-  </header>
-  <main>
-    <section>
-      <h2>גן חובה</h2>
-      <ul>
-        <li>
-          <a href="GanHova/Learn Letters.html" target="_blank">לימוד אותיות א-ב</a>
-        </li>
-        <li>
-          <a href="GanHova/letter_a.html" target="_blank">אות א</a>
-        </li>
-        <li>
-          <a href="GanHova/letter_b.html" target="_blank">אות ב</a>
-        </li>
-      </ul>
-    </section>
-    <section>
-      <h2>כיתה א</h2>
-      <p class="coming-soon">בקרוב...</p>
-    </section>
-    <section>
-      <h2>כיתה ב</h2>
-      <p class="coming-soon">בקרוב...</p>
-    </section>
-    <!-- אפשר להוסיף כאן סקשנים נוספים בעתיד -->
-  </main>
+    <div class="background-overlay"></div>
+    <div class="container">
+        <h1>HEBREW LEARNING - אינדקס ניווט</h1>
+        <div class="intro-text">
+            בחרו סקשן ולחצו על הקישור כדי להתחיל ללמוד ולשחק. <br>
+            כל התכנים חינמיים, צבעוניים ומותאמים במיוחד לילדים!
+        </div>
+
+        <div class="grade-section">
+            <div class="section-title"><span class="icon">🎒</span>גן חובה</div>
+            <ul>
+                <li>
+                    <a class="nav-link" href="GanHova/Learn Letters.html" target="_blank">לימוד אותיות א-ב</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="GanHova/letter_a.html" target="_blank">אות א</a>
+                </li>
+                <li>
+                    <a class="nav-link" href="GanHova/letter_b.html" target="_blank">אות ב</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="grade-section">
+            <div class="section-title"><span class="icon">🅰️</span>כיתה א</div>
+            <p class="coming-soon">בקרוב...</p>
+        </div>
+
+        <div class="grade-section">
+            <div class="section-title"><span class="icon">🅱️</span>כיתה ב</div>
+            <p class="coming-soon">בקרוב...</p>
+        </div>
+    </div>
+</body>
+</html>
