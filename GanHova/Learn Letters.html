@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>לומדים אותיות א-ב</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    body { direction: rtl; font-family: Arial, sans-serif; background: #f0e9ff; }
+    body { direction: rtl; font-family: Arial, sans-serif; background: #f0e9ff; margin: 0; }
     .container { max-width: 600px; margin: 48px auto; background: #fff; border-radius: 32px; box-shadow: 0 6px 24px #bbb; padding: 40px 24px; text-align: center; }
     .letter { font-size: 7rem; margin-bottom: 12px; }
     .emoji { font-size: 3rem; }
@@ -18,6 +19,48 @@
     .stars { font-size: 3rem; color: #facc15; margin: 20px 0; }
     .play-again-btn { background: #a78bfa; color: #fff; border: none; border-radius: 28px; padding: 18px 48px; font-size: 1.35rem; font-weight: bold; margin-top: 32px; cursor: pointer; }
     .play-again-btn:hover { background: #7c3aed; }
+    .letters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 36px;
+      gap: 8px;
+      user-select: none;
+    }
+    .letters-bar span {
+      display: inline-block;
+      font-size: 2.1rem;
+      background: #ede9fe;
+      color: #7c3aed;
+      border-radius: 12px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, transform 0.12s;
+      border: 2px solid transparent;
+    }
+    .letters-bar span.active {
+      background: #a78bfa;
+      color: #fff;
+      font-weight: bold;
+      border-color: #7c3aed;
+      transform: scale(1.13);
+      box-shadow: 0 2px 8px #a78bfa44;
+      cursor: default;
+    }
+    .letters-bar span:hover:not(.active) {
+      background: #d1c4e9;
+      color: #4f46e5;
+      transform: scale(1.07);
+    }
+    @media (max-width: 700px) {
+      .container { padding: 10vw 2vw; margin: 12px 2vw; border-radius: 18px; }
+      .letter { font-size: 4rem; }
+      .emoji { font-size: 1.7rem; }
+      .name { font-size: 1.2rem; }
+      .examples span { font-size: 1rem; padding: 7px 12px; }
+      .letters-bar span { font-size: 1.1rem; padding: 5px 8px; }
+      .nav-btn, .sound-btn, .play-again-btn { font-size: 1rem; padding: 10px 18px; }
+    }
   </style>
 </head>
 <body>
@@ -78,6 +121,17 @@
         alert('הדפדפן שלך לא תומך בהשמעת קול');
       }
     }
+
+    function renderLettersBar() {
+      return `
+        <div class="letters-bar">
+          ${letters.map((l, idx) =>
+            `<span class="${idx === currentIndex ? 'active' : ''}" onclick="goToLetter(${idx})">${l.letter}</span>`
+          ).join('')}
+        </div>
+      `;
+    }
+
     function render() {
       if (currentIndex >= letters.length) {
         document.getElementById('game').innerHTML = `
@@ -86,6 +140,7 @@
           <div style="font-size:1.7rem; color:#444; margin-bottom:20px;">למדת את כל האותיות!</div>
           <div class="stars">⭐️ ⭐️ ⭐️</div>
           <button class="play-again-btn" onclick="restartGame()">שחק שוב</button>
+          ${renderLettersBar()}
         `;
         return;
       }
@@ -102,15 +157,22 @@
           <button class="nav-btn" onclick="prevLetter()" ${currentIndex === 0 ? 'disabled' : ''}>הקודם</button>
           <button class="nav-btn" onclick="nextLetter()">${currentIndex === letters.length-1 ? 'סיום' : 'הבא'}</button>
         </div>
+        ${renderLettersBar()}
       `;
     }
+
     function nextLetter() { if(currentIndex<letters.length){currentIndex++;render();} }
     function prevLetter() { if(currentIndex>0){currentIndex--;render();} }
     function restartGame() { currentIndex = 0; render(); }
+    function goToLetter(idx) { if(idx !== currentIndex){currentIndex = idx; render();} }
+
     window.speak = speak;
     window.speakLetterAndWords = speakLetterAndWords;
     window.nextLetter = nextLetter;
     window.prevLetter = prevLetter;
     window.restartGame = restartGame;
+    window.goToLetter = goToLetter;
     render();
   </script>
+</body>
+</html>
