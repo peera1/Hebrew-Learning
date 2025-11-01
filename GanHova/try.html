@@ -1,0 +1,64 @@
+// Hebrew voice selection
+let hebrewVoice = null;
+function loadVoices() {
+  const voices = window.speechSynthesis.getVoices();
+  hebrewVoice = voices.find(v => v.lang === 'he-IL');
+}
+window.speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+function speakLetterAndWords(idx) {
+  if (idx < 0 || idx >= letters.length) return;
+  const l = letters[idx];
+  const words = l.examples.join(', ');
+  const text = `האות היא: ${l.name}. מילים שמתחילות באות ${l.name} הן: ${words}.`;
+  speak(text);
+}
+
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const utter = new window.SpeechSynthesisUtterance(text);
+    utter.lang = 'he-IL';
+    if (hebrewVoice) utter.voice = hebrewVoice;
+    utter.rate = 0.7;
+    window.speechSynthesis.speak(utter);
+  } else {
+    alert('הדפדפן שלך לא תומך בהשמעת קול');
+  }
+}
+function render() {
+  if (currentIndex >= letters.length) {
+    document.getElementById('game').innerHTML = `
+      <div class="reward">🎉</div>
+      <h1 class="name" style="font-size:2.7rem;">כל הכבוד!</h1>
+      <div style="font-size:1.7rem; color:#444; margin-bottom:20px;">למדת את כל האותיות!</div>
+      <div class="stars">⭐️ ⭐️ ⭐️</div>
+      <button class="play-again-btn" onclick="restartGame()">שחק שוב</button>
+    `;
+    return;
+  }
+  const l = letters[currentIndex];
+  document.getElementById('game').innerHTML = `
+    <div class="letter">${l.letter}</div>
+    <div class="emoji">${l.emoji}</div>
+    <div class="name">${l.name}</div>
+    <button class="sound-btn" onclick="speakLetterAndWords(${currentIndex})">🔊 שמע צליל</button>
+    <div class="examples">
+      ${l.examples.map(word => `<span onclick="speak('${word}')">${word}</span>`).join('')}
+    </div>
+    <div>
+      <button class="nav-btn" onclick="prevLetter()" ${currentIndex === 0 ? 'disabled' : ''}>הקודם</button>
+      <button class="nav-btn" onclick="nextLetter()">${currentIndex === letters.length-1 ? 'סיום' : 'הבא'}</button>
+    </div>
+  `;
+}
+function nextLetter() { if(currentIndex<letters.length){currentIndex++;render();} }
+function prevLetter() { if(currentIndex>0){currentIndex--;render();} }
+function restartGame() { currentIndex = 0; render(); }
+window.speak = speak;
+window.speakLetterAndWords = speakLetterAndWords;
+window.nextLetter = nextLetter;
+window.prevLetter = prevLetter;
+window.restartGame = restartGame;
+render();
