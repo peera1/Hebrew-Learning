@@ -1,200 +1,318 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEBREW LEARNING - אינדקס ניווט</title>
-    <meta name="description" content="אינדקס ניווט לכל משחקי הלמידה בעברית - אותיות, קריאה, וחשבון. מותאם לילדים, חינמי, צבעוני ומזמין.">
-    <meta name="keywords" content="עברית, אותיות, לימוד, משחקים, גן חובה, כיתה א, כיתה ב, אינדקס, ניווט, ילדים, חינם, משחקי לימוד">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-gradient-start: #7c3aed;
-            --primary-gradient-end: #a78bfa;
-            --secondary-color: #facc15;
-            --section-bg: #f8fafc;
-            --button-shadow: rgba(124, 58, 237, 0.13);
-        }
-        * { box-sizing: border-box; }
-        body {
-            font-family: 'Varela Round', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
-            min-height: 100vh;
-            margin: 0;
-            direction: rtl;
-            color: #22223b;
-            overflow-x: hidden;
-        }
-        .background-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(255,255,255,0.13);
-            z-index: 1;
-            pointer-events: none;
-        }
-        .container {
-            background: #fff;
-            border-radius: 32px;
-            box-shadow: 0 18px 48px var(--button-shadow);
-            padding: 44px 28px 32px 28px;
-            text-align: center;
-            width: 95%;
-            max-width: 650px;
-            margin: 40px auto 30px auto;
-            position: relative;
-            z-index: 2;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-            background: linear-gradient(to right, var(--primary-gradient-start), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-        }
-        .intro-text {
-            font-size: 1.15rem;
-            color: #555;
-            margin-bottom: 30px;
-            line-height: 1.7;
-        }
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--primary-gradient-start);
-            background: linear-gradient(90deg, #ede9fe 60%, #fff 100%);
-            border-radius: 18px;
-            padding: 8px 22px 8px 12px;
-            width: fit-content;
-            margin: 0 auto 18px auto;
-            box-shadow: 0 2px 8px #a78bfa11;
-            border: none;
-            letter-spacing: 1px;
-        }
-        .section-title .icon {
-            font-size: 1.3em;
-            margin-left: 4px;
-            opacity: 0.7;
-        }
-        .grade-section {
-            margin-bottom: 36px;
-            padding: 24px 10px 18px 10px;
-            border-radius: 18px;
-            background: var(--section-bg);
-            border: 2px dashed var(--primary-gradient-end);
-            transition: all 0.3s;
-            box-shadow: 0 2px 12px #a78bfa11;
-        }
-        .grade-section:hover {
-            background: #f3f0ff;
-            transform: translateY(-3px) scale(1.01);
-            box-shadow: 0 8px 24px #a78bfa22;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: center;
-        }
-        li {
-            margin: 0;
-            flex: 1 1 100%;
-            min-width: 180px;
-            max-width: 100%;
-        }
-        .nav-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            color: #fff;
-            background: linear-gradient(90deg, #a78bfa 0%, #f472b6 100%);
-            padding: 16px 0;
-            border-radius: 20px;
-            font-size: 1.18rem;
-            font-weight: 600;
-            box-shadow: 0 2px 12px #a78bfa22;
-            transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
-            margin-bottom: 0;
-            border: none;
-            outline: none;
-            letter-spacing: 1px;
-            position: relative;
-        }
-        .nav-link::before {
-            content: "🔗";
-            margin-left: 10px;
-            font-size: 1.2em;
-            opacity: 0.7;
-            transition: opacity 0.2s;
-        }
-        .nav-link:hover, .nav-link:focus {
-            background: linear-gradient(90deg, #7c3aed 0%, #f472b6 100%);
-            color: #fff;
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 4px 18px #a78bfa44;
-        }
-        .coming-soon {
-            color: #aaa;
-            font-size: 1.1rem;
-            margin-top: 8px;
-            margin-bottom: 0;
-            text-align: right;
-            padding-right: 10px;
-        }
-        @media (max-width: 700px) {
-            .container { padding: 18px 2vw 14px 2vw; border-radius: 14px; }
-            h1 { font-size: 1.5rem; }
-            .intro-text { font-size: 1rem; }
-            .section-title { font-size: 1rem; padding: 6px 12px 6px 8px; border-radius: 10px; }
-            .grade-section { padding: 12px 2vw 10px 2vw; }
-            .nav-link { font-size: 1rem; padding: 12px 0; border-radius: 14px; }
-            ul { gap: 10px; }
-            li { min-width: 120px; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>באיזה אות מתחילה המילה?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+    body {
+      direction: rtl;
+      font-family: 'Varela Round', Arial, sans-serif;
+      background: linear-gradient(135deg, #f0e9ff 0%, #e0e7ff 100%);
+      margin: 0;
+      min-height: 100vh;
+      color: #22223b;
+      overflow-x: hidden;
+    }
+    .container {
+      background: #fff;
+      border-radius: 32px;
+      box-shadow: 0 18px 48px rgba(124,58,237,0.13);
+      padding: 44px 28px 32px 28px;
+      text-align: center;
+      width: 95%;
+      max-width: 420px;
+      margin: 40px auto 30px auto;
+      position: relative;
+      z-index: 2;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    h1 {
+      font-size: 2.1rem;
+      margin-bottom: 18px;
+      background: linear-gradient(to right, #7c3aed, #facc15);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-shadow: 0 2px 8px #a78bfa22;
+    }
+    .question {
+      font-size: 1.5rem;
+      margin-bottom: 32px;
+      color: #7c3aed;
+      background: #ede9fe;
+      border-radius: 18px;
+      padding: 18px 10px;
+      box-shadow: 0 2px 8px #a78bfa11;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    .option-btn {
+      background: linear-gradient(135deg, #a78bfa 60%, #f472b6 100%);
+      color: #fff;
+      border: none;
+      border-radius: 18px;
+      font-size: 2.2rem;
+      font-weight: bold;
+      padding: 18px 0;
+      width: 80px;
+      cursor: pointer;
+      box-shadow: 0 2px 12px #a78bfa22;
+      transition: background 0.18s, transform 0.13s;
+      outline: none;
+      position: relative;
+      letter-spacing: 2px;
+      user-select: none;
+    }
+    .option-btn:active {
+      background: linear-gradient(135deg, #7c3aed 60%, #f472b6 100%);
+      transform: scale(0.97);
+    }
+    .option-btn.correct {
+      background: linear-gradient(135deg, #34d399 60%, #a7f3d0 100%);
+      color: #065f46;
+      animation: pop 0.4s;
+    }
+    .option-btn.wrong {
+      background: linear-gradient(135deg, #f87171 60%, #fbbf24 100%);
+      color: #fff;
+      animation: shake 0.4s;
+    }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      60% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-8px); }
+      80% { transform: translateX(8px); }
+      100% { transform: translateX(0); }
+    }
+    .word-show {
+      font-size: 2.5rem;
+      color: #7c3aed;
+      background: #f3f0ff;
+      border-radius: 18px;
+      padding: 18px 0;
+      margin: 24px 0 18px 0;
+      font-weight: bold;
+      letter-spacing: 2px;
+      box-shadow: 0 2px 8px #a78bfa11;
+      animation: pop 0.5s;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .next-btn {
+      background: linear-gradient(90deg, #facc15 0%, #a78bfa 100%);
+      color: #fff;
+      border: none;
+      border-radius: 18px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      padding: 16px 38px;
+      cursor: pointer;
+      box-shadow: 0 2px 12px #a78bfa22;
+      margin-top: 10px;
+      transition: background 0.18s, transform 0.13s;
+      outline: none;
+      letter-spacing: 1px;
+      user-select: none;
+    }
+    .next-btn:active {
+      background: linear-gradient(90deg, #facc15 0%, #7c3aed 100%);
+      transform: scale(0.97);
+    }
+    .emoji {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      animation: pop 0.5s;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 18px 2vw 14px 2vw; border-radius: 18px; min-height: 350px;}
+      h1 { font-size: 1.2rem; }
+      .question { font-size: 1.1rem; padding: 10px 4px; }
+      .option-btn { font-size: 1.5rem; width: 60px; padding: 12px 0; }
+      .word-show { font-size: 1.5rem; padding: 10px 0; }
+      .next-btn { font-size: 1rem; padding: 10px 18px; }
+      .emoji { font-size: 1.3rem; }
+    }
+  </style>
 </head>
 <body>
-    <div class="background-overlay"></div>
-    <div class="container">
-        <h1>HEBREW LEARNING - אינדקס ניווט</h1>
-        <div class="intro-text">
-            בחרו סקשן ולחצו על הקישור כדי להתחיל ללמוד ולשחק. <br>
-            כל התכנים חינמיים, צבעוניים ומותאמים במיוחד לילדים!
-        </div>
+  <div class="container">
+    <h1>באיזה אות מתחילה המילה?</h1>
+    <div id="game"></div>
+  </div>
+  <script>
+    // מילים פשוטות עם ניקוד, אות נכונה, ואימוג'י
+    const words = [
+      { word: "אִמָּא", letter: "א", emoji: "👩", audio: "אמא" },
+      { word: "בַּלוֹן", letter: "ב", emoji: "🎈", audio: "בלון" },
+      { word: "גֶּזֶר", letter: "ג", emoji: "🥕", audio: "גזר" },
+      { word: "דֶּגֶל", letter: "ד", emoji: "🏳️", audio: "דגל" },
+      { word: "הַר", letter: "ה", emoji: "⛰️", audio: "הר" },
+      { word: "וָרָד", letter: "ו", emoji: "🌹", audio: "ורד" },
+      { word: "זַיִת", letter: "ז", emoji: "🫒", audio: "זית" },
+      { word: "חַלּוֹן", letter: "ח", emoji: "🪟", audio: "חלון" },
+      { word: "טוּסְטוּס", letter: "ט", emoji: "🛵", audio: "טוסטוס" },
+      { word: "יֶלֶד", letter: "י", emoji: "🧒", audio: "ילד" },
+      { word: "כֶּלֶב", letter: "כ", emoji: "🐶", audio: "כלב" },
+      { word: "לֶחֶם", letter: "ל", emoji: "🍞", audio: "לחם" },
+      { word: "מַיִם", letter: "מ", emoji: "💧", audio: "מים" },
+      { word: "נַעַל", letter: "נ", emoji: "👟", audio: "נעל" },
+      { word: "סֵפֶר", letter: "ס", emoji: "📖", audio: "ספר" },
+      { word: "עֵץ", letter: "ע", emoji: "🌳", audio: "עץ" },
+      { word: "פִּיל", letter: "פ", emoji: "🐘", audio: "פיל" },
+      { word: "צִפּוֹר", letter: "צ", emoji: "🐦", audio: "ציפור" },
+      { word: "קֶרֶח", letter: "ק", emoji: "🧊", audio: "קרח" },
+      { word: "רֶגֶל", letter: "ר", emoji: "🦵", audio: "רגל" },
+      { word: "שֶׁמֶשׁ", letter: "ש", emoji: "☀️", audio: "שמש" },
+      { word: "תַּפּוּחַ", letter: "ת", emoji: "🍎", audio: "תפוח" }
+    ];
 
-        <div class="grade-section">
-            <div class="section-title"><span class="icon">🎒</span>גן חובה</div>
-            <ul>
-                <li>
-                    <a class="nav-link" href="GanHova/Learn Letters.html" target="_blank">לימוד אותיות א-ב</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="GanHova/letter_a.html" target="_blank">אות א</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="GanHova/letter_b.html" target="_blank">אות ב</a>
-                </li>
-            </ul>
-        </div>
+    // כל האותיות האפשריות
+    const allLetters = [
+      "א","ב","ג","ד","ה","ו","ז","ח","ט","י","כ","ל","מ","נ","ס","ע","פ","צ","ק","ר","ש","ת"
+    ];
 
-        <div class="grade-section">
-            <div class="section-title"><span class="icon">🅰️</span>כיתה א</div>
-            <p class="coming-soon">בקרוב...</p>
-        </div>
+    // ערבוב מילים
+    function shuffle(arr) {
+      let a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
 
-        <div class="grade-section">
-            <div class="section-title"><span class="icon">🅱️</span>כיתה ב</div>
-            <p class="coming-soon">בקרוב...</p>
+    let gameWords = shuffle(words);
+    let current = 0;
+    let locked = false;
+
+    // דיבור
+    let hebrewVoice = null;
+    function loadVoices() {
+      const voices = window.speechSynthesis.getVoices();
+      hebrewVoice = voices.find(v => v.lang === 'he-IL');
+    }
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new window.SpeechSynthesisUtterance(text);
+        utter.lang = 'he-IL';
+        if (hebrewVoice) utter.voice = hebrewVoice;
+        utter.rate = 0.8;
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    function askQuestion() {
+      locked = false;
+      const w = gameWords[current];
+      // בחר 3 אותיות נוספות אקראיות
+      let options = [w.letter];
+      let otherLetters = allLetters.filter(l => l !== w.letter);
+      shuffle(otherLetters).slice(0,3).forEach(l => options.push(l));
+      options = shuffle(options);
+
+      document.getElementById('game').innerHTML = `
+        <div class="question">
+          באיזה אות מתחילה המילה -
+          <button onclick="playWord()" aria-label="השמע מילה" style="background:none;border:none;cursor:pointer;font-size:1.5em;margin-right:10px;">
+            <span style="color:#facc15;">🔊</span>
+          </button>
         </div>
-    </div>
+        <div class="options">
+          ${options.map(l => `<button class="option-btn" onclick="choose('${l}', this)">${l}</button>`).join('')}
+        </div>
+      `;
+      // השמע את המילה
+      setTimeout(playWord, 400);
+    }
+
+    function playWord() {
+      const w = gameWords[current];
+      speak(w.word);
+    }
+
+    function choose(letter, btn) {
+      if (locked) return;
+      locked = true;
+      const w = gameWords[current];
+      const allBtns = document.querySelectorAll('.option-btn');
+      if (letter === w.letter) {
+        btn.classList.add('correct');
+        speak("כל הכבוד! איזה אלוף!");
+        setTimeout(() => showWord(), 900);
+      } else {
+        btn.classList.add('wrong');
+        speak("נסה שנית, אתה יכול!");
+        setTimeout(() => {
+          btn.classList.remove('wrong');
+          locked = false;
+        }, 900);
+      }
+    }
+
+    function showWord() {
+      const w = gameWords[current];
+      document.getElementById('game').innerHTML = `
+        <div class="emoji">${w.emoji}</div>
+        <div class="word-show">${w.word}</div>
+        <button class="next-btn" onclick="nextWord()">למילה הבאה</button>
+      `;
+      speak(w.word);
+    }
+
+    function nextWord() {
+      current++;
+      if (current >= gameWords.length) {
+        document.getElementById('game').innerHTML = `
+          <div class="emoji">🎉</div>
+          <div class="word-show" style="color:#34d399;">כל הכבוד! סיימת את כל המילים!</div>
+          <button class="next-btn" onclick="restartGame()">שחק שוב</button>
+        `;
+        speak("כל הכבוד! סיימת את כל המילים!");
+      } else {
+        askQuestion();
+      }
+    }
+
+    function restartGame() {
+      gameWords = shuffle(words);
+      current = 0;
+      askQuestion();
+    }
+
+    // הפוך לפונקציות גלובליות
+    window.choose = choose;
+    window.nextWord = nextWord;
+    window.restartGame = restartGame;
+    window.playWord = playWord;
+
+    askQuestion();
+  </script>
 </body>
 </html>
