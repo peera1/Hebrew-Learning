@@ -1,64 +1,178 @@
-// Hebrew voice selection
-let hebrewVoice = null;
-function loadVoices() {
-  const voices = window.speechSynthesis.getVoices();
-  hebrewVoice = voices.find(v => v.lang === 'he-IL');
-}
-window.speechSynthesis.onvoiceschanged = loadVoices;
-loadVoices();
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>לומדים אותיות א-ב</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { direction: rtl; font-family: Arial, sans-serif; background: #f0e9ff; margin: 0; }
+    .container { max-width: 600px; margin: 48px auto; background: #fff; border-radius: 32px; box-shadow: 0 6px 24px #bbb; padding: 40px 24px; text-align: center; }
+    .letter { font-size: 7rem; margin-bottom: 12px; }
+    .emoji { font-size: 3rem; }
+    .name { font-size: 2.3rem; color: #7c3aed; font-weight: bold; margin-bottom: 12px; }
+    .examples span { display: inline-block; background: #f3f4f6; color: #6d28d9; border-radius: 20px; padding: 10px 22px; margin: 6px; font-size: 1.25rem; cursor: pointer; }
+    .nav-btn { background: #fff; color: #7c3aed; border: 2.5px solid #a78bfa; border-radius: 28px; padding: 14px 38px; font-size: 1.25rem; font-weight: bold; margin: 20px 12px 0 12px; cursor: pointer; }
+    .nav-btn:disabled { background: #e5e7eb; color: #a1a1aa; border-color: #e5e7eb; cursor: not-allowed; }
+    .sound-btn { background: #a78bfa; color: #fff; border: none; border-radius: 28px; padding: 14px 32px; font-size: 1.25rem; margin: 12px 0; cursor: pointer; }
+    .sound-btn:hover { background: #7c3aed; }
+    .reward { font-size: 3.5rem; margin-bottom: 20px; }
+    .stars { font-size: 3rem; color: #facc15; margin: 20px 0; }
+    .play-again-btn { background: #a78bfa; color: #fff; border: none; border-radius: 28px; padding: 18px 48px; font-size: 1.35rem; font-weight: bold; margin-top: 32px; cursor: pointer; }
+    .play-again-btn:hover { background: #7c3aed; }
+    .letters-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 36px;
+      gap: 8px;
+      user-select: none;
+    }
+    .letters-bar span {
+      display: inline-block;
+      font-size: 2.1rem;
+      background: #ede9fe;
+      color: #7c3aed;
+      border-radius: 12px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, transform 0.12s;
+      border: 2px solid transparent;
+    }
+    .letters-bar span.active {
+      background: #a78bfa;
+      color: #fff;
+      font-weight: bold;
+      border-color: #7c3aed;
+      transform: scale(1.13);
+      box-shadow: 0 2px 8px #a78bfa44;
+      cursor: default;
+    }
+    .letters-bar span:hover:not(.active) {
+      background: #d1c4e9;
+      color: #4f46e5;
+      transform: scale(1.07);
+    }
+    @media (max-width: 700px) {
+      .container { padding: 10vw 2vw; margin: 12px 2vw; border-radius: 18px; }
+      .letter { font-size: 4rem; }
+      .emoji { font-size: 1.7rem; }
+      .name { font-size: 1.2rem; }
+      .examples span { font-size: 1rem; padding: 7px 12px; }
+      .letters-bar span { font-size: 1.1rem; padding: 5px 8px; }
+      .nav-btn, .sound-btn, .play-again-btn { font-size: 1rem; padding: 10px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="game"></div>
+  <script>
+    const letters = [
+      { letter: 'א', name: 'אָלֶף', sound: 'א', examples: ['אַבָּא', 'אִמָּא', 'אַרְיֵה'], emoji: '🦁' },
+      { letter: 'ב', name: 'בֵּית', sound: 'ב / בּ', examples: ['בַּיִת', 'בַּנָּנָה', 'בּוּבָה'], emoji: '🏠' },
+      { letter: 'ג', name: 'גִּימֶל', sound: 'ג', examples: ['גָּמָל', 'גִּבּוֹר', 'גַּן'], emoji: '🐪' },
+      { letter: 'ד', name: 'דָּלֶת', sound: 'ד', examples: ['דֶּלֶת', 'דָּג', 'דּוּבִּי'], emoji: '🐻' },
+      { letter: 'ה', name: 'הֵא', sound: 'ה', examples: ['הַר', 'הִיפּוֹפּוֹטָם', 'הַמְבּוּרְגֶּר'], emoji: '⛰️' },
+      { letter: 'ו', name: 'וָו', sound: 'ו / וּ / וֹ', examples: ['וָרֹד', 'וִילוֹן', 'וָתִיק'], emoji: '🌹' },
+      { letter: 'ז', name: 'זַיִן', sound: 'ז', examples: ['זְאֵב', 'זָהָב', 'זֶבְרָה'], emoji: '🐺' },
+      { letter: 'ח', name: 'חֵית', sound: 'ח', examples: ['חָתוּל', 'חֲלוֹם', 'חַלָּה'], emoji: '🐱' },
+      { letter: 'ט', name: 'טֵית', sound: 'ט', examples: ['טַבַּעַת', 'טֶלֶה', 'טָּוָס'], emoji: '🐑' },
+      { letter: 'י', name: 'יוֹד', sound: 'י', examples: ['יֶלֶד', 'יַלְדָּה', 'יָם'], emoji: '🌊' },
+      { letter: 'כ', name: 'כַּף', sound: 'כּ / כ / ך', examples: ['כֶּלֶב', 'כּוֹכָב', 'כַּדּוּר'], emoji: '🐕' },
+      { letter: 'ל', name: 'לָמֶד', sound: 'ל', examples: ['לֶחֶם', 'לֵב', 'לָבָן'], emoji: '🍞' },
+      { letter: 'מ', name: 'מֵם', sound: 'מ / ם', examples: ['מַיִם', 'מֶלֶךְ', 'מוֹרָה'], emoji: '👑' },
+      { letter: 'נ', name: 'נוּן', sound: 'נ / ן', examples: ['נָחָשׁ', 'נֵר', 'נְמָלָה'], emoji: '🐍' },
+      { letter: 'ס', name: 'סָמֶךְ', sound: 'ס', examples: ['סוּס', 'סֵפֶר', 'סַבָּא'], emoji: '🐴' },
+      { letter: 'ע', name: 'עַיִן', sound: 'ע', examples: ['עֵץ', 'עַיִן', 'עוּגָה'], emoji: '🌳' },
+      { letter: 'פ', name: 'פֵּא', sound: 'פּ / פ / ף', examples: ['פִּיל', 'פֶּרַח', 'פָּרָה'], emoji: '🐘' },
+      { letter: 'צ', name: 'צַדִּיק', sound: 'צ / ץ', examples: ['צִפּוֹר', 'צָב', 'צֶבַע'], emoji: '🐦' },
+      { letter: 'ק', name: 'קוֹף', sound: 'ק', examples: ['קוֹף', 'קֶשֶׁת', 'קָטָן'], emoji: '🐵' },
+      { letter: 'ר', name: 'רֵישׁ', sound: 'ר', examples: ['רַכֶּבֶת', 'רֹאשׁ', 'רַגַל'], emoji: '🚂' },
+      { letter: 'ש', name: 'שִׁין', sound: 'שׁ / שׂ', examples: ['שֶׁמֶשׁ', 'שׁוּלְחָן', 'שָׁלוֹם'], emoji: '☀️' },
+      { letter: 'ת', name: 'תָּו', sound: 'ת', examples: ['תַּפּוּחַ', 'תּוֹרָה', 'תִּינוֹק'], emoji: '🍎' }
+    ];
+    let currentIndex = 0;
 
-function speakLetterAndWords(idx) {
-  if (idx < 0 || idx >= letters.length) return;
-  const l = letters[idx];
-  const words = l.examples.join(', ');
-  const text = `האות היא: ${l.name}. מילים שמתחילות באות ${l.name} הן: ${words}.`;
-  speak(text);
-}
+    // Hebrew voice selection
+    let hebrewVoice = null;
+    function loadVoices() {
+      const voices = window.speechSynthesis.getVoices();
+      hebrewVoice = voices.find(v => v.lang === 'he-IL');
+    }
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
 
-function speak(text) {
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-    const utter = new window.SpeechSynthesisUtterance(text);
-    utter.lang = 'he-IL';
-    if (hebrewVoice) utter.voice = hebrewVoice;
-    utter.rate = 0.7;
-    window.speechSynthesis.speak(utter);
-  } else {
-    alert('הדפדפן שלך לא תומך בהשמעת קול');
-  }
-}
-function render() {
-  if (currentIndex >= letters.length) {
-    document.getElementById('game').innerHTML = `
-      <div class="reward">🎉</div>
-      <h1 class="name" style="font-size:2.7rem;">כל הכבוד!</h1>
-      <div style="font-size:1.7rem; color:#444; margin-bottom:20px;">למדת את כל האותיות!</div>
-      <div class="stars">⭐️ ⭐️ ⭐️</div>
-      <button class="play-again-btn" onclick="restartGame()">שחק שוב</button>
-    `;
-    return;
-  }
-  const l = letters[currentIndex];
-  document.getElementById('game').innerHTML = `
-    <div class="letter">${l.letter}</div>
-    <div class="emoji">${l.emoji}</div>
-    <div class="name">${l.name}</div>
-    <button class="sound-btn" onclick="speakLetterAndWords(${currentIndex})">🔊 שמע צליל</button>
-    <div class="examples">
-      ${l.examples.map(word => `<span onclick="speak('${word}')">${word}</span>`).join('')}
-    </div>
-    <div>
-      <button class="nav-btn" onclick="prevLetter()" ${currentIndex === 0 ? 'disabled' : ''}>הקודם</button>
-      <button class="nav-btn" onclick="nextLetter()">${currentIndex === letters.length-1 ? 'סיום' : 'הבא'}</button>
-    </div>
-  `;
-}
-function nextLetter() { if(currentIndex<letters.length){currentIndex++;render();} }
-function prevLetter() { if(currentIndex>0){currentIndex--;render();} }
-function restartGame() { currentIndex = 0; render(); }
-window.speak = speak;
-window.speakLetterAndWords = speakLetterAndWords;
-window.nextLetter = nextLetter;
-window.prevLetter = prevLetter;
-window.restartGame = restartGame;
-render();
+    function speakLetterAndWords(idx) {
+      if (idx < 0 || idx >= letters.length) return;
+      const l = letters[idx];
+      const words = l.examples.join(', ');
+      const text = `האות היא: ${l.name}. מילים שמתחילות באות ${l.name} הן: ${words}.`;
+      speak(text);
+    }
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new window.SpeechSynthesisUtterance(text);
+        utter.lang = 'he-IL';
+        if (hebrewVoice) utter.voice = hebrewVoice;
+        utter.rate = 0.7;
+        window.speechSynthesis.speak(utter);
+      } else {
+        alert('הדפדפן שלך לא תומך בהשמעת קול');
+      }
+    }
+
+    function renderLettersBar() {
+      return `
+        <div class="letters-bar">
+          ${letters.map((l, idx) =>
+            `<span class="${idx === currentIndex ? 'active' : ''}" onclick="goToLetter(${idx})">${l.letter}</span>`
+          ).join('')}
+        </div>
+      `;
+    }
+
+    function render() {
+      if (currentIndex >= letters.length) {
+        document.getElementById('game').innerHTML = `
+          <div class="reward">🎉</div>
+          <h1 class="name" style="font-size:2.7rem;">כל הכבוד!</h1>
+          <div style="font-size:1.7rem; color:#444; margin-bottom:20px;">למדת את כל האותיות!</div>
+          <div class="stars">⭐️ ⭐️ ⭐️</div>
+          <button class="play-again-btn" onclick="restartGame()">שחק שוב</button>
+          ${renderLettersBar()}
+        `;
+        return;
+      }
+      const l = letters[currentIndex];
+      document.getElementById('game').innerHTML = `
+        <div class="letter">${l.letter}</div>
+        <div class="emoji">${l.emoji}</div>
+        <div class="name">${l.name}</div>
+        <button class="sound-btn" onclick="speakLetterAndWords(${currentIndex})">🔊 שמע צליל</button>
+        <div class="examples">
+          ${l.examples.map(word => `<span onclick="speak('${word}')">${word}</span>`).join('')}
+        </div>
+        <div>
+          <button class="nav-btn" onclick="prevLetter()" ${currentIndex === 0 ? 'disabled' : ''}>הקודם</button>
+          <button class="nav-btn" onclick="nextLetter()">${currentIndex === letters.length-1 ? 'סיום' : 'הבא'}</button>
+        </div>
+        ${renderLettersBar()}
+      `;
+    }
+
+    function nextLetter() { if(currentIndex<letters.length){currentIndex++;render();} }
+    function prevLetter() { if(currentIndex>0){currentIndex--;render();} }
+    function restartGame() { currentIndex = 0; render(); }
+    function goToLetter(idx) { if(idx !== currentIndex){currentIndex = idx; render();} }
+
+    window.speak = speak;
+    window.speakLetterAndWords = speakLetterAndWords;
+    window.nextLetter = nextLetter;
+    window.prevLetter = prevLetter;
+    window.restartGame = restartGame;
+    window.goToLetter = goToLetter;
+    render();
+  </script>
+</body>
+</html>
