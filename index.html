@@ -3,198 +3,470 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEBREW LEARNING - אינדקס ניווט</title>
-    <meta name="description" content="אינדקס ניווט לכל משחקי הלמידה בעברית - אותיות, קריאה, וחשבון. מותאם לילדים, חינמי, צבעוני ומזמין.">
-    <meta name="keywords" content="עברית, אותיות, לימוד, משחקים, גן חובה, כיתה א, כיתה ב, אינדקס, ניווט, ילדים, חינם, משחקי לימוד">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <title>כיתה ג - קבצים ומשאבים</title>
     <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-gradient-start: #7c3aed;
-            --primary-gradient-end: #a78bfa;
-            --secondary-color: #facc15;
-            --section-bg: #f8fafc;
-            --button-shadow: rgba(124, 58, 237, 0.13);
+            --bg-start: #f97316;
+            --bg-end: #fb923c;
+            --card-bg: #fff;
+            --accent: #7c3aed;
+            --accent2: #f43f5e;
+            --text: #1e1b4b;
+            --muted: #64748b;
+            --shadow: rgba(124,58,237,0.13);
         }
-        * { box-sizing: border-box; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: 'Varela Round', Arial, sans-serif;
-            background: linear-gradient(135deg, var(--primary-gradient-start) 0%, var(--primary-gradient-end) 100%);
+            background: linear-gradient(135deg, #f97316 0%, #fb923c 40%, #fbbf24 100%);
             min-height: 100vh;
-            margin: 0;
             direction: rtl;
-            color: #22223b;
+            color: var(--text);
             overflow-x: hidden;
+            padding: 30px 16px 50px;
         }
-        .background-overlay {
+
+        /* Floating bubbles background */
+        .bubbles {
             position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(255,255,255,0.13);
-            z-index: 1;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
             pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
         }
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.13;
+            animation: floatBubble linear infinite;
+        }
+        @keyframes floatBubble {
+            0% { transform: translateY(110vh) scale(0.8); opacity: 0.08; }
+            80% { opacity: 0.15; }
+            100% { transform: translateY(-20vh) scale(1.1); opacity: 0; }
+        }
+
         .container {
-            background: #fff;
-            border-radius: 32px;
-            box-shadow: 0 18px 48px var(--button-shadow);
-            padding: 44px 28px 32px 28px;
-            text-align: center;
-            width: 95%;
-            max-width: 650px;
-            margin: 40px auto 30px auto;
+            max-width: 720px;
+            margin: 0 auto;
             position: relative;
             z-index: 2;
         }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-            background: linear-gradient(to right, var(--primary-gradient-start), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 36px;
+            animation: dropIn 0.7s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        @keyframes dropIn {
+            from { opacity: 0; transform: translateY(-40px) scale(0.9); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: white;
+            color: var(--accent);
+            border-radius: 50px;
+            padding: 6px 22px;
+            font-size: 0.9rem;
             font-weight: 700;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+            animation: dropIn 0.7s 0.1s both;
         }
-        .intro-text {
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.92);
             font-size: 1.15rem;
-            color: #555;
-            margin-bottom: 30px;
-            line-height: 1.7;
+            margin-bottom: 0;
         }
-        .section-title {
+
+        .emoji-row {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            animation: wiggle 2s ease-in-out infinite;
+        }
+        @keyframes wiggle {
+            0%,100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* Back button */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 50px;
+            padding: 10px 22px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 28px;
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.2s;
+            animation: dropIn 0.7s 0.2s both;
+        }
+        .back-btn:hover {
+            background: rgba(255,255,255,0.35);
+            transform: translateX(4px);
+        }
+
+        /* Card */
+        .files-card {
+            background: #fff;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.13);
+            overflow: hidden;
+            animation: dropIn 0.7s 0.25s both;
+        }
+
+        .card-header {
+            background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
+            padding: 20px 28px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 14px;
+        }
+
+        .card-header-icon {
+            font-size: 2rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 14px;
+            width: 52px; height: 52px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .card-header-text h2 {
+            color: #fff;
             font-size: 1.3rem;
             font-weight: 700;
-            color: var(--primary-gradient-start);
-            background: linear-gradient(90deg, #ede9fe 60%, #fff 100%);
-            border-radius: 18px;
-            padding: 8px 22px 8px 12px;
-            width: fit-content;
-            margin: 0 auto 18px auto;
-            box-shadow: 0 2px 8px #a78bfa11;
-            border: none;
+            margin-bottom: 2px;
+        }
+        .card-header-text p {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: #f8f5ff;
+            border-bottom: 2px solid #ede9fe;
+        }
+        thead th {
+            padding: 14px 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #7c3aed;
             letter-spacing: 1px;
+            text-align: right;
         }
-        .section-title .icon {
-            font-size: 1.3em;
-            margin-left: 4px;
-            opacity: 0.7;
+        thead th:last-child { text-align: center; }
+
+        tbody tr {
+            border-bottom: 1px solid #f3f0ff;
+            transition: background 0.15s;
+            animation: fadeRow 0.4s ease both;
         }
-        .grade-section {
-            margin-bottom: 36px;
-            padding: 24px 10px 18px 10px;
-            border-radius: 18px;
-            background: var(--section-bg);
-            border: 2px dashed var(--primary-gradient-end);
-            transition: all 0.3s;
-            box-shadow: 0 2px 12px #a78bfa11;
+        tbody tr:nth-child(1) { animation-delay: 0.3s; }
+        tbody tr:nth-child(2) { animation-delay: 0.38s; }
+        tbody tr:nth-child(3) { animation-delay: 0.46s; }
+        tbody tr:nth-child(4) { animation-delay: 0.54s; }
+        tbody tr:nth-child(5) { animation-delay: 0.62s; }
+        tbody tr:nth-child(n+6) { animation-delay: 0.7s; }
+
+        @keyframes fadeRow {
+            from { opacity: 0; transform: translateX(10px); }
+            to   { opacity: 1; transform: translateX(0); }
         }
-        .grade-section:hover {
-            background: #f3f0ff;
-            transform: translateY(-3px) scale(1.01);
-            box-shadow: 0 8px 24px #a78bfa22;
+        tbody tr:hover { background: #faf8ff; }
+        tbody tr:last-child { border-bottom: none; }
+
+        td {
+            padding: 16px 20px;
+            vertical-align: middle;
         }
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            justify-content: center;
-        }
-        li {
-            margin: 0;
-            flex: 1 1 100%;
-            min-width: 180px;
-            max-width: 100%;
-        }
-        .nav-link {
+
+        .file-info {
             display: flex;
             align-items: center;
+            gap: 14px;
+        }
+
+        .file-icon {
+            width: 46px; height: 46px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .file-icon.docx { background: #eff6ff; }
+        .file-icon.pdf  { background: #fff1f2; }
+        .file-icon.img  { background: #f0fdf4; }
+        .file-icon.other{ background: #fefce8; }
+
+        .file-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+        .file-meta {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .file-number {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #a78bfa;
+            background: #f3f0ff;
+            border-radius: 50%;
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
             justify-content: center;
-            text-decoration: none;
-            color: #fff;
-            background: linear-gradient(90deg, #a78bfa 0%, #f472b6 100%);
-            padding: 16px 0;
-            border-radius: 20px;
-            font-size: 1.18rem;
+        }
+
+        .btn-view, .btn-dl {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 0.88rem;
             font-weight: 600;
-            box-shadow: 0 2px 12px #a78bfa22;
-            transition: background 0.2s, color 0.2s, transform 0.15s, box-shadow 0.2s;
-            margin-bottom: 0;
+            text-decoration: none;
+            transition: all 0.18s;
+            white-space: nowrap;
+            font-family: 'Varela Round', Arial, sans-serif;
+            cursor: pointer;
             border: none;
-            outline: none;
-            letter-spacing: 1px;
-            position: relative;
         }
-        .nav-link::before {
-            content: "🔗";
-            margin-left: 10px;
-            font-size: 1.2em;
-            opacity: 0.7;
-            transition: opacity 0.2s;
+        .btn-view {
+            background: #ede9fe;
+            color: #7c3aed;
         }
-        .nav-link:hover, .nav-link:focus {
-            background: linear-gradient(90deg, #7c3aed 0%, #f472b6 100%);
+        .btn-view:hover {
+            background: #7c3aed;
             color: #fff;
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 4px 18px #a78bfa44;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124,58,237,0.3);
         }
-        .coming-soon {
-            color: #aaa;
-            font-size: 1.1rem;
-            margin-top: 8px;
-            margin-bottom: 0;
-            text-align: right;
-            padding-right: 10px;
+        .btn-dl {
+            background: #fce7f3;
+            color: #f43f5e;
         }
-        @media (max-width: 700px) {
-            .container { padding: 18px 2vw 14px 2vw; border-radius: 14px; }
-            h1 { font-size: 1.5rem; }
-            .intro-text { font-size: 1rem; }
-            .section-title { font-size: 1rem; padding: 6px 12px 6px 8px; border-radius: 10px; }
-            .grade-section { padding: 12px 2vw 10px 2vw; }
-            .nav-link { font-size: 1rem; padding: 12px 0; border-radius: 14px; }
-            ul { gap: 10px; }
-            li { min-width: 120px; }
+        .btn-dl:hover {
+            background: #f43f5e;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(244,63,94,0.3);
+        }
+
+        /* Empty state */
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--muted);
+        }
+        .empty .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+        .empty p { font-size: 1.1rem; }
+
+        /* Footer note */
+        .footer-note {
+            text-align: center;
+            margin-top: 28px;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.9rem;
+            animation: dropIn 0.7s 0.5s both;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.8rem; }
+            td { padding: 12px 10px; }
+            thead th { padding: 10px 10px; font-size: 0.75rem; }
+            .action-btns { flex-direction: column; }
+            .card-header { padding: 14px 16px; }
+            .btn-view, .btn-dl { padding: 7px 12px; font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
-    <div class="background-overlay"></div>
-    <div class="container">
-        <h1>HEBREW LEARNING - אינדקס ניווט</h1>
-        <div class="intro-text">
-            בחרו סקשן ולחצו על הקישור כדי להתחיל ללמוד ולשחק. <br>
-            כל התכנים חינמיים, צבעוניים ומותאמים במיוחד לילדים!
-        </div>
 
-        <div class="grade-section">
-            <div class="section-title"><span class="icon">🎒</span>גן חובה</div>
-            <ul>
-                <li>
-                    <a class="nav-link" href="GanHova/Learn Letters.html" target="_blank">לימוד אותיות א-ב</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="GanHova/letter_a.html" target="_blank">אות א</a>
-                </li>
-                <li>
-                    <a class="nav-link" href="GanHova/letter_b.html" target="_blank">אות ב</a>
-                </li>
-            </ul>
-        </div>
+<!-- Floating bubbles -->
+<div class="bubbles" id="bubbles"></div>
 
-        <div class="grade-section">
-            <div class="section-title"><span class="icon">🅰️</span>כיתה א</div>
-            <p class="coming-soon">בקרוב...</p>
-        </div>
+<div class="container">
 
-        <div class="grade-section">
-            <div class="section-title"><span class="icon">🅱️</span>כיתה ב</div>
-            <p class="coming-soon">בקרוב...</p>
-        </div>
+    <a href="../index.html" class="back-btn">← חזרה לאינדקס</a>
+
+    <div class="header">
+        <div class="emoji-row">📚 ✏️ 🌟</div>
+        <div class="header-badge">CLASS C · כיתה ג</div>
+        <h1>קבצים ומשאבים</h1>
+        <p>כל החומרים של כיתה ג במקום אחד!</p>
     </div>
+
+    <div class="files-card">
+        <div class="card-header">
+            <div class="card-header-icon">📁</div>
+            <div class="card-header-text">
+                <h2>תיקיית Class-C / Files</h2>
+                <p>לחצו על "צפייה" לפתיחה או "הורדה" לשמירה</p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:40px">#</th>
+                    <th>שם הקובץ</th>
+                    <th style="text-align:center">פעולות</th>
+                </tr>
+            </thead>
+            <tbody id="files-tbody">
+                <!-- Files injected here -->
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer-note">✨ כל הקבצים זמינים לצפייה והורדה חינם</div>
+</div>
+
+<script>
+    // =============================================
+    // FILE LIST - עדכן את הרשימה הזו כשמוסיפים קבצים
+    // סדר הקבצים: לפי סדר ההעלאה (מהישן לחדש)
+    // =============================================
+    const files = [
+        {
+            name: "החלום על מיוטו",
+            filename: "החלום על מיוטו.docx",
+            path: "Files/החלום על מיוטו.docx",
+            type: "docx",
+            uploadedAt: "2024-01-01",
+            description: "סיפור קריאה"
+        }
+        // הוסף כאן קבצים נוספים לפי הדוגמה:
+        // {
+        //   name: "שם הקובץ",
+        //   filename: "filename.pdf",
+        //   path: "Files/filename.pdf",
+        //   type: "pdf",
+        //   uploadedAt: "2024-02-15",
+        //   description: "תיאור קצר"
+        // }
+    ];
+
+    const typeConfig = {
+        docx:  { emoji: "📄", label: "Word", cls: "docx" },
+        pdf:   { emoji: "📕", label: "PDF",  cls: "pdf"  },
+        jpg:   { emoji: "🖼️", label: "תמונה", cls: "img" },
+        png:   { emoji: "🖼️", label: "תמונה", cls: "img" },
+        mp4:   { emoji: "🎬", label: "וידאו", cls: "other"},
+        other: { emoji: "📎", label: "קובץ",  cls: "other"},
+    };
+
+    function canPreview(type) {
+        return ["pdf","jpg","png","gif","mp4"].includes(type);
+    }
+
+    function renderFiles() {
+        const tbody = document.getElementById("files-tbody");
+
+        if (!files.length) {
+            tbody.innerHTML = `
+                <tr><td colspan="3">
+                    <div class="empty">
+                        <div class="empty-icon">📭</div>
+                        <p>אין קבצים עדיין — בקרוב!</p>
+                    </div>
+                </td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = files.map((f, i) => {
+            const cfg = typeConfig[f.type] || typeConfig.other;
+            const date = f.uploadedAt
+                ? new Date(f.uploadedAt).toLocaleDateString("he-IL", {day:"2-digit",month:"2-digit",year:"numeric"})
+                : "";
+
+            const viewBtn = canPreview(f.type)
+                ? `<a class="btn-view" href="${f.path}" target="_blank">👁️ צפייה</a>`
+                : `<a class="btn-view" href="${f.path}" target="_blank">👁️ פתיחה</a>`;
+
+            return `
+            <tr>
+                <td><div class="file-number">${i + 1}</div></td>
+                <td>
+                    <div class="file-info">
+                        <div class="file-icon ${cfg.cls}">${cfg.emoji}</div>
+                        <div>
+                            <div class="file-name">${f.name}</div>
+                            <div class="file-meta">${cfg.label}${date ? " · " + date : ""}${f.description ? " · " + f.description : ""}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="action-btns">
+                        ${viewBtn}
+                        <a class="btn-dl" href="${f.path}" download="${f.filename}">⬇️ הורדה</a>
+                    </div>
+                </td>
+            </tr>`;
+        }).join("");
+    }
+
+    // Floating bubbles
+    function createBubbles() {
+        const container = document.getElementById("bubbles");
+        const colors = ["#fff","#fbbf24","#f97316","#fb923c"];
+        for (let i = 0; i < 18; i++) {
+            const b = document.createElement("div");
+            b.className = "bubble";
+            const size = 20 + Math.random() * 80;
+            b.style.cssText = `
+                width:${size}px; height:${size}px;
+                left:${Math.random()*100}%;
+                background:${colors[Math.floor(Math.random()*colors.length)]};
+                animation-duration:${8+Math.random()*12}s;
+                animation-delay:${-Math.random()*15}s;
+            `;
+            container.appendChild(b);
+        }
+    }
+
+    createBubbles();
+    renderFiles();
+</script>
+
 </body>
 </html>
