@@ -3,469 +3,413 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>כיתה ג - קבצים ומשאבים</title>
+    <title>HEBREW LEARNING - בית הספר שלנו 🌟</title>
+    <meta name="description" content="אינדקס ניווט לכל משחקי הלמידה בעברית - אותיות, קריאה, וחשבון. מותאם לילדים, חינמי, צבעוני ומזמין.">
+    <meta name="keywords" content="עברית, אותיות, לימוד, משחקים, גן חובה, כיתה א, כיתה ב, כיתה ג, אינדקס, ניווט, ילדים, חינם">
     <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-start: #f97316;
-            --bg-end: #fb923c;
-            --card-bg: #fff;
-            --accent: #7c3aed;
-            --accent2: #f43f5e;
-            --text: #1e1b4b;
-            --muted: #64748b;
-            --shadow: rgba(124,58,237,0.13);
+            --font: 'Varela Round', Arial, sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Varela Round', Arial, sans-serif;
-            background: linear-gradient(135deg, #f97316 0%, #fb923c 40%, #fbbf24 100%);
+            font-family: var(--font);
             min-height: 100vh;
             direction: rtl;
-            color: var(--text);
+            background: #0f0a2e;
             overflow-x: hidden;
-            padding: 30px 16px 50px;
+            color: #fff;
         }
 
-        /* Floating bubbles background */
-        .bubbles {
-            position: fixed;
-            top: 0; left: 0;
+        /* ── Animated starfield background ── */
+        .stars {
+            position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
             overflow: hidden;
         }
-        .bubble {
+        .star {
             position: absolute;
             border-radius: 50%;
-            opacity: 0.13;
-            animation: floatBubble linear infinite;
+            background: #fff;
+            animation: twinkle ease-in-out infinite;
         }
-        @keyframes floatBubble {
-            0% { transform: translateY(110vh) scale(0.8); opacity: 0.08; }
-            80% { opacity: 0.15; }
-            100% { transform: translateY(-20vh) scale(1.1); opacity: 0; }
+        @keyframes twinkle {
+            0%,100% { opacity: 0.15; transform: scale(1); }
+            50%      { opacity: 1;    transform: scale(1.4); }
         }
 
+        /* ── Rainbow wave at top ── */
+        .rainbow-bar {
+            width: 100%; height: 7px;
+            background: linear-gradient(90deg,
+                #f43f5e, #f97316, #fbbf24, #22c55e,
+                #06b6d4, #6366f1, #a855f7, #f43f5e);
+            background-size: 200%;
+            animation: rainbowSlide 3s linear infinite;
+            position: fixed; top: 0; left: 0; z-index: 100;
+        }
+        @keyframes rainbowSlide {
+            0%  { background-position: 0%; }
+            100%{ background-position: 200%; }
+        }
+
+        /* ── Page layout ── */
+        .page {
+            position: relative; z-index: 2;
+            padding: 70px 16px 60px;
+            min-height: 100vh;
+        }
         .container {
-            max-width: 720px;
+            max-width: 680px;
             margin: 0 auto;
-            position: relative;
-            z-index: 2;
         }
 
-        /* Header */
-        .header {
+        /* ── Hero header ── */
+        .hero {
             text-align: center;
-            margin-bottom: 36px;
-            animation: dropIn 0.7s cubic-bezier(.34,1.56,.64,1) both;
+            margin-bottom: 52px;
+            animation: heroIn 0.8s cubic-bezier(.34,1.56,.64,1) both;
         }
-        @keyframes dropIn {
-            from { opacity: 0; transform: translateY(-40px) scale(0.9); }
+        @keyframes heroIn {
+            from { opacity: 0; transform: translateY(-50px) scale(0.85); }
             to   { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .header-badge {
+        .hero-logo {
             display: inline-block;
-            background: white;
-            color: var(--accent);
-            border-radius: 50px;
-            padding: 6px 22px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-            animation: dropIn 0.7s 0.1s both;
-        }
-
-        .header h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 4px 24px rgba(0,0,0,0.18);
-            margin-bottom: 10px;
-            line-height: 1.2;
-        }
-
-        .header p {
-            color: rgba(255,255,255,0.92);
-            font-size: 1.15rem;
-            margin-bottom: 0;
-        }
-
-        .emoji-row {
-            font-size: 2.2rem;
-            margin-bottom: 8px;
-            animation: wiggle 2s ease-in-out infinite;
-        }
-        @keyframes wiggle {
-            0%,100% { transform: rotate(-5deg); }
-            50% { transform: rotate(5deg); }
-        }
-
-        /* Back button */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.2);
-            color: #fff;
-            text-decoration: none;
-            border-radius: 50px;
-            padding: 10px 22px;
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 28px;
-            backdrop-filter: blur(8px);
-            border: 2px solid rgba(255,255,255,0.3);
-            transition: all 0.2s;
-            animation: dropIn 0.7s 0.2s both;
-        }
-        .back-btn:hover {
-            background: rgba(255,255,255,0.35);
-            transform: translateX(4px);
-        }
-
-        /* Card */
-        .files-card {
-            background: #fff;
+            background: linear-gradient(135deg, #fbbf24, #f97316);
             border-radius: 28px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.13);
-            overflow: hidden;
-            animation: dropIn 0.7s 0.25s both;
+            width: 100px; height: 100px;
+            font-size: 3.2rem;
+            line-height: 100px;
+            margin-bottom: 22px;
+            box-shadow: 0 0 40px rgba(251,191,36,0.5), 0 0 80px rgba(249,115,22,0.2);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        @keyframes logoFloat {
+            0%,100% { transform: translateY(0) rotate(-3deg); }
+            50%     { transform: translateY(-10px) rotate(3deg); }
         }
 
-        .card-header {
-            background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
-            padding: 20px 28px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .card-header-icon {
-            font-size: 2rem;
-            background: rgba(255,255,255,0.2);
-            border-radius: 14px;
-            width: 52px; height: 52px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .card-header-text h2 {
-            color: #fff;
-            font-size: 1.3rem;
+        .hero h1 {
+            font-size: 2.6rem;
             font-weight: 700;
-            margin-bottom: 2px;
-        }
-        .card-header-text p {
-            color: rgba(255,255,255,0.8);
-            font-size: 0.9rem;
-        }
-
-        /* Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
+            margin-bottom: 12px;
+            line-height: 1.2;
+            background: linear-gradient(90deg, #fbbf24, #f472b6, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        thead tr {
-            background: #f8f5ff;
-            border-bottom: 2px solid #ede9fe;
+        .hero-sub {
+            color: rgba(255,255,255,0.65);
+            font-size: 1.1rem;
+            line-height: 1.7;
         }
-        thead th {
-            padding: 14px 20px;
+
+        .hero-chips {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+        .chip {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(6px);
+            border-radius: 50px;
+            padding: 5px 16px;
             font-size: 0.85rem;
-            font-weight: 700;
-            color: #7c3aed;
-            letter-spacing: 1px;
-            text-align: right;
-        }
-        thead th:last-child { text-align: center; }
-
-        tbody tr {
-            border-bottom: 1px solid #f3f0ff;
-            transition: background 0.15s;
-            animation: fadeRow 0.4s ease both;
-        }
-        tbody tr:nth-child(1) { animation-delay: 0.3s; }
-        tbody tr:nth-child(2) { animation-delay: 0.38s; }
-        tbody tr:nth-child(3) { animation-delay: 0.46s; }
-        tbody tr:nth-child(4) { animation-delay: 0.54s; }
-        tbody tr:nth-child(5) { animation-delay: 0.62s; }
-        tbody tr:nth-child(n+6) { animation-delay: 0.7s; }
-
-        @keyframes fadeRow {
-            from { opacity: 0; transform: translateX(10px); }
-            to   { opacity: 1; transform: translateX(0); }
-        }
-        tbody tr:hover { background: #faf8ff; }
-        tbody tr:last-child { border-bottom: none; }
-
-        td {
-            padding: 16px 20px;
-            vertical-align: middle;
+            color: rgba(255,255,255,0.8);
         }
 
-        .file-info {
+        /* ── Grade section cards ── */
+        .section-card {
+            border-radius: 26px;
+            margin-bottom: 28px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: cardIn 0.7s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        .section-card:nth-child(1) { animation-delay: 0.15s; }
+        .section-card:nth-child(2) { animation-delay: 0.25s; }
+        .section-card:nth-child(3) { animation-delay: 0.35s; }
+        .section-card:nth-child(4) { animation-delay: 0.45s; }
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .section-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+        }
+
+        /* Card color themes */
+        .card-gan    { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+        .card-kita-a { background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%); }
+        .card-kita-b { background: linear-gradient(135deg, #059669 0%, #34d399 100%); }
+        .card-kita-c { background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%); }
+
+        /* Card header strip */
+        .card-header {
+            padding: 22px 26px 18px;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 18px;
         }
-
-        .file-icon {
-            width: 46px; height: 46px;
-            border-radius: 12px;
+        .card-badge {
+            font-size: 2.4rem;
+            background: rgba(255,255,255,0.18);
+            border-radius: 18px;
+            width: 62px; height: 62px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.5rem;
             flex-shrink: 0;
         }
-        .file-icon.docx { background: #eff6ff; }
-        .file-icon.pdf  { background: #fff1f2; }
-        .file-icon.img  { background: #f0fdf4; }
-        .file-icon.other{ background: #fefce8; }
-
-        .file-name {
+        .card-label h2 {
+            font-size: 1.4rem;
             font-weight: 700;
-            font-size: 1rem;
-            color: var(--text);
-            margin-bottom: 2px;
-        }
-        .file-meta {
-            font-size: 0.78rem;
-            color: var(--muted);
-        }
-
-        .file-number {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: #a78bfa;
-            background: #f3f0ff;
-            border-radius: 50%;
-            width: 28px; height: 28px;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .btn-view, .btn-dl {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            border-radius: 50px;
-            padding: 8px 16px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.18s;
-            white-space: nowrap;
-            font-family: 'Varela Round', Arial, sans-serif;
-            cursor: pointer;
-            border: none;
-        }
-        .btn-view {
-            background: #ede9fe;
-            color: #7c3aed;
-        }
-        .btn-view:hover {
-            background: #7c3aed;
             color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(124,58,237,0.3);
         }
-        .btn-dl {
-            background: #fce7f3;
-            color: #f43f5e;
-        }
-        .btn-dl:hover {
-            background: #f43f5e;
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(244,63,94,0.3);
-        }
-
-        /* Empty state */
-        .empty {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--muted);
-        }
-        .empty .empty-icon { font-size: 3rem; margin-bottom: 12px; }
-        .empty p { font-size: 1.1rem; }
-
-        /* Footer note */
-        .footer-note {
-            text-align: center;
-            margin-top: 28px;
+        .card-label p {
             color: rgba(255,255,255,0.75);
             font-size: 0.9rem;
-            animation: dropIn 0.7s 0.5s both;
+            margin-top: 2px;
+        }
+        .card-count {
+            margin-right: auto;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50px;
+            padding: 4px 14px;
+            font-size: 0.8rem;
+            color: #fff;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
-        @media (max-width: 600px) {
-            .header h1 { font-size: 1.8rem; }
-            td { padding: 12px 10px; }
-            thead th { padding: 10px 10px; font-size: 0.75rem; }
-            .action-btns { flex-direction: column; }
-            .card-header { padding: 14px 16px; }
-            .btn-view, .btn-dl { padding: 7px 12px; font-size: 0.8rem; }
+        /* Links inside card */
+        .card-links {
+            background: rgba(0,0,0,0.18);
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 14px 20px;
+            border-radius: 16px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            gap: 12px;
+            letter-spacing: 0.5px;
+        }
+        .nav-link:hover, .nav-link:focus {
+            background: rgba(255,255,255,0.25);
+            transform: translateX(-4px);
+            border-color: rgba(255,255,255,0.4);
+        }
+        .nav-link .link-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .nav-link .link-arrow {
+            margin-right: auto;
+            opacity: 0.6;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+        .nav-link:hover .link-arrow {
+            transform: translateX(-4px);
+            opacity: 1;
+        }
+
+        /* Coming soon state */
+        .coming-soon-banner {
+            background: rgba(0,0,0,0.18);
+            padding: 20px;
+            text-align: center;
+        }
+        .coming-soon-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            border: 1px dashed rgba(255,255,255,0.35);
+            border-radius: 50px;
+            padding: 10px 24px;
+            color: rgba(255,255,255,0.75);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .coming-soon-pill span { font-size: 1.1rem; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: rgba(255,255,255,0.35);
+            font-size: 0.85rem;
+            line-height: 1.8;
+            animation: cardIn 0.7s 0.6s both;
+        }
+        .footer strong { color: rgba(255,255,255,0.5); }
+
+        @media (max-width: 580px) {
+            .hero h1 { font-size: 1.8rem; }
+            .hero-logo { width: 76px; height: 76px; font-size: 2.3rem; line-height: 76px; border-radius: 20px; }
+            .card-header { padding: 16px 18px 14px; gap: 12px; }
+            .card-badge { width: 50px; height: 50px; font-size: 1.8rem; border-radius: 14px; }
+            .card-links { padding: 12px 14px; gap: 8px; }
+            .nav-link { padding: 12px 16px; font-size: 0.97rem; }
         }
     </style>
 </head>
 <body>
 
-<!-- Floating bubbles -->
-<div class="bubbles" id="bubbles"></div>
+<div class="rainbow-bar"></div>
+<div class="stars" id="stars"></div>
 
+<div class="page">
 <div class="container">
 
-    <a href="../index.html" class="back-btn">← חזרה לאינדקס</a>
-
-    <div class="header">
-        <div class="emoji-row">📚 ✏️ 🌟</div>
-        <div class="header-badge">CLASS C · כיתה ג</div>
-        <h1>קבצים ומשאבים</h1>
-        <p>כל החומרים של כיתה ג במקום אחד!</p>
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-logo">📖</div>
+        <h1>HEBREW LEARNING</h1>
+        <p class="hero-sub">
+            ברוכים הבאים לאתר הלמידה שלנו! 🎉<br>
+            בחרו כיתה ולחצו להתחיל ללמוד ולשחק
+        </p>
+        <div class="hero-chips">
+            <div class="chip">✅ חינמי לחלוטין</div>
+            <div class="chip">🎮 משחקים מהנים</div>
+            <div class="chip">🌈 צבעוני לילדים</div>
+        </div>
     </div>
 
-    <div class="files-card">
+    <!-- גן חובה -->
+    <div class="section-card card-gan">
         <div class="card-header">
-            <div class="card-header-icon">📁</div>
-            <div class="card-header-text">
-                <h2>תיקיית Class-C / Files</h2>
-                <p>לחצו על "צפייה" לפתיחה או "הורדה" לשמירה</p>
+            <div class="card-badge">🎒</div>
+            <div class="card-label">
+                <h2>גן חובה</h2>
+                <p>אותיות ראשונות ולמידה בסיסית</p>
+            </div>
+            <div class="card-count">3 פעילויות</div>
+        </div>
+        <div class="card-links">
+            <a class="nav-link" href="GanHova/Learn Letters.html" target="_blank">
+                <span class="link-icon">🔤</span>
+                לימוד אותיות א-ב
+                <span class="link-arrow">←</span>
+            </a>
+            <a class="nav-link" href="GanHova/letter_a.html" target="_blank">
+                <span class="link-icon">🔵</span>
+                אות א
+                <span class="link-arrow">←</span>
+            </a>
+            <a class="nav-link" href="GanHova/letter_b.html" target="_blank">
+                <span class="link-icon">🟣</span>
+                אות ב
+                <span class="link-arrow">←</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- כיתה א -->
+    <div class="section-card card-kita-a">
+        <div class="card-header">
+            <div class="card-badge">🅰️</div>
+            <div class="card-label">
+                <h2>כיתה א</h2>
+                <p>קריאה, כתיבה ומשחקים</p>
+            </div>
+            <div class="card-count">בקרוב</div>
+        </div>
+        <div class="coming-soon-banner">
+            <div class="coming-soon-pill">
+                <span>🚧</span> תוכן בפיתוח — בקרוב!
             </div>
         </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:40px">#</th>
-                    <th>שם הקובץ</th>
-                    <th style="text-align:center">פעולות</th>
-                </tr>
-            </thead>
-            <tbody id="files-tbody">
-                <!-- Files injected here -->
-            </tbody>
-        </table>
     </div>
 
-    <div class="footer-note">✨ כל הקבצים זמינים לצפייה והורדה חינם</div>
+    <!-- כיתה ב -->
+    <div class="section-card card-kita-b">
+        <div class="card-header">
+            <div class="card-badge">🅱️</div>
+            <div class="card-label">
+                <h2>כיתה ב</h2>
+                <p>קריאה מתקדמת ושפה</p>
+            </div>
+            <div class="card-count">בקרוב</div>
+        </div>
+        <div class="coming-soon-banner">
+            <div class="coming-soon-pill">
+                <span>🚧</span> תוכן בפיתוח — בקרוב!
+            </div>
+        </div>
+    </div>
+
+    <!-- כיתה ג -->
+    <div class="section-card card-kita-c">
+        <div class="card-header">
+            <div class="card-badge">🎓</div>
+            <div class="card-label">
+                <h2>כיתה ג</h2>
+                <p>קבצים וחומרי לימוד</p>
+            </div>
+            <div class="card-count">1 קובץ</div>
+        </div>
+        <div class="card-links">
+            <a class="nav-link" href="Class-C/index.html" target="_blank">
+                <span class="link-icon">📁</span>
+                קבצים ומשאבים — כיתה ג
+                <span class="link-arrow">←</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <strong>HEBREW LEARNING</strong><br>
+        כל התכנים חינמיים ומותאמים לילדים 💛<br>
+        נבנה באהבה ❤️
+    </div>
+
+</div>
 </div>
 
 <script>
-    // =============================================
-    // FILE LIST - עדכן את הרשימה הזו כשמוסיפים קבצים
-    // סדר הקבצים: לפי סדר ההעלאה (מהישן לחדש)
-    // =============================================
-    const files = [
-        {
-            name: "החלום על מיוטו",
-            filename: "החלום על מיוטו.docx",
-            path: "Files/החלום על מיוטו.docx",
-            type: "docx",
-            uploadedAt: "2024-01-01",
-            description: "סיפור קריאה"
-        }
-        // הוסף כאן קבצים נוספים לפי הדוגמה:
-        // {
-        //   name: "שם הקובץ",
-        //   filename: "filename.pdf",
-        //   path: "Files/filename.pdf",
-        //   type: "pdf",
-        //   uploadedAt: "2024-02-15",
-        //   description: "תיאור קצר"
-        // }
-    ];
-
-    const typeConfig = {
-        docx:  { emoji: "📄", label: "Word", cls: "docx" },
-        pdf:   { emoji: "📕", label: "PDF",  cls: "pdf"  },
-        jpg:   { emoji: "🖼️", label: "תמונה", cls: "img" },
-        png:   { emoji: "🖼️", label: "תמונה", cls: "img" },
-        mp4:   { emoji: "🎬", label: "וידאו", cls: "other"},
-        other: { emoji: "📎", label: "קובץ",  cls: "other"},
-    };
-
-    function canPreview(type) {
-        return ["pdf","jpg","png","gif","mp4"].includes(type);
-    }
-
-    function renderFiles() {
-        const tbody = document.getElementById("files-tbody");
-
-        if (!files.length) {
-            tbody.innerHTML = `
-                <tr><td colspan="3">
-                    <div class="empty">
-                        <div class="empty-icon">📭</div>
-                        <p>אין קבצים עדיין — בקרוב!</p>
-                    </div>
-                </td></tr>`;
-            return;
-        }
-
-        tbody.innerHTML = files.map((f, i) => {
-            const cfg = typeConfig[f.type] || typeConfig.other;
-            const date = f.uploadedAt
-                ? new Date(f.uploadedAt).toLocaleDateString("he-IL", {day:"2-digit",month:"2-digit",year:"numeric"})
-                : "";
-
-            const viewBtn = canPreview(f.type)
-                ? `<a class="btn-view" href="${f.path}" target="_blank">👁️ צפייה</a>`
-                : `<a class="btn-view" href="${f.path}" target="_blank">👁️ פתיחה</a>`;
-
-            return `
-            <tr>
-                <td><div class="file-number">${i + 1}</div></td>
-                <td>
-                    <div class="file-info">
-                        <div class="file-icon ${cfg.cls}">${cfg.emoji}</div>
-                        <div>
-                            <div class="file-name">${f.name}</div>
-                            <div class="file-meta">${cfg.label}${date ? " · " + date : ""}${f.description ? " · " + f.description : ""}</div>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="action-btns">
-                        ${viewBtn}
-                        <a class="btn-dl" href="${f.path}" download="${f.filename}">⬇️ הורדה</a>
-                    </div>
-                </td>
-            </tr>`;
-        }).join("");
-    }
-
-    // Floating bubbles
-    function createBubbles() {
-        const container = document.getElementById("bubbles");
-        const colors = ["#fff","#fbbf24","#f97316","#fb923c"];
-        for (let i = 0; i < 18; i++) {
-            const b = document.createElement("div");
-            b.className = "bubble";
-            const size = 20 + Math.random() * 80;
-            b.style.cssText = `
+    // Starfield
+    (function() {
+        const container = document.getElementById("stars");
+        for (let i = 0; i < 120; i++) {
+            const s = document.createElement("div");
+            s.className = "star";
+            const size = 1 + Math.random() * 3;
+            s.style.cssText = `
                 width:${size}px; height:${size}px;
+                top:${Math.random()*100}%;
                 left:${Math.random()*100}%;
-                background:${colors[Math.floor(Math.random()*colors.length)]};
-                animation-duration:${8+Math.random()*12}s;
-                animation-delay:${-Math.random()*15}s;
+                animation-duration:${2 + Math.random()*4}s;
+                animation-delay:${-Math.random()*5}s;
             `;
-            container.appendChild(b);
+            container.appendChild(s);
         }
-    }
-
-    createBubbles();
-    renderFiles();
+    })();
 </script>
 
 </body>
