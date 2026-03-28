@@ -366,6 +366,7 @@ function genStart(){
     type:'start',typeName:'מה מתחיל באות',
     html:`מה מתחיל באות <span class="question-word">${tl}</span>?`,
     spokenQ:`מה מתחיל באות ${LN[tl]}?`,
+    spokenCorrect:`נכון! המילה ${correct.w} מתחילה באות ${LN[tl]}`,
     opts:opts.map(o=>({label:o.w,sub:'',emoji:o.e,spoken:o.w,correct:o===correct})),
     detail:`האות ${LN[tl]}`
   };
@@ -385,6 +386,7 @@ function genOdd(){
     type:'odd',typeName:'מה יוצא דופן',
     html:`🔍 איזו מילה <span class="question-word">לא</span> מתחילה באותה אות?`,
     spokenQ:`שלוש מילות מתחילות באות ${LN[ml]}, ואחת שונה. מצא את המילה שיוצאת דופן!`,
+    spokenCorrect:`נכון! שלוש מילים מתחילות באות ${LN[ml]}: ${three.map(x=>x.w).join(', ')}, ורק המילה ${odd.w} מתחילה באות ${LN[oddL]}`,
     opts:opts.map(o=>({label:o.w,sub:'',emoji:o.e,spoken:o.w,correct:o===odd})),
     detail:`${odd.w} מתחילה ב-${odd.s}`
   };
@@ -398,6 +400,7 @@ function genEnd(){
     type:'end',typeName:'באיזה אות מסתיימת',
     html:`באיזו אות מסתיימת המילה <span class="question-word">${word.e} ${word.w}</span>?`,
     spokenQ:`באיזו אות מסתיימת המילה ${word.w}?`,
+    spokenCorrect:`נכון! המילה ${word.w} מסתיימת באות ${LN[cl]}`,
     opts:opts.map(l=>({label:l,sub:LN[l]||l,emoji:'',spoken:LN[l]||l,correct:l===cl})),
     detail:`האות ${LN[cl]}`
   };
@@ -525,7 +528,8 @@ function handleAnswer(btn, isCorrect){
     const msgs=['כל הכבוד! מדהים!','נכון לגמרי! יופי!','וואו! אתה גאון!','מושלם! ממש טוב!','נכון! כל הכבוד!'];
     const m=msgs[Math.floor(Math.random()*msgs.length)];
     showFeedback(true,m);
-    setTimeout(()=>speakText(m),400);
+    // Speak the specific correct-answer explanation instead of the generic praise
+    setTimeout(()=>speakText(cq.spokenCorrect),400);
     launchConfetti();
     setTimeout(()=>document.getElementById('nextBtn').classList.add('visible'),800);
   } else {
