@@ -361,42 +361,42 @@
     <div class="footer-note">✨ כל הקבצים זמינים לצפייה והורדה חינם</div>
 </div>
 
+<script src="files-manifest.js"></script>
 <script>
-    // =============================================
-    // FILE LIST - עדכן את הרשימה הזו כשמוסיפים קבצים
-    // סדר הקבצים: לפי סדר ההעלאה (מהישן לחדש)
-    // =============================================
-    const files = [
-        {
-            name: "החלום על מיוטו",
-            filename: "החלום על מיוטו.docx",
-            path: "Files/החלום על מיוטו.docx",
-            type: "docx",
-            uploadedAt: "2024-01-01",
-            description: "סיפור קריאה"
-        }
-        // הוסף כאן קבצים נוספים לפי הדוגמה:
-        // {
-        //   name: "שם הקובץ",
-        //   filename: "filename.pdf",
-        //   path: "Files/filename.pdf",
-        //   type: "pdf",
-        //   uploadedAt: "2024-02-15",
-        //   description: "תיאור קצר"
-        // }
-    ];
+    const files = (window.CLASS_C_FILES || []).map(path => {
+        const filename = path.split("/").pop();
+        const extension = filename.includes(".")
+            ? filename.split(".").pop().toLowerCase()
+            : "other";
+
+        return {
+            name: filename.replace(/\.[^.]+$/, ""),
+            filename,
+            path: path.split("/").map(encodeURIComponent).join("/"),
+            type: extension
+        };
+    });
 
     const typeConfig = {
         docx:  { emoji: "📄", label: "Word", cls: "docx" },
         pdf:   { emoji: "📕", label: "PDF",  cls: "pdf"  },
         jpg:   { emoji: "🖼️", label: "תמונה", cls: "img" },
         png:   { emoji: "🖼️", label: "תמונה", cls: "img" },
+        jpeg:  { emoji: "🖼️", label: "תמונה", cls: "img" },
+        gif:   { emoji: "🖼️", label: "תמונה", cls: "img" },
+        html:  { emoji: "🌐", label: "פעילות", cls: "other" },
         mp4:   { emoji: "🎬", label: "וידאו", cls: "other"},
         other: { emoji: "📎", label: "קובץ",  cls: "other"},
     };
 
     function canPreview(type) {
-        return ["pdf","jpg","png","gif","mp4"].includes(type);
+        return ["pdf","jpg","jpeg","png","gif","html","mp4"].includes(type);
+    }
+
+    function escapeHtml(value) {
+        const element = document.createElement("div");
+        element.textContent = value;
+        return element.innerHTML;
     }
 
     function renderFiles() {
@@ -415,13 +415,12 @@
 
         tbody.innerHTML = files.map((f, i) => {
             const cfg = typeConfig[f.type] || typeConfig.other;
-            const date = f.uploadedAt
-                ? new Date(f.uploadedAt).toLocaleDateString("he-IL", {day:"2-digit",month:"2-digit",year:"numeric"})
-                : "";
+            const safeName = escapeHtml(f.name);
+            const safeFilename = escapeHtml(f.filename);
 
             const viewBtn = canPreview(f.type)
-                ? `<a class="btn-view" href="${f.path}" target="_blank">👁️ צפייה</a>`
-                : `<a class="btn-view" href="${f.path}" target="_blank">👁️ פתיחה</a>`;
+                ? `<a class="btn-view" href="${f.path}">👁️ צפייה</a>`
+                : `<a class="btn-view" href="${f.path}">👁️ פתיחה</a>`;
 
             return `
             <tr>
@@ -430,15 +429,15 @@
                     <div class="file-info">
                         <div class="file-icon ${cfg.cls}">${cfg.emoji}</div>
                         <div>
-                            <div class="file-name">${f.name}</div>
-                            <div class="file-meta">${cfg.label}${date ? " · " + date : ""}${f.description ? " · " + f.description : ""}</div>
+                            <div class="file-name">${safeName}</div>
+                            <div class="file-meta">${cfg.label}</div>
                         </div>
                     </div>
                 </td>
                 <td>
                     <div class="action-btns">
                         ${viewBtn}
-                        <a class="btn-dl" href="${f.path}" download="${f.filename}">⬇️ הורדה</a>
+                        <a class="btn-dl" href="${f.path}" download="${safeFilename}">⬇️ הורדה</a>
                     </div>
                 </td>
             </tr>`;
