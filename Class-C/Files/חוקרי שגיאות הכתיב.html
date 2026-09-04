@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>בלשי הכתיב - לומדת שגיאות כתיב</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FDF3E0;
+    --paper-2:#FFFFFF;
+    --ink:#1B2A4A;
+    --ink-soft:#3E4E70;
+    --coral:#E8543E;
+    --coral-dark:#C23F2C;
+    --teal:#1E8F79;
+    --teal-dark:#136B5A;
+    --gold:#F2B23A;
+    --gold-dark:#D9931A;
+    --line:#1B2A4A;
+    --shadow: 6px 6px 0 rgba(27,42,74,0.18);
+    --radius: 18px;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; min-height:100vh;
+    background:
+      radial-gradient(circle at 8% 12%, rgba(242,178,58,0.20) 0, transparent 40%),
+      radial-gradient(circle at 92% 85%, rgba(30,143,121,0.18) 0, transparent 42%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Rubik', system-ui, sans-serif;
+    direction:rtl;
+    overflow-x:hidden;
+  }
+  .stage{
+    max-width:760px;
+    margin:0 auto;
+    padding:20px 16px 60px;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  /* ---------- decorative floating letters ---------- */
+  .letter-float{
+    position:fixed; font-family:'Rubik Mono One', sans-serif;
+    color:rgba(27,42,74,0.06); font-size:120px; pointer-events:none;
+    z-index:0; user-select:none;
+  }
+  /* ---------- top bar ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px; margin-bottom:18px; position:relative; z-index:1;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-weight:900; font-size:20px; color:var(--ink);
+  }
+  .brand .badge{
+    width:40px; height:40px; border-radius:50%;
+    background:var(--gold); border:3px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px;
+  }
+  .hearts{ display:flex; gap:6px; direction:ltr; }
+  .heart{ font-size:26px; line-height:1; transition:transform .25s; }
+  .heart.lost{ filter:grayscale(1) opacity(0.35); transform:scale(0.85) rotate(-8deg); }
+  .heart.breaking{ animation:heartBreak .5s ease forwards; }
+  @keyframes heartBreak{
+    0%{ transform:scale(1.15); }
+    40%{ transform:scale(0.7) rotate(-15deg); }
+    100%{ transform:scale(0.85) rotate(-8deg); filter:grayscale(1) opacity(0.35); }
+  }
+
+  /* ---------- generic card ---------- */
+  .card{
+    background:var(--paper-2);
+    border:3px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:26px 22px;
+    position:relative; z-index:1;
+  }
+
+  /* ---------- screens ---------- */
+  .screen{ display:none; flex:1; flex-direction:column; }
+  .screen.active{ display:flex; }
+
+  /* start screen */
+  #screen-start{ align-items:center; justify-content:center; text-align:center; gap:20px; }
+  .hero-badge{
+    width:120px; height:120px; border-radius:50%;
+    background:var(--teal); border:4px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-size:58px; box-shadow:var(--shadow);
+    transform:rotate(-4deg);
+  }
+  h1.title{
+    font-size:34px; margin:6px 0 2px; font-weight:900; color:var(--ink);
+    line-height:1.15;
+  }
+  .subtitle{ font-size:17px; color:var(--ink-soft); max-width:480px; margin:0 auto; line-height:1.6;}
+  .rules-card{
+    text-align:right; max-width:480px; width:100%;
+    display:grid; gap:10px; margin-top:6px;
+  }
+  .rule-row{ display:flex; align-items:center; gap:10px; font-size:15px; }
+  .rule-icon{
+    width:34px; height:34px; flex:none; border-radius:10px;
+    background:var(--paper); border:2px solid var(--ink);
+    display:flex; align-items:center; justify-content:center; font-size:17px;
+  }
+  .btn{
+    font-family:inherit; font-weight:700; font-size:18px;
+    border:3px solid var(--ink); border-radius:14px;
+    padding:14px 30px; cursor:pointer; background:var(--gold);
+    color:var(--ink); box-shadow:4px 4px 0 rgba(27,42,74,0.25);
+    transition:transform .12s, box-shadow .12s;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn:active{ transform:translateY(1px); box-shadow:2px 2px 0 rgba(27,42,74,0.25); }
+  .btn.primary{ background:var(--teal); color:#fff; }
+  .btn.wide{ width:100%; }
+
+  /* game screen */
+  #screen-game{ gap:16px; }
+  .progress-row{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:14px; color:var(--ink-soft); font-weight:700;
+  }
+  .progress-bar{
+    height:10px; border-radius:6px; background:#EADFC4; border:2px solid var(--ink);
+    overflow:hidden; margin:4px 0 2px;
+  }
+  .progress-fill{ height:100%; background:var(--teal); width:0%; transition:width .35s ease; }
+
+  .case-card{ position:relative; }
+  .case-tag{
+    position:absolute; top:-14px; right:20px;
+    background:var(--ink); color:#fff; font-size:12px; font-weight:700;
+    padding:5px 12px; border-radius:20px;
+  }
+  .sentence{
+    font-size:22px; line-height:1.9; font-weight:500; margin:14px 0 4px;
+  }
+  .blank{
+    display:inline-block; min-width:90px; border-bottom:3px dashed var(--coral);
+    text-align:center; color:var(--coral-dark); font-weight:900; padding:0 4px;
+  }
+  .blank.filled{ border-bottom-style:solid; color:var(--teal-dark); border-color:var(--teal-dark); }
+
+  .options{ display:grid; gap:12px; margin-top:18px; }
+  .opt-btn{
+    display:flex; align-items:center; gap:12px;
+    background:var(--paper); border:3px solid var(--ink); border-radius:14px;
+    padding:14px 16px; font-family:inherit; font-size:19px; font-weight:700;
+    cursor:pointer; text-align:right; color:var(--ink);
+    box-shadow:3px 3px 0 rgba(27,42,74,0.18);
+    transition:transform .1s, background .15s, box-shadow .1s;
+  }
+  .opt-btn:hover:not(:disabled){ transform:translateY(-2px); }
+  .opt-btn:active:not(:disabled){ transform:translateY(1px); box-shadow:1px 1px 0 rgba(27,42,74,0.18); }
+  .opt-btn .opt-label{
+    width:30px; height:30px; flex:none; border-radius:50%;
+    background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center;
+    font-size:15px; font-weight:900;
+  }
+  .opt-btn.correct{ background:var(--teal); color:#fff; border-color:var(--teal-dark); }
+  .opt-btn.correct .opt-label{ background:#fff; color:var(--teal-dark); }
+  .opt-btn.wrong{ background:var(--coral); color:#fff; border-color:var(--coral-dark); animation:shake .4s; }
+  .opt-btn.wrong .opt-label{ background:#fff; color:var(--coral-dark); }
+  .opt-btn:disabled{ cursor:default; opacity:0.55; }
+  .opt-btn.wrong:disabled{ opacity:0.85; }
+  @keyframes shake{
+    0%,100%{ transform:translateX(0); }
+    20%{ transform:translateX(6px); }
+    40%{ transform:translateX(-6px); }
+    60%{ transform:translateX(4px); }
+    80%{ transform:translateX(-4px); }
+  }
+
+  .feedback{
+    min-height:30px; font-size:16px; font-weight:700; text-align:center;
+    margin-top:14px; color:var(--teal-dark);
+  }
+  .feedback.bad{ color:var(--coral-dark); }
+
+  .next-wrap{ display:flex; justify-content:center; margin-top:6px; min-height:52px; }
+
+  /* game over */
+  #screen-over{ align-items:center; justify-content:center; text-align:center; gap:16px; }
+  .over-emoji{ font-size:64px; }
+
+  /* summary */
+  #screen-summary{ gap:16px; }
+  .summary-stats{ display:flex; gap:12px; flex-wrap:wrap; }
+  .stat-pill{
+    flex:1; min-width:120px; background:var(--paper-2); border:3px solid var(--ink);
+    border-radius:14px; padding:12px 10px; text-align:center; box-shadow:var(--shadow);
+  }
+  .stat-pill .num{ font-size:26px; font-weight:900; color:var(--teal-dark); }
+  .stat-pill .lbl{ font-size:12px; color:var(--ink-soft); font-weight:700; }
+
+  table.report{
+    width:100%; border-collapse:collapse; background:var(--paper-2);
+    border:3px solid var(--ink); border-radius:14px; overflow:hidden;
+    box-shadow:var(--shadow); font-size:14px;
+  }
+  table.report th{
+    background:var(--ink); color:#fff; padding:10px 8px; font-size:13px;
+    text-align:right;
+  }
+  table.report td{ padding:10px 8px; border-top:1px solid #E5DAC0; vertical-align:top; line-height:1.6; }
+  table.report tr:nth-child(even) td{ background:#FBF3E3; }
+  table.report td.center{ text-align:center; }
+  table.report mark{
+    background:transparent; color:var(--teal-dark); font-weight:900;
+    border-bottom:3px solid var(--gold);
+  }
+  .tbl-wrap{ overflow-x:auto; border-radius:14px; }
+  .first-try{ color:var(--teal-dark); font-weight:800; }
+  .retry-try{ color:var(--coral-dark); font-weight:800; }
+
+  .footer-actions{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:8px; }
+
+  /* confetti canvas */
+  #confetti-canvas{
+    position:fixed; inset:0; pointer-events:none; z-index:50;
+  }
+
+  @media (max-width:480px){
+    h1.title{ font-size:27px; }
+    .sentence{ font-size:19px; }
+    .opt-btn{ font-size:16px; }
+    .card{ padding:18px 14px; }
+    .hero-badge{ width:96px; height:96px; font-size:46px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="stage">
+
+  <div class="topbar">
+    <div class="brand"><span class="badge">🔎</span> בלשי הכתיב</div>
+    <div class="hearts" id="hearts-row"></div>
+  </div>
+
+  <!-- START SCREEN -->
+  <section class="screen active" id="screen-start">
+    <div class="hero-badge">🕵️‍♀️</div>
+    <h1 class="title">ברוכים הבאים לבלשי הכתיב!</h1>
+    <p class="subtitle">בכל תיק (משפט) חסרה מילה. תפקידכם הוא לבחור מהרשימה למטה את המילה עם הכתיב הנכון ולפתור את התעלומה!</p>
+    <div class="card rules-card">
+      <div class="rule-row"><span class="rule-icon">📝</span><span>בכל משפט בוחרים את המילה הכתובה נכון מבין שלוש אפשרויות.</span></div>
+      <div class="rule-row"><span class="rule-icon">🎉</span><span>תשובה נכונה = קונפיטי חוגג ועידוד!</span></div>
+      <div class="rule-row"><span class="rule-icon">❤️</span><span>יש לכם 5 לבבות לכל המשחק. כל טעות מורידה לב אחד - ואפשר לנסות שוב מיד.</span></div>
+      <div class="rule-row"><span class="rule-icon">🔁</span><span>אם כל הלבבות נגמרים - המשחק מתחיל מחדש, ואפשר לנסות שוב!</span></div>
+      <div class="rule-row"><span class="rule-icon">🏆</span><span>בסוף המשחק מחכה לכם דוח סיכום עם כל התיקים שפתרתם.</span></div>
+    </div>
+    <button class="btn primary wide" id="btn-start" style="max-width:320px;">בואו נתחיל לחקור! 🔍</button>
+  </section>
+
+  <!-- GAME SCREEN -->
+  <section class="screen" id="screen-game">
+    <div class="progress-row">
+      <span id="progress-text">תיק 1 מתוך 16</span>
+      <span id="cat-text"></span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+    <div class="card case-card">
+      <div class="case-tag">תיק כתיב 🗂️</div>
+      <div class="sentence" id="sentence-el"></div>
+      <div class="options" id="options-el"></div>
+      <div class="feedback" id="feedback-el"></div>
+      <div class="next-wrap" id="next-wrap"></div>
+    </div>
+  </section>
+
+  <!-- GAME OVER SCREEN -->
+  <section class="screen" id="screen-over">
+    <div class="over-emoji">💛</div>
+    <h1 class="title">כמעט! נגמרו הלבבות</h1>
+    <p class="subtitle" id="over-text">גם לבלשים הכי טובים יוצא לפעמים לפספס רמז. תנוחו רגע, ותצאו לחקור מקרה חדש - בפעם הבאה תצליחו עוד יותר!</p>
+    <button class="btn primary wide" id="btn-restart" style="max-width:320px;">לנסות שוב 💪</button>
+  </section>
+
+  <!-- SUMMARY SCREEN -->
+  <section class="screen" id="screen-summary">
+    <div style="text-align:center;">
+      <div class="over-emoji" id="summary-emoji">🏆</div>
+      <h1 class="title">התיק נסגר - עבודה מעולה!</h1>
+      <p class="subtitle" id="summary-sub">פתרתם את כל התיקים בהצלחה. הנה דוח הסיכום שלכם:</p>
+    </div>
+
+    <div class="summary-stats">
+      <div class="stat-pill"><div class="num" id="stat-total">0</div><div class="lbl">תיקים שנפתרו</div></div>
+      <div class="stat-pill"><div class="num" id="stat-first">0</div><div class="lbl">בניסיון ראשון</div></div>
+      <div class="stat-pill"><div class="num" id="stat-hearts">0</div><div class="lbl">לבבות שנותרו</div></div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table class="report">
+        <thead>
+          <tr><th>#</th><th>המשפט (המילה הנכונה מודגשת)</th><th>קטגוריה</th><th>איך נפתר</th></tr>
+        </thead>
+        <tbody id="report-body"></tbody>
+      </table>
+    </div>
+
+    <div class="footer-actions">
+      <button class="btn primary" id="btn-play-again">לחקור תיקים חדשים 🔍</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const SENTENCES = [{"cat": "chet_kaf", "sentence": "אני פותח את ה___ כדי שהרוח תיכנס.", "correct": "חלון", "options": ["חלון", "כלון", "חלוןן"]}, {"cat": "chet_kaf", "sentence": "המורה כותבת על ה___ בגיר לבן.", "correct": "לוח", "options": ["לוח", "לוכ", "לוחח"]}, {"cat": "chet_kaf", "sentence": "ה___ שלי ישן על השטיח כל היום.", "correct": "חתול", "options": ["חתול", "כתול", "חתולל"]}, {"cat": "chet_kaf", "sentence": "דני הוא ה___ הכי טוב שלי בכיתה.", "correct": "חבר", "options": ["חבר", "כבר", "חברר"]}, {"cat": "chet_kaf", "sentence": "בפסח חוגגים את ה___ עם כל המשפחה.", "correct": "חג", "options": ["חג", "כג", "חגג"]}, {"cat": "chet_kaf", "sentence": "אמא מבשלת ארוחת ערב ב___.", "correct": "מטבח", "options": ["מטבח", "מטבכ", "מטבחח"]}, {"cat": "chet_kaf", "sentence": "קניתי ___ טרי מהמאפייה ליד הבית.", "correct": "לחם", "options": ["לחם", "לכם", "לחםם"]}, {"cat": "chet_kaf", "sentence": "הספרים מונחים על ה___ בסלון.", "correct": "שולחן", "options": ["שולחן", "שולכן", "שולחחן"]}, {"cat": "chet_kaf", "sentence": "אכלתי ___ אדום ומתוק בהפסקה.", "correct": "תפוח", "options": ["תפוח", "תפוכ", "תפוחח"]}, {"cat": "chet_kaf", "sentence": "שכחתי את ה___ של הבית בתיק.", "correct": "מפתח", "options": ["מפתח", "מפתכ", "מפתחח"]}, {"cat": "chet_kaf", "sentence": "היום נושבת ___ חזקה מאוד בחוץ.", "correct": "רוח", "options": ["רוח", "רוכ", "רוחח"]}, {"cat": "chet_kaf", "sentence": "אני שותה כוס ___ לפני השינה.", "correct": "חלב", "options": ["חלב", "כלב", "חלבב"]}, {"cat": "chet_kaf", "sentence": "אחרי הטיול כולנו צריכים קצת ___.", "correct": "מנוחה", "options": ["מנוחה", "מנוכה", "מנוחחה"]}, {"cat": "chet_kaf", "sentence": "כל הילדים היו ___ מאוד במסיבה.", "correct": "שמח", "options": ["שמח", "שמכ", "שמחח"]}, {"cat": "chet_kaf", "sentence": "השמיים היום צבועים ב___ בהיר.", "correct": "כחול", "options": ["כחול", "ככול", "כחולל"]}, {"cat": "chet_kaf", "sentence": "ראינו ___ ירוק בגן החיות.", "correct": "נחש", "options": ["נחש", "נכש", "נחשש"]}, {"cat": "chet_kaf", "sentence": "אל תלחצי חזק מדי על ה___ האדום.", "correct": "לחץ", "options": ["לחץ", "לכץ", "לחץץ"]}, {"cat": "chet_kaf", "sentence": "אמא שמה קצת ___ בתוך המרק.", "correct": "מלח", "options": ["מלח", "מלכ", "מלחח"]}, {"cat": "chet_kaf", "sentence": "אנחנו חוצים את ה___ במעבר חצייה.", "correct": "רחוב", "options": ["רחוב", "רכוב", "רחובב"]}, {"cat": "chet_kaf", "sentence": "מהעוגה עולה ___ נפלא של שוקולד.", "correct": "ריח", "options": ["ריח", "ריכ", "ריחח"]}, {"cat": "chet_kaf", "sentence": "החתול שלי צבעו ___ לגמרי.", "correct": "שחור", "options": ["שחור", "שכור", "שחורר"]}, {"cat": "chet_kaf", "sentence": "שמענו ___ שמח מהחצר של בית הספר.", "correct": "צחוק", "options": ["צחוק", "צכוק", "צחוקק"]}, {"cat": "kaf_kuf", "sentence": "ה___ שלנו נובח כשמישהו דופק בדלת.", "correct": "כלב", "options": ["כלב", "קלב", "כלבב"]}, {"cat": "kaf_kuf", "sentence": "אנחנו לומדים היום חשבון ב___ שלנו.", "correct": "כיתה", "options": ["כיתה", "קיתה", "כיתהה"]}, {"cat": "kaf_kuf", "sentence": "הילד ___ מכתב יפה לסבתא שלו.", "correct": "כתב", "options": ["כתב", "קתב", "כתבב"]}, {"cat": "kaf_kuf", "sentence": "שמתי ___ אדום כדי להגן מהשמש.", "correct": "כובע", "options": ["כובע", "קובע", "כובעע"]}, {"cat": "kaf_kuf", "sentence": "בלילה ראינו ___ בהיר מאוד בשמיים.", "correct": "כוכב", "options": ["כוכב", "קוכב", "כוכבב"]}, {"cat": "kaf_kuf", "sentence": "אני צריך ___ קטנה כדי לאכול את הדייסה.", "correct": "כפית", "options": ["כפית", "קפית", "כפיתת"]}, {"cat": "kaf_kuf", "sentence": "קניתי ___ לסרט החדש בקולנוע.", "correct": "כרטיס", "options": ["כרטיס", "קרטיס", "כרטייס"]}, {"cat": "kaf_kuf", "sentence": "חצינו את ה___ בזהירות רבה.", "correct": "כביש", "options": ["כביש", "קביש", "כבישש"]}, {"cat": "kaf_kuf", "sentence": "לציפור יש ___ שבורה, לכן היא לא עפה.", "correct": "כנף", "options": ["כנף", "קנף", "כנףף"]}, {"cat": "kaf_kuf", "sentence": "הילדים שיחקו ___ בחצר בית הספר.", "correct": "כדור", "options": ["כדור", "קדור", "כדורר"]}, {"cat": "kaf_kuf", "sentence": "שמתי את הממחטה בתוך ה___ של המעיל.", "correct": "כיס", "options": ["כיס", "קיס", "כיסס"]}, {"cat": "kaf_kuf", "sentence": "מזגתי מים לתוך ה___ הכחולה.", "correct": "כוס", "options": ["כוס", "קוס", "כוסס"]}, {"cat": "kaf_kuf", "sentence": "זהו ___ חדש שאמא קנתה למטבח.", "correct": "כלי", "options": ["כלי", "קלי", "כליי"]}, {"cat": "kaf_kuf", "sentence": "אבא נוסע ב___ שלו לעבודה.", "correct": "מכונית", "options": ["מכונית", "מקונית", "מכוניית"]}, {"cat": "kaf_kuf", "sentence": "בחורף מאוד ___ בחוץ, לכן לובשים מעיל.", "correct": "קר", "options": ["קר", "כר", "קרר"]}, {"cat": "kaf_kuf", "sentence": "ראינו ___ מצחיק בגן החיות.", "correct": "קוף", "options": ["קוף", "כוף", "קוףף"]}, {"cat": "kaf_kuf", "sentence": "שמעתי ___ מוזר מהחדר השני.", "correct": "קול", "options": ["קול", "כול", "קולל"]}, {"cat": "kaf_kuf", "sentence": "אני שם את הספרים ב___ לפני הלימודים.", "correct": "ילקוט", "options": ["ילקוט", "ילכוט", "ילקווט"]}, {"cat": "kaf_kuf", "sentence": "חכה לי רק ___ אחת, אני כבר בא.", "correct": "דקה", "options": ["דקה", "דכה", "דקהה"]}, {"cat": "kaf_kuf", "sentence": "כל ___ אני אוכל ארוחת בוקר טובה.", "correct": "בוקר", "options": ["בוקר", "בוכר", "בוקרר"]}, {"cat": "kaf_kuf", "sentence": "הלכנו עם סבתא ל___ לקנות ירקות.", "correct": "שוק", "options": ["שוק", "שוכ", "שוקק"]}, {"cat": "kaf_kuf", "sentence": "אמא הכינה ___ ירקות חם וטעים.", "correct": "מרק", "options": ["מרק", "מרכ", "מרקק"]}, {"cat": "kaf_kuf", "sentence": "שכחתי את ה___ שלי באוטובוס.", "correct": "תיק", "options": ["תיק", "תיכ", "תיקק"]}, {"cat": "kaf_kuf", "sentence": "הפרוסה הזאת ___ מאוד ושבירה.", "correct": "דק", "options": ["דק", "דכ", "דקק"]}, {"cat": "tav_tet", "sentence": "אכלתי ___ ירוק וחמוץ בכיתה.", "correct": "תפוח", "options": ["תפוח", "טפוח", "תפוחח"]}, {"cat": "tav_tet", "sentence": "שכחתי להביא את ה___ שלי היום.", "correct": "תיק", "options": ["תיק", "תיכ", "תיקק"]}, {"cat": "tav_tet", "sentence": "אנחנו גרים ב___ קטן ליד הפארק.", "correct": "בית", "options": ["בית", "ביט", "ביתת"]}, {"cat": "tav_tet", "sentence": "קיבלתי ___ יפה ליום ההולדת שלי.", "correct": "מתנה", "options": ["מתנה", "מתנא", "מתנהה"]}, {"cat": "tav_tet", "sentence": "אני צמא, אני צריך ___ קרה.", "correct": "שתייה", "options": ["שתייה", "שטייה", "שתיייה"]}, {"cat": "tav_tet", "sentence": "יש לי ___ קטנה שקוראים לה נועה.", "correct": "אחות", "options": ["אחות", "אכות", "אחותת"]}, {"cat": "tav_tet", "sentence": "כל ___ בכיתה קיבל ספר חדש.", "correct": "תלמיד", "options": ["תלמיד", "טלמיד", "תלמייד"]}, {"cat": "tav_tet", "sentence": "ציירתי ___ יפה של הים.", "correct": "תמונה", "options": ["תמונה", "טמונה", "תמוננה"]}, {"cat": "tav_tet", "sentence": "סחטתי מיץ מ___ מתוק וטרי.", "correct": "תפוז", "options": ["תפוז", "טפוז", "תפוזז"]}, {"cat": "tav_tet", "sentence": "בחצר של סבא יש ___ שקורא בבוקר.", "correct": "תרנגול", "options": ["תרנגול", "טרנגול", "תרנגוול"]}, {"cat": "tav_tet", "sentence": "העוגה הזאת ___ מאוד ואני אוהב אותה.", "correct": "מתוק", "options": ["מתוק", "מטוק", "מתוקק"]}, {"cat": "tav_tet", "sentence": "הצבע ___ הוא תערובת של אדום וצהוב.", "correct": "כתום", "options": ["כתום", "כתומ", "כתוםם"]}, {"cat": "tav_tet", "sentence": "היום היה יום ___ ומהנה בבית הספר.", "correct": "טוב", "options": ["טוב", "תוב", "טובב"]}, {"cat": "tav_tet", "sentence": "אמא מדברת ב___ עם סבתא כל ערב.", "correct": "טלפון", "options": ["טלפון", "תלפון", "טלפוון"]}, {"cat": "tav_tet", "sentence": "מחר יוצאים ל___ שנתי עם כל הכיתה.", "correct": "טיול", "options": ["טיול", "תיול", "טיולל"]}, {"cat": "tav_tet", "sentence": "האוכל של אמא תמיד ___ מאוד.", "correct": "טעים", "options": ["טעים", "תעים", "טעיםם"]}, {"cat": "tav_tet", "sentence": "אנחנו אוהבים לטייל ב___ בסופי שבוע.", "correct": "טבע", "options": ["טבע", "תבע", "טבעע"]}, {"cat": "tav_tet", "sentence": "החקלאי נוסע על ה___ בשדה.", "correct": "טרקטור", "options": ["טרקטור", "תרקטור", "טרקטוור"]}, {"cat": "tav_tet", "sentence": "ראינו ___ גדול עף בשמיים.", "correct": "מטוס", "options": ["מטוס", "מתוס", "מטוסס"]}, {"cat": "tav_tet", "sentence": "לתינוק יש כפית ___ מאוד.", "correct": "קטן", "options": ["קטן", "קתן", "קטןן"]}, {"cat": "tav_tet", "sentence": "קניתי ___ בריא לארוחת עשר.", "correct": "חטיף", "options": ["חטיף", "חתיף", "חטיףף"]}, {"cat": "tav_tet", "sentence": "אני אוהב לאכול ___ עם רוטב עגבניות.", "correct": "אטריות", "options": ["אטריות", "אתריות", "אטריוות"]}, {"cat": "tav_tet", "sentence": "בסיפור המלך גר ב___ גדולה ויפה.", "correct": "טירה", "options": ["טירה", "תירה", "טירהה"]}, {"cat": "tav_tet", "sentence": "הסרתי את ה___ מהממתק לפני שאכלתי אותו.", "correct": "עטיפה", "options": ["עטיפה", "עתיפה", "עטיפפה"]}, {"cat": "tav_tet", "sentence": "ה___ שלי היא לקרוא ספר חדש בכל שבוע.", "correct": "מטרה", "options": ["מטרה", "מתרה", "מטרהה"]}, {"cat": "alef_ayin", "sentence": "כאב לי ה___ אחרי שחייתי בים.", "correct": "אוזן", "options": ["אוזן", "עוזן", "אוזןן"]}, {"cat": "alef_ayin", "sentence": "אנא הדליקי את ה___ בחדר, חשוך פה.", "correct": "אור", "options": ["אור", "עור", "אורר"]}, {"cat": "alef_ayin", "sentence": "ה___ הוא מלך החיות בג'ונגל.", "correct": "אריה", "options": ["אריה", "עריה", "אריהה"]}, {"cat": "alef_ayin", "sentence": "אנחנו אוכלים ___ משפחתית בכל יום שישי.", "correct": "ארוחה", "options": ["ארוחה", "ערוחה", "ארוחחה"]}, {"cat": "alef_ayin", "sentence": "הפרח הזה צבעו ___ בוהק.", "correct": "אדום", "options": ["אדום", "עדום", "אדוםם"]}, {"cat": "alef_ayin", "sentence": "באביב ה___ בחוץ נעים ורענן.", "correct": "אוויר", "options": ["אוויר", "עוויר", "אווייר"]}, {"cat": "alef_ayin", "sentence": "שמתי את הבגדים בתוך ה___.", "correct": "ארון", "options": ["ארון", "ערון", "ארוןן"]}, {"cat": "alef_ayin", "sentence": "שחינו ב___ שליד היער.", "correct": "אגם", "options": ["אגם", "עגם", "אגםם"]}, {"cat": "alef_ayin", "sentence": "אמא אפתה ___ שוקולד ליום ההולדת שלי.", "correct": "עוגה", "options": ["עוגה", "אוגה", "עוגהה"]}, {"cat": "alef_ayin", "sentence": "אני רוצה לטייל בכל ה___ כשאהיה גדול.", "correct": "עולם", "options": ["עולם", "אולם", "עולםם"]}, {"cat": "alef_ayin", "sentence": "הציפור בנתה קן על ה___ הגבוה.", "correct": "עץ", "options": ["עץ", "אץ", "עץץ"]}, {"cat": "alef_ayin", "sentence": "תל אביב היא ___ גדולה וסואנת.", "correct": "עיר", "options": ["עיר", "איר", "עירר"]}, {"cat": "alef_ayin", "sentence": "חתכתי ___ אדומה לתוך הסלט.", "correct": "עגבנייה", "options": ["עגבנייה", "אגבנייה", "עגבניייה"]}, {"cat": "alef_ayin", "sentence": "אני כותב שיעורי בית ב___ ולא בעט.", "correct": "עיפרון", "options": ["עיפרון", "איפרון", "עיפרוון"]}, {"cat": "alef_ayin", "sentence": "בכיתה שלי לומדים ___ תלמידים חדשים.", "correct": "עשר", "options": ["עשר", "אשר", "עשרר"]}, {"cat": "alef_ayin", "sentence": "שמנו את התינוק ב___ ויצאנו לטייל.", "correct": "עגלה", "options": ["עגלה", "אגלה", "עגלהה"]}, {"cat": "alef_ayin", "sentence": "___ אפור מכסה את השמש עכשיו.", "correct": "ענן", "options": ["ענן", "אנן", "ענןן"]}, {"cat": "alef_ayin", "sentence": "___ שחור עמד על גג הבית.", "correct": "עורב", "options": ["עורב", "אורב", "עורבב"]}, {"cat": "alef_ayin", "sentence": "ה___ הקטן ברח מתחת לארון.", "correct": "עכבר", "options": ["עכבר", "אכבר", "עכברר"]}, {"cat": "alef_ayin", "sentence": "החקלאי מגדל ___ בחצר החווה.", "correct": "עז", "options": ["עז", "אז", "עזז"]}, {"cat": "alef_ayin", "sentence": "אנחנו מגדלים תרנגולות ו___ בחצר.", "correct": "עוף", "options": ["עוף", "אוף", "עוףף"]}, {"cat": "sofiot", "sentence": "אמרתי ___ לחברה שלי בבוקר.", "correct": "שלום", "options": ["שלום", "שלומ", "שלוםם"]}, {"cat": "sofiot", "sentence": "קניתי ___ חם ורך מהמאפייה.", "correct": "לחם", "options": ["לחם", "לחמ", "לחםם"]}, {"cat": "sofiot", "sentence": "היום זה ___ ראשון בשבוע.", "correct": "יום", "options": ["יום", "יומ", "יוםם"]}, {"cat": "sofiot", "sentence": "חלמתי ___ יפה על טיסה בשמיים.", "correct": "חלום", "options": ["חלום", "חלומ", "חלוםם"]}, {"cat": "sofiot", "sentence": "זה ה___ הכי יפה בעיר שלנו.", "correct": "מקום", "options": ["מקום", "מקומ", "מקוםם"]}, {"cat": "sofiot", "sentence": "לגלידה הזאת יש ___ מיוחד של תות.", "correct": "טעם", "options": ["טעם", "טעמ", "טעםם"]}, {"cat": "sofiot", "sentence": "הכלב שלנו מאוד ___ ולומד מהר.", "correct": "חכם", "options": ["חכם", "חכמ", "חכםם"]}, {"cat": "sofiot", "sentence": "הלכתי לגן ___ סבא שלי.", "correct": "עם", "options": ["עם", "עמ", "עםם"]}, {"cat": "sofiot", "sentence": "מצאתי ___ יפה על שפת הים.", "correct": "אבן", "options": ["אבן", "אבנ", "אבןן"]}, {"cat": "sofiot", "sentence": "הילדים משחקים ב___ שליד הבית.", "correct": "גן", "options": ["גן", "גנ", "גןן"]}, {"cat": "sofiot", "sentence": "פתחתי את ה___ כדי לאוורר את החדר.", "correct": "חלון", "options": ["חלון", "חלונ", "חלוןן"]}, {"cat": "sofiot", "sentence": "הנחתי את הצלחת על ה___.", "correct": "שולחן", "options": ["שולחן", "שולחנ", "שולחחן"]}, {"cat": "sofiot", "sentence": "כדאי לשתות מים כשה___ יבשה.", "correct": "לשון", "options": ["לשון", "לשונ", "לשוןן"]}, {"cat": "sofiot", "sentence": "סבא קורא ___ כל בוקר בבית קפה.", "correct": "עיתון", "options": ["עיתון", "עיתונ", "עיתוון"]}, {"cat": "sofiot", "sentence": "רחצתי ידיים עם ___ ומים חמים.", "correct": "סבון", "options": ["סבון", "סבונ", "סבוןן"]}, {"cat": "sofiot", "sentence": "הלכנו ב___ הנכון לבית הספר.", "correct": "כיוון", "options": ["כיוון", "כיוונ", "כיווון"]}, {"cat": "sofiot", "sentence": "בסיפור הזה ה___ גר בארמון גדול.", "correct": "מלך", "options": ["מלך", "מלכ", "מלךך"]}, {"cat": "sofiot", "sentence": "הלכנו ב___ הארוכה אל הכפר.", "correct": "דרך", "options": ["דרך", "דרכ", "דרךך"]}, {"cat": "sofiot", "sentence": "בלילה יש ___ גדול בחוץ בלי ירח.", "correct": "חושך", "options": ["חושך", "חושכ", "חושךך"]}, {"cat": "sofiot", "sentence": "נפלתי ופצעתי לי את ה___.", "correct": "ברך", "options": ["ברך", "ברכ", "ברךך"]}, {"cat": "sofiot", "sentence": "אני ___ לסיים את השיעורים לפני שאשחק.", "correct": "צריך", "options": ["צריך", "צריכ", "צריךך"]}, {"cat": "sofiot", "sentence": "אכלתי מרק עם ___ גדולה.", "correct": "כף", "options": ["כף", "כפ", "כףף"]}, {"cat": "sofiot", "sentence": "יש לי ___ קטן וגם אוזניים גדולות.", "correct": "אף", "options": ["אף", "אפ", "אףף"]}, {"cat": "sofiot", "sentence": "אכלנו ___ בארוחת הצהריים ביום שישי.", "correct": "עוף", "options": ["עוף", "עופ", "עוףף"]}, {"cat": "sofiot", "sentence": "לפרפר הצבעוני יש ___ עדינה ויפה.", "correct": "כנף", "options": ["כנף", "כנפ", "כנףף"]}, {"cat": "sofiot", "sentence": "בספרייה יש ___ ספרים בערך.", "correct": "אלף", "options": ["אלף", "אלפ", "אלףף"]}, {"cat": "sofiot", "sentence": "טיפסתי על ה___ הגבוה בגינה.", "correct": "עץ", "options": ["עץ", "עצ", "עץץ"]}, {"cat": "sofiot", "sentence": "אני גר ב___ ישראל, ליד הים.", "correct": "ארץ", "options": ["ארץ", "ארצ", "ארץץ"]}, {"cat": "sofiot", "sentence": "הצייד ירה ___ לעבר המטרה.", "correct": "חץ", "options": ["חץ", "חצ", "חץץ"]}, {"cat": "sofiot", "sentence": "הילד ___ מהר מאוד במגרש.", "correct": "רץ", "options": ["רץ", "רצ", "רץץ"]}, {"cat": "sofiot", "sentence": "הצפרדע ___ גבוה מעל השלולית.", "correct": "קפץ", "options": ["קפץ", "קפצ", "קפץץ"]}, {"cat": "he_sof", "sentence": "ה___ הקטנה משחקת בחצר עם חברותיה.", "correct": "ילדה", "options": ["ילדה", "ילדע", "ילדהה"]}, {"cat": "he_sof", "sentence": "ה___ שלנו מסבירה את השיעור בסבלנות.", "correct": "מורה", "options": ["מורה", "מורע", "מורהה"]}, {"cat": "he_sof", "sentence": "הזמנתי ___ טובה למסיבת יום ההולדת שלי.", "correct": "חברה", "options": ["חברה", "חברע", "חברהה"]}, {"cat": "he_sof", "sentence": "היא לבשה ___ כחולה ויפה לחתונה.", "correct": "שמלה", "options": ["שמלה", "שמלע", "שמלהה"]}, {"cat": "he_sof", "sentence": "תליתי ___ יפה על הקיר בחדר.", "correct": "תמונה", "options": ["תמונה", "תמונע", "תמוננה"]}, {"cat": "he_sof", "sentence": "אכלנו ___ שוקולד במסיבה של דנה.", "correct": "עוגה", "options": ["עוגה", "עוגע", "עוגהה"]}, {"cat": "he_sof", "sentence": "הדלקתי את ה___ כי היה חשוך בחדר.", "correct": "מנורה", "options": ["מנורה", "מנורע", "מנוררה"]}, {"cat": "he_sof", "sentence": "ל___ שלי יש פרווה לבנה ורכה.", "correct": "חתולה", "options": ["חתולה", "חתולע", "חתוללה"]}, {"cat": "he_sof", "sentence": "בישלנו ___ טעימה לכל המשפחה.", "correct": "ארוחה", "options": ["ארוחה", "ארוחע", "ארוחחה"]}, {"cat": "he_sof", "sentence": "המשפחה שלנו עברה ל___ חדשה בעיר.", "correct": "דירה", "options": ["דירה", "דירע", "דירהה"]}, {"cat": "he_sof", "sentence": "ישראל היא ___ קטנה בגודלה.", "correct": "מדינה", "options": ["מדינה", "מדינע", "מדיננה"]}, {"cat": "he_sof", "sentence": "שתלנו פרחים צבעוניים ב___ שלנו.", "correct": "גינה", "options": ["גינה", "גינע", "גינהה"]}, {"cat": "he_sof", "sentence": "חגגנו ___ שמחה ליום ההולדת של אבא.", "correct": "מסיבה", "options": ["מסיבה", "מסיבע", "מסיבבה"]}, {"cat": "he_sof", "sentence": "כל ה___ שלי מתכנסת בחג בבית סבא.", "correct": "משפחה", "options": ["משפחה", "משפחע", "משפחחה"]}, {"cat": "he_sof", "sentence": "חיכיתי לאוטובוס ___ שלמה בתחנה.", "correct": "שעה", "options": ["שעה", "שעע", "שעהה"]}, {"cat": "he_sof", "sentence": "קניתי ___ אדומה חדשה לקראת הקיץ.", "correct": "חולצה", "options": ["חולצה", "חולצע", "חולצצה"]}, {"cat": "he_sof", "sentence": "לאחותי הקטנה יש ___ עם שיער ארוך.", "correct": "בובה", "options": ["בובה", "בובע", "בובהה"]}, {"cat": "he_sof", "sentence": "שמתי את העפרונות בתוך ה___.", "correct": "קופסה", "options": ["קופסה", "קופסע", "קופססה"]}, {"cat": "he_sof", "sentence": "אכלנו ארוחת ערב ב___ חדשה בעיר.", "correct": "מסעדה", "options": ["מסעדה", "מסעדע", "מסעדדה"]}, {"cat": "he_sof", "sentence": "חיכינו לרכבת ב___ המרכזית.", "correct": "תחנה", "options": ["תחנה", "תחנע", "תחנהה"]}, {"cat": "chet_kaf", "sentence": "ה___ הירוק זוחל לאט לאט על העלה.", "correct": "זחל", "options": ["זחל", "זכל", "זחלל"]}, {"cat": "chet_kaf", "sentence": "הוא ילד ___ ואדיב לכל החברים שלו.", "correct": "נחמד", "options": ["נחמד", "נכמד", "נחמדד"]}, {"cat": "chet_kaf", "sentence": "היא חייכה אליי ___ גדול וחם.", "correct": "חיוך", "options": ["חיוך", "כיוך", "חיוךך"]}, {"cat": "chet_kaf", "sentence": "ניהלנו ___ ארוכה על הטיול המשפחתי.", "correct": "שיחה", "options": ["שיחה", "שיכה", "שיחהה"]}, {"cat": "chet_kaf", "sentence": "החנות ___ עד השעה שמונה בערב.", "correct": "פתוח", "options": ["פתוח", "פתוכ", "פתוחח"]}, {"cat": "kaf_kuf", "sentence": "כתבתי את ה___ שלי על המעטפה.", "correct": "כתובת", "options": ["כתובת", "קתובת", "כתובבת"]}, {"cat": "kaf_kuf", "sentence": "ב___ אנחנו הולכים הרבה לים.", "correct": "קיץ", "options": ["קיץ", "כיץ", "קיץץ"]}, {"cat": "kaf_kuf", "sentence": "אבא שותה כוס ___ חם כל בוקר.", "correct": "קפה", "options": ["קפה", "כפה", "קפהה"]}, {"cat": "kaf_kuf", "sentence": "סבא וסבתא גרים ב___ קטן ושקט.", "correct": "כפר", "options": ["כפר", "קפר", "כפרר"]}, {"cat": "kaf_kuf", "sentence": "תליתי ציור צבעוני על ה___.", "correct": "קיר", "options": ["קיר", "כיר", "קירר"]}, {"cat": "tav_tet", "sentence": "שמתי את המכתב בתוך ה___.", "correct": "תיבה", "options": ["תיבה", "טיבה", "תיבהה"]}, {"cat": "tav_tet", "sentence": "לאמא יש ___ יפה עם אבן כחולה.", "correct": "טבעת", "options": ["טבעת", "תבעת", "טבעתת"]}, {"cat": "tav_tet", "sentence": "אני אוהב לאכול ___ אדום ומתוק.", "correct": "תות", "options": ["תות", "טות", "תותת"]}, {"cat": "tav_tet", "sentence": "אמא הכינה לי ___ עם גבינה לארוחת בוקר.", "correct": "טוסט", "options": ["טוסט", "תוסט", "טוסטט"]}, {"cat": "alef_ayin", "sentence": "ישננו ב___ בטיול השנתי של הכיתה.", "correct": "אוהל", "options": ["אוהל", "עוהל", "אוהלל"]}, {"cat": "alef_ayin", "sentence": "ראיתי ___ גדול בפינת החדר.", "correct": "עכביש", "options": ["עכביש", "אכביש", "עכבייש"]}, {"cat": "alef_ayin", "sentence": "כל ___ אנחנו קוראים סיפור לפני השינה.", "correct": "ערב", "options": ["ערב", "ארב", "ערבב"]}, {"cat": "alef_ayin", "sentence": "אפיתי ___ קטנה וטעימה עם שוקולד.", "correct": "עוגייה", "options": ["עוגייה", "אוגייה", "עוגיייה"]}, {"cat": "sofiot", "sentence": "שמעתי צלצול של ___ מבית הספר.", "correct": "פעמון", "options": ["פעמון", "פעמונ", "פעמוון"]}, {"cat": "sofiot", "sentence": "שחינו ב___ הגדול בקיץ החם.", "correct": "ים", "options": ["ים", "ימ", "יםם"]}, {"cat": "sofiot", "sentence": "מה ה___ שלך? אני קוראת לך כבר חצי שעה.", "correct": "שם", "options": ["שם", "שמ", "שםם"]}, {"cat": "sofiot", "sentence": "החתול שלי מזיז את ה___ כששומע רעש.", "correct": "אוזן", "options": ["אוזן", "אוזנ", "אוזןן"]}, {"cat": "sofiot", "sentence": "הוא ___ לבית הספר ברגל כל בוקר.", "correct": "הולך", "options": ["הולך", "הולכ", "הולךך"]}, {"cat": "sofiot", "sentence": "שתיתי ___ תפוזים קר בארוחת הבוקר.", "correct": "מיץ", "options": ["מיץ", "מיצ", "מיץץ"]}, {"cat": "he_sof", "sentence": "אנחנו לומדים היום חשבון ב___ שלנו.", "correct": "כיתה", "options": ["כיתה", "כיתע", "כיתהה"]}, {"cat": "he_sof", "sentence": "הלכתי ל___ כדי לשאול ספר חדש.", "correct": "ספרייה", "options": ["ספרייה", "ספרייע", "ספריייה"]}, {"cat": "he_sof", "sentence": "לקחתי ___ כי ירד גשם חזק בחוץ.", "correct": "מטרייה", "options": ["מטרייה", "מטרייע", "מטריייה"]}, {"cat": "he_sof", "sentence": "ישבתי ב___ השקטה של החדר וקראתי ספר.", "correct": "פינה", "options": ["פינה", "פינע", "פינהה"]}];
+
+const CAT_LABELS = {
+  chet_kaf: "ח / כ",
+  kaf_kuf: "כ / ק",
+  tav_tet: "ת / ט",
+  alef_ayin: "א / ע",
+  sofiot: "אותיות סופיות",
+  he_sof: "ה״א בסוף מילה"
+};
+
+const QUESTIONS_PER_GAME = 16;
+const MAX_HEARTS = 5;
+
+const CORRECT_MESSAGES = [
+  "מעולה! פתרתם את התיק! 🎉",
+  "בול פגיעה, בלש/ית! 👏",
+  "כל הכבוד! חדי עין כתמיד 🔎",
+  "מדויק לגמרי! ממשיכים לתיק הבא 🌟",
+  "וואו, איזה כתיב מושלם! ✨",
+  "כל הכבוד, זיהיתם את הרמז הנכון!"
+];
+const WRONG_MESSAGES = [
+  "לא בדיוק... נסו שוב, אתם קרובים!",
+  "כמעט! תבדקו שוב את הרמזים.",
+  "לא זו התשובה - עוד ניסיון ותצליחו!",
+  "אופס, זה לא זה. תסתכלו שוב טוב טוב.",
+  "לא נורא, גם בלשים גדולים טועים לפעמים. נסו שוב!"
+];
+
+let state = null;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function renderHearts(){
+  const row = document.getElementById('hearts-row');
+  row.innerHTML = '';
+  for(let i=0;i<MAX_HEARTS;i++){
+    const span = document.createElement('span');
+    span.className = 'heart' + (i < state.heartsLost ? ' lost' : '');
+    span.textContent = '❤️';
+    span.id = 'heart-'+i;
+    row.appendChild(span);
+  }
+}
+
+function breakHeart(index){
+  const el = document.getElementById('heart-'+index);
+  if(el){
+    el.classList.add('breaking');
+  }
+}
+
+function startNewGame(){
+  const pool = shuffle(SENTENCES);
+  const chosen = pool.slice(0, QUESTIONS_PER_GAME);
+  state = {
+    questions: chosen.map(q => ({...q, options: shuffle(q.options), attempts: 0, wrongPicks: []})),
+    index: 0,
+    heartsLost: 0,
+    log: []
+  };
+  renderHearts();
+  showScreen('screen-game');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const total = state.questions.length;
+  const q = state.questions[state.index];
+  document.getElementById('progress-text').textContent = `תיק ${state.index+1} מתוך ${total}`;
+  document.getElementById('cat-text').textContent = CAT_LABELS[q.cat] || '';
+  document.getElementById('progress-fill').style.width = Math.round((state.index/total)*100) + '%';
+
+  const parts = q.sentence.split('___');
+  const wrap = document.getElementById('sentence-el');
+  wrap.innerHTML = '';
+  wrap.appendChild(document.createTextNode(parts[0]));
+  const blank = document.createElement('span');
+  blank.className = 'blank';
+  blank.id = 'blank-el';
+  blank.textContent = '？？？';
+  wrap.appendChild(blank);
+  wrap.appendChild(document.createTextNode(parts[1] || ''));
+
+  const optWrap = document.getElementById('options-el');
+  optWrap.innerHTML = '';
+  const labels = ['א','ב','ג','ד'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-label">${labels[i]}</span><span>${opt}</span>`;
+    btn.dataset.word = opt;
+    btn.addEventListener('click', () => handleAnswer(btn, opt, q));
+    optWrap.appendChild(btn);
+  });
+
+  document.getElementById('feedback-el').textContent = '';
+  document.getElementById('feedback-el').className = 'feedback';
+  document.getElementById('next-wrap').innerHTML = '';
+}
+
+function handleAnswer(btn, word, q){
+  if(btn.disabled) return;
+  const allBtns = document.querySelectorAll('#options-el .opt-btn');
+  q.attempts++;
+
+  if(word === q.correct){
+    allBtns.forEach(b=>b.disabled = true);
+    btn.classList.add('correct');
+    document.getElementById('blank-el').textContent = q.correct;
+    document.getElementById('blank-el').classList.add('filled');
+    const fb = document.getElementById('feedback-el');
+    fb.textContent = CORRECT_MESSAGES[Math.floor(Math.random()*CORRECT_MESSAGES.length)];
+    fb.className = 'feedback good';
+    launchConfetti();
+
+    state.log.push({
+      sentence: q.sentence, correct: q.correct, cat: q.cat,
+      firstTry: q.attempts === 1
+    });
+
+    const nextWrap = document.getElementById('next-wrap');
+    const isLast = state.index === state.questions.length - 1;
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'btn primary';
+    nextBtn.textContent = isLast ? 'לצפייה בדוח הסיכום 📊' : 'לתיק הבא ➡️';
+    nextBtn.addEventListener('click', advance);
+    nextWrap.appendChild(nextBtn);
+
+    state._autoAdvance = setTimeout(advance, 1700);
+  } else {
+    btn.disabled = true;
+    btn.classList.add('wrong');
+    q.wrongPicks.push(word);
+    state.heartsLost++;
+    breakHeart(state.heartsLost - 1);
+    const fb = document.getElementById('feedback-el');
+    fb.textContent = WRONG_MESSAGES[Math.floor(Math.random()*WRONG_MESSAGES.length)];
+    fb.className = 'feedback bad';
+
+    if(state.heartsLost >= MAX_HEARTS){
+      setTimeout(gameOver, 900);
+    }
+  }
+}
+
+function advance(){
+  if(state._autoAdvance){ clearTimeout(state._autoAdvance); state._autoAdvance = null; }
+  if(state.heartsLost >= MAX_HEARTS) return;
+  state.index++;
+  if(state.index >= state.questions.length){
+    showSummary();
+  } else {
+    renderQuestion();
+  }
+}
+
+function gameOver(){
+  showScreen('screen-over');
+}
+
+function showSummary(){
+  const total = state.log.length;
+  const firstCount = state.log.filter(l=>l.firstTry).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-first').textContent = firstCount;
+  document.getElementById('stat-hearts').textContent = (MAX_HEARTS - state.heartsLost);
+
+  const sub = document.getElementById('summary-sub');
+  if(firstCount === total){
+    sub.textContent = 'וואו - כל התיקים נפתרו בניסיון הראשון! עבודת בילוש מושלמת.';
+  } else {
+    sub.textContent = 'פתרתם את כל התיקים בהצלחה. הנה דוח הסיכום שלכם:';
+  }
+
+  const body = document.getElementById('report-body');
+  body.innerHTML = '';
+  state.log.forEach((l, i) => {
+    const tr = document.createElement('tr');
+    const filled = l.sentence.replace('___', `<mark>${l.correct}</mark>`);
+    tr.innerHTML = `
+      <td class="center">${i+1}</td>
+      <td>${filled}</td>
+      <td>${CAT_LABELS[l.cat] || ''}</td>
+      <td class="center ${l.firstTry ? 'first-try' : 'retry-try'}">${l.firstTry ? 'ניסיון ראשון ✅' : 'אחרי תרגול ✏️'}</td>
+    `;
+    body.appendChild(tr);
+  });
+
+  showScreen('screen-summary');
+  launchConfetti(true);
+}
+
+document.getElementById('btn-start').addEventListener('click', startNewGame);
+document.getElementById('btn-restart').addEventListener('click', startNewGame);
+document.getElementById('btn-play-again').addEventListener('click', startNewGame);
+
+/* ---------------- confetti ---------------- */
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+let confettiParticles = [];
+let confettiRAF = null;
+const CONFETTI_COLORS = ['#E8543E','#F2B23A','#1E8F79','#1B2A4A','#FFFFFF'];
+
+function launchConfetti(big){
+  const count = big ? 160 : 70;
+  const originX = canvas.width/2;
+  for(let i=0;i<count;i++){
+    confettiParticles.push({
+      x: originX + (Math.random()-0.5)*(big?canvas.width*0.6:200),
+      y: -20 - Math.random()*80,
+      vx: (Math.random()-0.5)*4,
+      vy: 2 + Math.random()*3.5,
+      size: 5 + Math.random()*6,
+      color: CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)],
+      rot: Math.random()*360,
+      vr: (Math.random()-0.5)*10,
+      life: 0,
+      maxLife: 130 + Math.random()*60
+    });
+  }
+  if(!confettiRAF){ confettiRAF = requestAnimationFrame(tickConfetti); }
+}
+
+function tickConfetti(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  confettiParticles.forEach(p=>{
+    p.x += p.vx; p.y += p.vy; p.vy += 0.03; p.rot += p.vr; p.life++;
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rot*Math.PI/180);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = Math.max(0, 1 - p.life/p.maxLife);
+    ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size*0.6);
+    ctx.restore();
+  });
+  confettiParticles = confettiParticles.filter(p => p.life < p.maxLife && p.y < canvas.height + 40);
+  if(confettiParticles.length > 0){
+    confettiRAF = requestAnimationFrame(tickConfetti);
+  } else {
+    confettiRAF = null;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+}
+</script>
+</body>
+</html>
