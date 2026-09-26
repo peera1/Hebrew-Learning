@@ -47,7 +47,6 @@ td,th{padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;}
 </style>
 </head>
 <body>
-<a href="../index.html" style="position:fixed;top:14px;right:14px;z-index:10;color:var(--accent);font-weight:700;text-decoration:none">← חזרה לאינדקס</a>
 <div class="wrap">
   <h1>🎈 משחק קריאה לכיתה א' 🎈</h1>
   <div class="card" id="app"></div>
@@ -113,7 +112,9 @@ function renderQuestion(){
   <div class="progress"><div style="width:${(st.idx/15)*100}%"></div></div>
   <button class="word-btn" onclick="speak('${word}')" title="השמע שוב">🔊</button>
   <div class="options">${st.curOptions.map(o=>`<button class="opt" data-w="${o}" onclick="choose(this,'${word}')">${o}</button>`).join('')}</div>
-  <div class="msg" id="msg"></div>`;
+  <div class="msg" id="msg"></div>
+  <div id="nextArea"></div>`;
+  speak(word);
 }
 
 function choose(btn,correctWord){
@@ -128,7 +129,9 @@ function choose(btn,correctWord){
     msg.className='msg good';
     msg.textContent=pick(['כל הכבוד! 🌟','מעולה!! 🎉','נכון מאוד!! 👏','איזה כיף, צדקת! 😄']);
     st.idx++;
-    setTimeout(()=>{ st.idx>=15 ? finishSuccess() : renderQuestion(); },1100);
+    const isLast=st.idx>=15;
+    document.getElementById('nextArea').innerHTML=
+      `<button class="big-btn" onclick="${isLast?'finishSuccess()':'renderQuestion()'}">${isLast?'לתוצאות 🏁':'למילה הבאה ➡️'}</button>`;
   }else{
     stats.totalWrong++;
     stats.mistakeMap[correctWord]=(stats.mistakeMap[correctWord]||0)+1;
@@ -138,10 +141,10 @@ function choose(btn,correctWord){
     document.querySelectorAll('.hearts').forEach(h=>h.textContent='❤️'.repeat(5-st.mistakes)+'🖤'.repeat(st.mistakes));
     if(st.mistakes>=5){
       msg.className='msg bad';
-      msg.textContent='זה בסדר גמור, כולם טועים! מתחילים מחדש 💪';
+      msg.textContent='זה בסדר גמור, כולם טועים! 💪';
       stats.logs.push({completed:false,mistakes:st.mistakes,firstTry:st.firstTry,q:st.idx+1,dur:Date.now()-st.attemptStart});
       document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
-      setTimeout(newGame,1800);
+      document.getElementById('nextArea').innerHTML=`<button class="big-btn" onclick="newGame()">מתחילים מחדש 🔄</button>`;
     }else{
       msg.className='msg bad';
       msg.textContent=pick(['לא נורא, נסה שוב! 💛','כמעט! תקשיב שוב ותנסה 😊','אתה מסוגל, נסה עוד פעם! 🙂']);
