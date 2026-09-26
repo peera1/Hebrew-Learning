@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>משחק קריאה - כיתה א'</title>
+<style>
+:root{
+  --bg:#fef6e4; --card:#ffffff; --ink:#3a2e39; --accent:#ff8552; --accent2:#43aa8b;
+  --wrong:#e05263; --border:#f2d0a4; --shadow:rgba(0,0,0,.12);
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#241f2e;--card:#332c40;--ink:#f5ecff;--border:#4a3f5c;--shadow:rgba(0,0,0,.4);}
+}
+:root[data-theme="dark"]{--bg:#241f2e;--card:#332c40;--ink:#f5ecff;--border:#4a3f5c;--shadow:rgba(0,0,0,.4);}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);
+  display:flex;align-items:center;justify-content:center;min-height:100%;padding:16px;}
+.wrap{width:100%;max-width:560px;}
+h1{text-align:center;font-size:1.7rem;margin:.2em 0 .6em;}
+.card{background:var(--card);border-radius:22px;box-shadow:0 8px 24px var(--shadow);padding:22px;text-align:center;}
+.sub{color:var(--accent);font-weight:700;}
+button{font-family:inherit;cursor:pointer;border:none;}
+.big-btn{background:var(--accent);color:#fff;font-size:1.15rem;font-weight:700;padding:14px 28px;
+  border-radius:16px;margin-top:12px;}
+.big-btn:active{transform:scale(.97);}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:1.2rem;font-weight:700;}
+.hearts{letter-spacing:3px;font-size:1.5rem;}
+.progress{height:10px;background:var(--border);border-radius:6px;overflow:hidden;margin-bottom:18px;}
+.progress>div{height:100%;background:var(--accent2);transition:width .3s;}
+.word-btn{font-size:3rem;padding:10px;border-radius:50%;background:var(--accent2);color:#fff;
+  width:110px;height:110px;box-shadow:0 4px 10px var(--shadow);margin-bottom:22px;}
+.word-btn:active{transform:scale(.95);}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.opt{background:var(--bg);border:3px solid var(--border);border-radius:16px;padding:22px 6px;
+  font-size:2.4rem;font-weight:700;color:var(--ink);}
+.opt.correct{background:#c9f0d5;border-color:var(--accent2);}
+.opt.wrong{background:#fbd6dc;border-color:var(--wrong);}
+.msg{min-height:1.6em;font-weight:700;margin-top:10px;font-size:1.3rem;}
+.msg.good{color:var(--accent2);} .msg.bad{color:var(--wrong);}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.95rem;}
+td,th{padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;}
+.stat-row{display:flex;justify-content:space-between;padding:6px 2px;border-bottom:1px solid var(--border);}
+.emoji{font-size:2.4rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎈 משחק קריאה לכיתה א' 🎈</h1>
+  <div class="card" id="app"></div>
+</div>
+<script>
+const WORDS=["אַבָּא","אִמָא","יֶלֶד","יַלְדָּה","תִּינוֹק","סָבָא","סָבְתָא","אָח","אָחוֹת","מִשְׁפָּחָה",
+"בַּיִת","חֶדֶר","דֶּלֶת","חַלּוֹן","שֻׁלְחָן","כִּסֵּא","מִטָּה","סֵפֶר","עִפָּרוֹן","יַלְקוּט",
+"תִּיק","מַחְבֶּרֶת","גַּלְגַּל","כִּתָּה","מוֹרָה","תַּלְמִיד","תַּלְמִידָה","חָבֵר","חֲבֵרָה","שֶׁמֶש",
+"יָרֵחַ","כּוֹכָב","שָׁמַיִם","עָנָן","גֶּשֶׁם","שֶׁלֶג","רוּחַ","קַיִץ","חוֹרֶף","אָבִיב",
+"סְתָיו","עֵץ","פֶּרַח","עָלֶה","דֶּשֶׁא","גַּן","יַעַר","הַר","יָם","נָהָר",
+"חוֹל","אֶבֶן","כֶּלֶב","חָתוּל","סוּס","פָּרָה","כֶּבֶשׂ","תַּרְנְגוֹל","תַּרְנְגוֹלֶת","דָּג",
+"צִפּוֹר","אַרְיֵה","דֹּב","פִּיל","קוֹף","נָחָש","עַכְבָּר","אַרְנָב","פַּרְפַּר","דְּבוֹרָה",
+"לֶחֶם","חָלָב","בֵּיצָה","גְּבִינָה","תַּפּוּחַ","בָּנָנָה","תַּפּוּז","עֲנָבִים","אֲבַטִּיחַ","עוּגָה",
+"גְּלִידָה","מַיִם","מִיץ","מָרָק","יָד","רֶגֶל","רֹאש","עַיִן","אֹזֶן","אַף",
+"פֶּה","שֵׁן","שֵׂעָר","בֶּטֶן","גַּב","אֶצְבַּע","אָדֹם","כָּחֹל","יָרֹק","צָהֹב",
+"לָבָן","שָׁחוֹר","וָרֹד","כָּתֹם","סָגֹל","גָּדוֹל","קָטָן","גָּבוֹהַ","נָמוּך","חַם",
+"קַר","יָפֶה","שָׂמֵחַ","עָצוּב","אֶחָד","שְׁתַּיִם","שָׁלוֹש","אַרְבַּע","חָמֵש","שֵׁש",
+"שֶׁבַע","שְׁמוֹנֶה","תֵּשַׁע","עֶשֶׂר","הוֹלֵך","רָץ","קוֹפֵץ","יוֹשֵׁב","יָשֵׁן","אוֹכֵל",
+"שׁוֹתֶה","קוֹרֵא","כּוֹתֵב","מְשַׂחֵק","שָׁר","רוֹקֵד","צוֹחֵק","בּוֹכֶה","מְכוֹנִית","אוֹפַנַּיִם",
+"רַכֶּבֶת","מָטוֹס","סְפִינָה","אוֹטוֹבּוּס","כֶּסֶף","מַתָּנָה","חַג","שָׁלֵו","חֲבֵרִים","אַהֲבָה"];
+
+let stats={start:Date.now(),attempts:0,totalAns:0,totalCorrect:0,totalWrong:0,mistakeMap:{},logs:[]};
+let st={};
+const app=document.getElementById('app');
+
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+let hebrewVoice=null;
+function loadVoices(){
+  const voices=window.speechSynthesis.getVoices();
+  hebrewVoice=voices.find(v=>v.lang==='he-IL')||voices.find(v=>v.lang && v.lang.startsWith('he'));
+}
+if('speechSynthesis' in window){ window.speechSynthesis.onvoiceschanged=loadVoices; loadVoices(); }
+
+function speak(word){
+  if(!('speechSynthesis' in window)){ alert('הדפדפן שלך לא תומך בהשמעת קול'); return; }
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(word);
+  u.lang='he-IL'; u.rate=0.7;
+  if(hebrewVoice) u.voice=hebrewVoice;
+  window.speechSynthesis.speak(u);
+}
+
+function startScreen(){
+  app.innerHTML=`<p style="font-size:1.1rem">לוחצים על הכפתור, שומעים מילה, ובוחרים אותה מבין ארבע אפשרויות.<br>מותר לטעות עד 5 פעמים 💛</p>
+  <button class="big-btn" onclick="newGame()">בואו נתחיל! 🚀</button>`;
+}
+
+function newGame(){
+  stats.attempts++;
+  st={pool:shuffle(WORDS).slice(0,15),idx:0,mistakes:0,firstTry:0,curOptions:[],attemptStart:Date.now(),answeredThisQOK:true};
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const word=st.pool[st.idx];
+  const distractors=shuffle(WORDS.filter(w=>w!==word)).slice(0,3);
+  st.curOptions=shuffle([word,...distractors]);
+  st.answeredThisQOK=true;
+  const hearts='❤️'.repeat(5-st.mistakes)+'🖤'.repeat(st.mistakes);
+  app.innerHTML=`
+  <div class="topbar"><span>שאלה ${st.idx+1} מתוך 15</span><span class="hearts">${hearts}</span></div>
+  <div class="progress"><div style="width:${(st.idx/15)*100}%"></div></div>
+  <button class="word-btn" onclick="speak('${word}')" title="השמע שוב">🔊</button>
+  <div class="options">${st.curOptions.map(o=>`<button class="opt" data-w="${o}" onclick="choose(this,'${word}')">${o}</button>`).join('')}</div>
+  <div class="msg" id="msg"></div>`;
+}
+
+function choose(btn,correctWord){
+  const msg=document.getElementById('msg');
+  const chosen=btn.getAttribute('data-w');
+  stats.totalAns++;
+  if(chosen===correctWord){
+    stats.totalCorrect++;
+    btn.classList.add('correct');
+    document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+    if(st.answeredThisQOK)st.firstTry++;
+    msg.className='msg good';
+    msg.textContent=pick(['כל הכבוד! 🌟','מעולה!! 🎉','נכון מאוד!! 👏','איזה כיף, צדקת! 😄']);
+    st.idx++;
+    setTimeout(()=>{ st.idx>=15 ? finishSuccess() : renderQuestion(); },1100);
+  }else{
+    stats.totalWrong++;
+    stats.mistakeMap[correctWord]=(stats.mistakeMap[correctWord]||0)+1;
+    st.answeredThisQOK=false;
+    st.mistakes++;
+    btn.classList.add('wrong');
+    document.querySelectorAll('.hearts').forEach(h=>h.textContent='❤️'.repeat(5-st.mistakes)+'🖤'.repeat(st.mistakes));
+    if(st.mistakes>=5){
+      msg.className='msg bad';
+      msg.textContent='זה בסדר גמור, כולם טועים! מתחילים מחדש 💪';
+      stats.logs.push({completed:false,mistakes:st.mistakes,firstTry:st.firstTry,q:st.idx+1,dur:Date.now()-st.attemptStart});
+      document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+      setTimeout(newGame,1800);
+    }else{
+      msg.className='msg bad';
+      msg.textContent=pick(['לא נורא, נסה שוב! 💛','כמעט! תקשיב שוב ותנסה 😊','אתה מסוגל, נסה עוד פעם! 🙂']);
+      btn.disabled=true;
+    }
+  }
+}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+
+function finishSuccess(){
+  stats.logs.push({completed:true,mistakes:st.mistakes,firstTry:st.firstTry,q:15,dur:Date.now()-st.attemptStart});
+  renderReport();
+}
+
+function fmtDur(ms){const s=Math.round(ms/1000);return s<60?s+' שנ׳':Math.floor(s/60)+' דק׳ '+(s%60)+' שנ׳';}
+
+function renderReport(){
+  const totalDur=Date.now()-stats.start;
+  const acc=stats.totalAns? Math.round(100*stats.totalCorrect/stats.totalAns):0;
+  const hardWords=Object.entries(stats.mistakeMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const rows=stats.logs.map((l,i)=>`<tr><td>${i+1}</td><td>${l.completed?'הושלם ✅':'הופסק ⏹'}</td><td>${l.q}</td><td>${l.mistakes}</td><td>${l.firstTry}</td><td>${fmtDur(l.dur)}</td></tr>`).join('');
+  app.innerHTML=`
+  <div class="emoji">🏆</div>
+  <h2>סיימת את המשחק בהצלחה!</h2>
+  <p class="sub">דו"ח סיכום להורה</p>
+  <div class="stat-row"><span>זמן משחק כולל</span><b>${fmtDur(totalDur)}</b></div>
+  <div class="stat-row"><span>מספר ניסיונות (כולל התחלות מחדש)</span><b>${stats.attempts}</b></div>
+  <div class="stat-row"><span>סה"כ שאלות שנענו</span><b>${stats.totalAns}</b></div>
+  <div class="stat-row"><span>תשובות נכונות</span><b>${stats.totalCorrect}</b></div>
+  <div class="stat-row"><span>תשובות שגויות</span><b>${stats.totalWrong}</b></div>
+  <div class="stat-row"><span>אחוז הצלחה כולל</span><b>${acc}%</b></div>
+  <div class="stat-row"><span>ניחוש נכון בפעם הראשונה (בסבב המנצח)</span><b>${stats.logs[stats.logs.length-1].firstTry}/15</b></div>
+  ${hardWords.length?`<p class="sub" style="margin-top:14px">מילים שדרשו יותר תרגול:</p>
+  <table><tr><th>מילה</th><th>פעמים שטעה</th></tr>${hardWords.map(([w,c])=>`<tr><td>${w}</td><td>${c}</td></tr>`).join('')}</table>`:'<p style="margin-top:10px">🎉 ללא מילים קשות מיוחדות — ביצוע נהדר!</p>'}
+  <p class="sub" style="margin-top:14px">פירוט לפי ניסיון:</p>
+  <table><tr><th>#</th><th>סטטוס</th><th>שאלות</th><th>טעויות</th><th>נכון-ראשון</th><th>משך</th></tr>${rows}</table>
+  <button class="big-btn" onclick="location.reload()">שחקו שוב מההתחלה 🔄</button>`;
+}
+
+startScreen();
+</script>
+</body>
+</html>
