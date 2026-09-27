@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>לומדת עברית - בית הספר שלנו 🌟</title>
-    <meta name="description" content="אינדקס ניווט לכל משחקי הלמידה בעברית - אותיות, קריאה, וחשבון. מותאם לילדים, חינמי, צבעוני ומזמין.">
+    <meta name="description" content="אינדקס ניווט לכל משחקי הלמידה בעברית - אותיות, קריאה, וחשבון. מותאם לילדים, חינמי, צבעוני וידידותי.">
     <meta name="keywords" content="עברית, אותיות, לימוד, משחקים, גן חובה, כיתה א, כיתה ב, כיתה ג, אינדקס, ניווט, ילדים, חינם">
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BPNZZJWSF8"></script>
@@ -21,9 +21,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
         
         :root {
-            --primary-gradient-start: #2A0944; /* סגול כהה עמוק */
-            --primary-gradient-end: #A12568;   /* ורוד-סגול אלגנטי */
-            --secondary-color: #FEC260;         /* זהב חם */
+            --primary-gradient-start: #2A0944;
+            --primary-gradient-end: #A12568;
+            --secondary-color: #FEC260;
             --text-color: #2D3748;
             --background-overlay: rgba(15, 5, 29, 0.45);
             --card-bg: rgba(255, 255, 255, 0.92);
@@ -156,7 +156,6 @@
             transform: scale(1.2) rotate(-5deg);
         }
 
-        /* פלטת צבעים אלגנטיים */
         .purple { background: linear-gradient(135deg, #6B46C1, #9F7AEA); }
         .blue { background: linear-gradient(135deg, #2B6CB0, #4299E1); }
         .teal { background: linear-gradient(135deg, #2C7A7B, #38B2AC); }
@@ -257,8 +256,11 @@
             <h2><i class="fas fa-book-open"></i> כיתה א'</h2>
             <p class="grade-description">קריאה, כתיבה ומשחקים ראשונים</p>
             
-            <button class="button coral" onclick="openLinkWithConfetti('Class-a/index.html')">
-                <i class="fas fa-book-reader"></i> משחק קריאה לכיתה א'
+            <button class="button coral" onclick="openLinkWithConfetti('Class-a/קריאת%20מילים.html')">
+                <i class="fas fa-book-reader"></i> משחק קריאת מילים
+            </button>
+            <button class="button pink" onclick="openLinkWithConfetti('Class-a/הרכבת%20מילים.html')">
+                <i class="fas fa-puzzle-piece"></i> הרכבת מילים
             </button>
         </div>
 
@@ -303,7 +305,7 @@
             });
 
             setTimeout(() => {
-                window.open(url, '_blank'); 
+                window.open(url, '_blank');
             }, 450);
         }
     </script>
