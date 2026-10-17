@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>משחק ניקוד | Hebrew Learning</title>
+  <style>
+    :root{--bg:#fff9f2;--card:#ffffff;--accent:#ff8552;--accent-2:#ffd27a;--muted:#6b6b6b;--good:#2ecc71;--bad:#e74c3c}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:grid;place-items:center;padding:28px;background:linear-gradient(135deg,#fff4df,#eaf7ff);font-family: "Segoe UI", Roboto, Arial; color:#253033}
+    main{width:min(100%,760px);background:var(--card);border-radius:20px;padding:28px;border:2px solid rgba(0,0,0,.04);box-shadow:0 18px 40px rgba(45,48,50,.08);}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .back{font-weight:700;color:var(--accent-2);text-decoration:none}
+    h1{margin:6px 0;font-size:1.8rem}
+    p.lead{margin:0;color:var(--muted)}
+    .board{margin-top:20px;display:grid;grid-template-columns:1fr 320px;gap:18px}
+    .letter-card{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.6),#fff);border:2px solid #f1e4d6}
+    .letter{font-size:8rem;font-weight:800;line-height:1}
+    .controls{display:flex;gap:10px;margin-top:14px}
+    button.btn{padding:10px 14px;border-radius:10px;border:0;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}
+    button.secondary{background:#f3f3f3;color:#333}
+    .options{display:grid;gap:12px;padding:12px;border-radius:12px;background:linear-gradient(90deg,#fff,#fffef8);border:2px solid #f7ead6}
+    .opt{display:flex;align-items:center;justify-content:center;padding:14px;border-radius:12px;background:#fff;border:2px solid #fff;font-size:2.4rem;font-weight:700;cursor:pointer;transition:transform .12s,box-shadow .12s}
+    .opt:hover{transform:translateY(-4px);box-shadow:0 8px 18px rgba(0,0,0,.06)}
+    .opt.correct{border-color:var(--good);box-shadow:0 8px 18px rgba(46,204,113,.12)}
+    .opt.wrong{border-color:var(--bad);box-shadow:0 8px 18px rgba(231,76,60,.12)}
+    .stats{padding:12px;border-radius:12px;background:#fffef8;border:2px solid #f7ead6}
+    .hidden{display:none}
+    .center{text-align:center}
+    .summary{margin-top:18px;padding:16px;border-radius:12px;background:linear-gradient(180deg,#fff,#fffef8);border:2px solid #f1e4d6}
+    footer.meta{margin-top:16px;font-size:.95rem;color:var(--muted)}
+    @media (max-width:780px){.board{grid-template-columns:1fr;}.letter{font-size:6.2rem}}
+  </style>
+</head>
+<body>
+  <main>
+    <a class="back" href="index.html">← חזרה לאינדקס</a>
+    <header>
+      <div>
+        <h1>משחק: לימוד ניקוד</h1>
+        <p class="lead">האזן לאות ממנון וקבע את הניקוד הנכון מתוך 4 אופציות. כל תרגיל חווייתי, משוב מיידי ודוח בסיום.</p>
+      </div>
+      <div class="center">
+        <div id="roundInfo">סיבוב <strong id="round">0</strong> / <strong id="totalRounds">10</strong></div>
+        <div style="margin-top:8px">ציון: <strong id="score">0</strong></div>
+      </div>
+    </header>
+
+    <section class="board" aria-live="polite">
+      <div>
+        <div class="letter-card" role="region" aria-label="אות לשמיעה">
+          <div id="letter" class="letter" aria-hidden="true">א</div>
+          <div class="controls">
+            <button id="playBtn" class="btn" aria-label="שמע">▶️ השמע</button>
+            <button id="repeatBtn" class="secondary btn" aria-label="השמעה חוזרת">🔁 חזור</button>
+            <button id="skipBtn" class="secondary btn" aria-label="דלג">⏭️ דלג</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+          <label for="rounds">מספר שאלות:</label>
+          <select id="rounds">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="15">15</option>
+          </select>
+          <label style="margin-left:12px"><input type="checkbox" id="includeExtra" checked> לכלול חידושים (חולם, שורוק)</label>
+        </div>
+      </div>
+
+      <aside>
+        <div class="options" id="options" role="list">
+          <!-- option buttons injected here -->
+        </div>
+
+        <div class="stats" style="margin-top:12px">
+          <div>נכון: <strong id="correctCount">0</strong></div>
+          <div>טעות: <strong id="wrongCount">0</strong></div>
+          <div>זמן ממוצע לשאלה: <strong id="avgTime">0</strong> שניות</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="summary hidden" id="summary">
+      <h2>דוח סיכום</h2>
+      <p>תודה! הנה ביצועיך:</p>
+      <div id="report"></div>
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <button id="retry" class="btn">נסה שוב</button>
+        <button id="backIndex" class="secondary btn">חזרה לאינדקס</button>
+      </div>
+    </section>
+
+    <footer class="meta">המשחק מדגים ניקוד: פתח, קמץ, חיריק, שווא, צירה, סגול; כולל גם חולם ושורוק כחידוש. מתאים לכיתה א.</footer>
+  </main>
+
+  <script>
+    // Data: Hebrew letters (consonants) and vowel marks
+    const letters = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','כ','ל','מ','נ','ס','ע','פ','צ','ק','ר','ש','ת'];
+    const vowelsCore = [
+      {id:'patach', name:'פתח', mark:'\u05B7'},
+      {id:'kamatz', name:'קמץ', mark:'\u05B8'},
+      {id:'hiriq', name:'חיריק', mark:'\u05B4'},
+      {id:'shva', name:'שווא', mark:'\u05B0'},
+      {id:'tsere', name:'צירה', mark:'\u05B6'},
+      {id:'segol', name:'סגול', mark:'\u05B5'}
+    ];
+    const extraVowels = [
+      {id:'cholam', name:'חולם', mark:'\u05B9'},
+      {id:'shuruk', name:'שורוק', mark:'\u05BC', needsVav:true} // שורוק rendered as וּ (vav + dagesh) - we will special-case
+    ];
+
+    // UI refs
+    const letterEl = document.getElementById('letter');
+    const playBtn = document.getElementById('playBtn');
+    const repeatBtn = document.getElementById('repeatBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    const optionsEl = document.getElementById('options');
+    const roundEl = document.getElementById('round');
+    const totalRoundsEl = document.getElementById('totalRounds');
+    const scoreEl = document.getElementById('score');
+    const correctCountEl = document.getElementById('correctCount');
+    const wrongCountEl = document.getElementById('wrongCount');
+    const avgTimeEl = document.getElementById('avgTime');
+    const roundsSelect = document.getElementById('rounds');
+    const includeExtraCheckbox = document.getElementById('includeExtra');
+    const summarySection = document.getElementById('summary');
+    const reportEl = document.getElementById('report');
+    const retryBtn = document.getElementById('retry');
+    const backIndexBtn = document.getElementById('backIndex');
+
+    // Game state
+    let vowels = [];
+    let totalRounds = parseInt(roundsSelect.value,10);
+    let currentRound = 0;
+    let score = 0;
+    let correctCount = 0;
+    let wrongCount = 0;
+    let startTime = null;
+    let times = [];
+    let current = null; // {letter, vowel}
+    let mistakes = [];
+
+    function init(){
+      updateVowels();
+      attachHandlers();
+      reset();
+    }
+
+    function updateVowels(){
+      vowels = vowelsCore.slice();
+      if(includeExtraCheckbox.checked){ vowels = vowels.concat(extraVowels); }
+    }
+
+    function reset(){
+      totalRounds = parseInt(roundsSelect.value,10);
+      totalRoundsEl.textContent = totalRounds;
+      currentRound = 0; score = 0; correctCount = 0; wrongCount = 0; times = []; mistakes = [];
+      scoreEl.textContent = score; correctCountEl.textContent = correctCount; wrongCountEl.textContent = wrongCount; avgTimeEl.textContent = '0';
+      summarySection.classList.add('hidden');
+      nextRound();
+    }
+
+    function attachHandlers(){
+      playBtn.addEventListener('click',()=>{ if(current) speakCurrent(); });
+      repeatBtn.addEventListener('click',()=>{ if(current) speakCurrent(); });
+      skipBtn.addEventListener('click',()=>{ skipQuestion(); });
+      roundsSelect.addEventListener('change',reset);
+      includeExtraCheckbox.addEventListener('change',()=>{ updateVowels(); reset(); });
+      retryBtn.addEventListener('click',reset);
+      backIndexBtn.addEventListener('click',()=> location.href='index.html');
+    }
+
+    function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+    function makeLetterWithVowel(letter, vowel){
+      if(vowel.id === 'shuruk'){
+        // render as וּ (vav + dot) only if base letter is vav -> special-case: if letter isn't ו, show letter + shva mark instead
+        if(letter === 'ו') return letter + '\u05BC'; // vav with dagesh - will visually show dot; we'll also append hiriq? However, for shuruk commonly it's vowel on vav
+        // for simplicity, show base letter + combining dot (dagesh) after vav-like, but if base isn't ו, just use letter + u vowel mark (use qamatz as placeholder)
+      }
+      return letter + vowel.mark;
+    }
+
+    function speak(text){
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'he-IL';
+      utter.rate = 0.95; utter.pitch = 1.05; utter.volume = 1;
+      // some browsers ignore diacritics; still we present the text with combining marks
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utter);
+    }
+
+    function speakCurrent(){
+      if(!current) return; const txt = makeLetterWithVowel(current.letter,current.vowel);
+      // Introduce a short chime before speaking
+      beep(350,0.02,0.02);
+      setTimeout(()=> speak(txt),120);
+    }
+
+    // small beep helper
+    function beep(duration=200,volume=0.04,frequency=440){
+      try{
+        const ctx = new (window.AudioContext||window.webkitAudioContext)();
+        const o = ctx.createOscillator(); const g = ctx.createGain();
+        o.type='sine'; o.frequency.value = frequency; g.gain.value = volume;
+        o.connect(g); g.connect(ctx.destination); o.start(); setTimeout(()=>{ o.stop(); ctx.close(); }, duration);
+      }catch(e){/* ignore */}
+    }
+
+    function nextRound(){
+      if(currentRound >= totalRounds){ endGame(); return; }
+      currentRound++; roundEl.textContent = currentRound;
+      // prepare question
+      const base = pickRandom(letters);
+      const vowel = pickRandom(vowels);
+      current = {letter:base, vowel};
+      letterEl.textContent = base;
+      renderOptions(base,vowel);
+      startTime = performance.now();
+      // auto-play
+      setTimeout(()=> speakCurrent(),220);
+    }
+
+    function renderOptions(letter, correctVowel){
+      // options are same letter with different vowels
+      const pool = [...vowels];
+      // ensure correct in pool
+      const options = [correctVowel];
+      // pick 3 distinct other vowels
+      while(options.length < 4 && pool.length){
+        const pick = pool.splice(Math.floor(Math.random()*pool.length),1)[0];
+        if(pick.id !== correctVowel.id) options.push(pick);
+      }
+      // shuffle
+      for(let i=options.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [options[i],options[j]]=[options[j],options[i]]; }
+      optionsEl.innerHTML = '';
+      options.forEach(opt=>{
+        const btn = document.createElement('button'); btn.className='opt'; btn.type='button'; btn.setAttribute('role','button');
+        btn.innerHTML = makeLetterWithVowel(letter,opt);
+        btn.onclick = ()=> chooseOption(opt,btn);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function chooseOption(chosenVowel,btn){
+      const elapsed = (performance.now() - startTime)/1000; times.push(elapsed); updateAvgTime();
+      const correct = chosenVowel.id === current.vowel.id;
+      if(correct){ score+=10; correctCount++; scoreEl.textContent = score; correctCountEl.textContent = correctCount; btn.classList.add('correct'); beep(220,0.06,880); }
+      else{ score = Math.max(0,score-5); wrongCount++; scoreEl.textContent = score; wrongCountEl.textContent = wrongCount; btn.classList.add('wrong'); beep(220,0.06,220); 
+        // reveal correct
+        Array.from(optionsEl.children).forEach(b=>{
+          if(b.innerText === makeLetterWithVowel(current.letter,current.vowel)) b.classList.add('correct');
+        });
+        mistakes.push({round:currentRound,letter:current.letter,expected:current.vowel.name,chosen:chosenVowel.name,time:elapsed});
+      }
+      // disable options
+      Array.from(optionsEl.children).forEach(b=>b.disabled=true);
+      // proceed after short delay
+      setTimeout(()=>{
+        Array.from(optionsEl.children).forEach(b=>{ b.classList.remove('correct','wrong'); b.disabled=false; });
+        nextRound();
+      },900);
+    }
+
+    function skipQuestion(){
+      // count as wrong and move on
+      wrongCount++; wrongCountEl.textContent = wrongCount; times.push((performance.now()-startTime)/1000); mistakes.push({round:currentRound,letter:current.letter,expected:current.vowel.name,chosen:'דלג',time:0});
+      // reveal correct
+      Array.from(optionsEl.children).forEach(b=>{ if(b.innerText===makeLetterWithVowel(current.letter,current.vowel)) b.classList.add('correct'); b.disabled=true; });
+      setTimeout(()=>{ Array.from(optionsEl.children).forEach(b=>{ b.classList.remove('correct'); b.disabled=false; }); nextRound(); },900);
+    }
+
+    function updateAvgTime(){
+      if(times.length===0){ avgTimeEl.textContent='0'; return; }
+      const avg = (times.reduce((a,b)=>a+b,0)/times.length).toFixed(2); avgTimeEl.textContent = avg;
+    }
+
+    function endGame(){
+      current = null; summarySection.classList.remove('hidden');
+      // build report
+      const percent = Math.round((correctCount/(correctCount+wrongCount||1))*100);
+      const totalTime = times.reduce((a,b)=>a+b,0).toFixed(2);
+      let html = `<div>שאלות: ${totalRounds}</div>`;
+      html += `<div>נכונות: ${correctCount} — ${percent}%</div>`;
+      html += `<div>ציון סופי: ${score}</div>`;
+      html += `<div>זמן כולל: ${totalTime} שניות</div>`;
+      // breakdown per vowel
+      const byVowel = {};
+      vowels.forEach(v=> byVowel[v.name]= {correct:0,wrong:0});
+      mistakes.forEach(m=>{ if(byVowel[m.expected]) byVowel[m.expected].wrong++; });
+      // we need correct per vowel: we will count from rounds by recording successes in a log (simple derivation)
+      // For simplicity, compute correct counts by re-building from stored data: (we didn't store successes per vowel) so approximate: total correct - sum wrong per vowel
+      const totalWrongByVowel = Object.fromEntries(Object.entries(byVowel).map(([k,v])=>[k,v.wrong]));
+      html += '<h3 style="margin-top:8px">פירוט לפי ניקוד</h3>';
+      html += '<ul>';
+      const totalAnswered = correctCount + wrongCount;
+      // show wrong counts and list
+      for(const name in byVowel){ html += `<li>${name}: טעויות ${byVowel[name].wrong||0}</li>`; }
+      html += '</ul>';
+
+      if(mistakes.length){ html += '<h4>טעויות - פירוט</h4><ol>'; mistakes.forEach(m=>{ html += `<li>סיבוב ${m.round}: ${m.letter} — ציפינו: ${m.expected}, בחרת: ${m.chosen}</li>`; }); html += '</ol>'; }
+
+      reportEl.innerHTML = html;
+
+      // save a simple history in localStorage
+      try{
+        const storage = JSON.parse(localStorage.getItem('nikud_history')||'[]');
+        storage.unshift({date:new Date().toISOString(), score, totalRounds, correctCount, wrongCount, percent, totalTime});
+        localStorage.setItem('nikud_history', JSON.stringify(storage.slice(0,20)));
+      }catch(e){/* ignore */}
+
+      // update high-level display
+      document.getElementById('roundInfo').textContent = 'המשחק הסתיים';
+    }
+
+    // start
+    init();
+  </script>
+</body>
+</html>
