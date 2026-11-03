@@ -5,193 +5,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>משחק קריאה - כיתה א'</title>
 <style>
-:root{
-  --bg:#fef6e4; --card:#ffffff; --ink:#3a2e39; --accent:#ff8552; --accent2:#43aa8b;
-  --wrong:#e05263; --border:#f2d0a4; --shadow:rgba(0,0,0,.12);
-  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){--bg:#241f2e;--card:#332c40;--ink:#f5ecff;--border:#4a3f5c;--shadow:rgba(0,0,0,.4);}
-}
-:root[data-theme="dark"]{--bg:#241f2e;--card:#332c40;--ink:#f5ecff;--border:#4a3f5c;--shadow:rgba(0,0,0,.4);}
-*{box-sizing:border-box;}
-html,body{height:100%;}
-body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);
-  display:flex;align-items:center;justify-content:center;min-height:100%;padding:16px;}
-.wrap{width:100%;max-width:560px;}
-h1{text-align:center;font-size:1.7rem;margin:.2em 0 .6em;}
-.card{background:var(--card);border-radius:22px;box-shadow:0 8px 24px var(--shadow);padding:22px;text-align:center;}
-.sub{color:var(--accent);font-weight:700;}
-button{font-family:inherit;cursor:pointer;border:none;}
-.big-btn{background:var(--accent);color:#fff;font-size:1.15rem;font-weight:700;padding:14px 28px;
-  border-radius:16px;margin-top:12px;}
-.big-btn:active{transform:scale(.97);}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:1.2rem;font-weight:700;}
-.hearts{letter-spacing:3px;font-size:1.5rem;}
-.progress{height:10px;background:var(--border);border-radius:6px;overflow:hidden;margin-bottom:18px;}
-.progress>div{height:100%;background:var(--accent2);transition:width .3s;}
-.word-btn{font-size:3rem;padding:10px;border-radius:50%;background:var(--accent2);color:#fff;
-  width:110px;height:110px;box-shadow:0 4px 10px var(--shadow);margin-bottom:22px;}
-.word-btn:active{transform:scale(.95);}
-.options{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-.opt{background:var(--bg);border:3px solid var(--border);border-radius:16px;padding:22px 6px;
-  font-size:2.4rem;font-weight:700;color:var(--ink);}
-.opt.correct{background:var(--bg);border-color:var(--accent2);border-width:4px;}
-.opt.wrong{background:var(--bg);border-color:var(--wrong);border-width:4px;}
-.msg{min-height:1.6em;font-weight:700;margin-top:10px;font-size:1.3rem;}
-.msg.good{color:var(--accent2);} .msg.bad{color:var(--wrong);}
-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.95rem;}
-td,th{padding:6px 8px;border-bottom:1px solid var(--border);text-align:center;}
-.stat-row{display:flex;justify-content:space-between;padding:6px 2px;border-bottom:1px solid var(--border);}
-.emoji{font-size:2.4rem;}
+:root{--bg:#fef6e4;--card:#fff;--ink:#3a2e39;--accent:#ff8552;--accent2:#43aa8b;--wrong:#e05263;--border:#f2d0a4;--shadow:rgba(0,0,0,.12)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#241f2e;--card:#332c40;--ink:#f5ecff;--border:#4a3f5c;--shadow:rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#241f2e;--card:#332c40;--ink:#f5ecff;--border:#4a3f5c;--shadow:rgba(0,0,0,.4)}
+*{box-sizing:border-box}html,body{min-height:100%;margin:0}body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:16px}
+.wrap{width:100%;max-width:680px}h1{text-align:center;font-size:1.7rem;margin:.2em 0 .6em}.card{background:var(--card);border-radius:22px;box-shadow:0 8px 24px var(--shadow);padding:22px;text-align:center}.sub{color:var(--accent);font-weight:700}button{font-family:inherit;cursor:pointer;border:none;color:inherit}.big-btn{background:var(--accent);color:#fff;font-size:1.15rem;font-weight:700;padding:14px 28px;border-radius:16px;margin-top:12px}.big-btn:active,.choice:active{transform:scale(.97)}button:focus-visible{outline:3px solid #2878c8;outline-offset:3px}
+.group-title{margin:18px 0 8px}.choices{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.choice,.category{background:var(--bg);border:3px solid var(--border);border-radius:15px;padding:10px 14px;font-size:1.05rem;font-weight:700}.choice.selected,.category.selected{border-color:var(--accent2);background:color-mix(in srgb,var(--accent2) 14%,var(--card))}.avatar-choice{font-size:2rem;min-width:76px}.category-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px}.category small{display:block;font-size:.8rem;font-weight:400;margin-top:3px}.hint{min-height:1.5em;color:var(--wrong);font-weight:700}.topbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;font-size:1.1rem;font-weight:700}.hearts{letter-spacing:2px;font-size:1.2rem}.progress{height:11px;background:var(--border);border-radius:6px;overflow:hidden;margin:12px 0}.progress>div{height:100%;background:var(--accent2);transition:width .35s}.trail{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:12px 0 18px}.stop{min-height:42px;border-radius:14px;background:var(--bg);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.4rem;position:relative}.stop.done{border-color:var(--accent2);background:color-mix(in srgb,var(--accent2) 15%,var(--card))}.stop.here{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent);transform:scale(1.08);z-index:1}.word-btn{font-size:2.5rem;border-radius:50%;background:var(--accent2);color:white;width:88px;height:88px;box-shadow:0 4px 10px var(--shadow);margin:0 0 14px}.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}.opt{background:var(--bg);border:3px solid var(--border);border-radius:16px;padding:18px 6px;font-size:2rem;font-weight:700;color:var(--ink)}.opt.correct{border-color:var(--accent2);border-width:4px}.opt.wrong{border-color:var(--wrong);border-width:4px}.msg{min-height:1.6em;font-weight:700;margin-top:10px;font-size:1.25rem}.msg.good{color:var(--accent2)}.msg.bad{color:var(--wrong)}table{width:100%;border-collapse:collapse;margin-top:10px;font-size:.95rem}td,th{padding:6px 8px;border-bottom:1px solid var(--border);text-align:center}.stat-row{display:flex;justify-content:space-between;padding:6px 2px;border-bottom:1px solid var(--border)}.emoji{font-size:2.4rem}
+@media(max-width:420px){.card{padding:16px}.opt{font-size:1.65rem;padding:15px 4px}.topbar{font-size:1rem}.trail{gap:5px}.stop{min-height:36px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>🎈 משחק קריאה לכיתה א' 🎈</h1>
-  <div class="card" id="app"></div>
-</div>
+<div class="wrap"><h1>🎈 משחק קריאה לכיתה א' 🎈</h1><main class="card" id="app" aria-live="polite"></main></div>
 <script>
-const WORDS=["אַבָּא","אִמָא","יֶלֶד","יַלְדָּה","תִּינוֹק","סָבָא","סָבְתָא","אָח","אָחוֹת","מִשְׁפָּחָה",
-"בַּיִת","חֶדֶר","דֶּלֶת","חַלּוֹן","שֻׁלְחָן","כִּסֵּא","מִטָּה","סֵפֶר","עִפָּרוֹן","יַלְקוּט",
-"תִּיק","מַחְבֶּרֶת","גַּלְגַּל","כִּתָּה","מוֹרָה","תַּלְמִיד","תַּלְמִידָה","חָבֵר","חֲבֵרָה","שֶׁמֶש",
-"יָרֵחַ","כּוֹכָב","שָׁמַיִם","עָנָן","גֶּשֶׁם","שֶׁלֶג","רוּחַ","קַיִץ","חוֹרֶף","אָבִיב",
-"סְתָיו","עֵץ","פֶּרַח","עָלֶה","דֶּשֶׁא","גַּן","יַעַר","הַר","יָם","נָהָר",
-"חוֹל","אֶבֶן","כֶּלֶב","חָתוּל","סוּס","פָּרָה","כֶּבֶשׂ","תַּרְנְגוֹל","תַּרְנְגוֹלֶת","דָּג",
-"צִפּוֹר","אַרְיֵה","דֹּב","פִּיל","קוֹף","נָחָש","עַכְבָּר","אַרְנָב","פַּרְפַּר","דְּבוֹרָה",
-"לֶחֶם","חָלָב","בֵּיצָה","גְּבִינָה","תַּפּוּחַ","בָּנָנָה","תַּפּוּז","עֲנָבִים","אֲבַטִּיחַ","עוּגָה",
-"גְּלִידָה","מַיִם","מִיץ","מָרָק","יָד","רֶגֶל","רֹאש","עַיִן","אֹזֶן","אַף",
-"פֶּה","שֵׁן","שֵׂעָר","בֶּטֶן","גַּב","אֶצְבַּע","אָדֹם","כָּחֹל","יָרֹק","צָהֹב",
-"לָבָן","שָׁחוֹר","וָרֹד","כָּתֹם","סָגֹל","גָּדוֹל","קָטָן","גָּבוֹהַ","נָמוּך","חַם",
-"קַר","יָפֶה","שָׂמֵחַ","עָצוּב","אֶחָד","שְׁתַּיִם","שָׁלוֹש","אַרְבַּע","חָמֵש","שֵׁש",
-"שֶׁבַע","שְׁמוֹנֶה","תֵּשַׁע","עֶשֶׂר","הוֹלֵך","רָץ","קוֹפֵץ","יוֹשֵׁב","יָשֵׁן","אוֹכֵל",
-"שׁוֹתֶה","קוֹרֵא","כּוֹתֵב","מְשַׂחֵק","שָׁר","רוֹקֵד","צוֹחֵק","בּוֹכֶה","מְכוֹנִית","אוֹפַנַּיִם",
-"רַכֶּבֶת","מָטוֹס","סְפִינָה","אוֹטוֹבּוּס","כֶּסֶף","מַתָּנָה","חַג","שָׁלֵו","חֲבֵרִים","אַהֲבָה",
-"מִשְׂחָק","כַּדּוּר","צַעֲצוּעַ","בֻּבָּה","צֶבַע","לוּחַ","גִּיר","מַחְקָה","מְחַדֵּד","מִסְפָּר",
-"כֶּתֶר","כּוֹבַע","חוּלְצָה","מִכְנָסַיִם","שִׂמְלָה","נַעַל","גֶּרֶב","מִטְרִיָּה","תִּיק גַּב","מַפְתֵּחַ",
-"כּוֹס","צַלַּחַת","כַּף","מַזְלֵג","סַכִּין","תַּפּוּד","גֶּזֶר","מְלָפְפוֹן","עַגְבָנִיָּה","תִּירָס",
-"אֹרֶז","פִּיצָה","דְּבַשׁ","שׁוֹקוֹלָד","תָּמָר","תּוּת","לִימוֹן","בָּצָל","תַּרְנְגוֹלִים","פִּרְפֵּר",
-"חָתוּלָה","גּוּר","נָמֵר","זְאֵב","צָב","צְפַרְדֵּעַ","פַּרְתּוּשׁ","דּוֹלְפִין","בַּרְוָז","יוֹנָה",
-"שׁוֹשַׁנָּה","כַּלָּנִית","דֶּקֶל","שִׂיחַ","שֹׁרֶשׁ","עָנָף","פְּרִי","גַּל","חוֹף","מַעְיָן",
-"בֹּקֶר","עֶרֶב","לַיְלָה","הַיּוֹם","מָחָר","עַכְשָׁו","לָרוּץ","לָלֶכֶת","לִקְפֹּץ","לִרְקֹד",
-"לָשִׁיר","לֶאֱכֹל","לִשְׁתּוֹת","לִכְתֹּב","לִצְחֹק","לִישֹׁן","לְשַׂחֵק","לְצַיֵּר","לִקְרֹא","לְסַדֵּר"];
-
+const WORD_GROUPS={
+  family:{label:'משפחה וחברים',emoji:'👨‍👩‍👧',words:['אַבָּא','אִמָא','יֶלֶד','יַלְדָּה','תִּינוֹק','סָבָא','סָבְתָא','אָח','אָחוֹת','מִשְׁפָּחָה','תַּלְמִיד','תַּלְמִידָה','חָבֵר','חֲבֵרָה','חֲבֵרִים','אַהֲבָה']},
+  school:{label:'בית הספר',emoji:'🎒',words:['סֵפֶר','עִפָּרוֹן','יַלְקוּט','תִּיק','מַחְבֶּרֶת','כִּתָּה','מוֹרָה','גַּלְגַּל','מִשְׂחָק','צֶבַע','לוּחַ','גִּיר','מַחְקָה','מְחַדֵּד','מִסְפָּר']},
+  home:{label:'הבית וחפצים',emoji:'🏠',words:['בַּיִת','חֶדֶר','דֶּלֶת','חַלּוֹן','שֻׁלְחָן','כִּסֵּא','מִטָּה','כּוֹס','צַלַּחַת','כַּף','מַזְלֵג','סַכִּין','מַפְתֵּחַ','מִטְרִיָּה','תִּיק גַּב']},
+  nature:{label:'טבע ומזג האוויר',emoji:'🌈',words:['שֶׁמֶש','יָרֵחַ','כּוֹכָב','שָׁמַיִם','עָנָן','גֶּשֶׁם','שֶׁלֶג','רוּחַ','קַיִץ','חוֹרֶף','אָבִיב','סְתָיו','עֵץ','פֶּרַח','עָלֶה','דֶּשֶׁא','גַּן','יַעַר','הַר','יָם','נָהָר','חוֹל','אֶבֶן','גַּל','חוֹף','מַעְיָן','דֶּקֶל','שִׂיחַ','שֹׁרֶשׁ','עָנָף']},
+  animals:{label:'בעלי חיים',emoji:'🐾',words:['כֶּלֶב','חָתוּל','סוּס','פָּרָה','כֶּבֶשׂ','תַּרְנְגוֹל','תַּרְנְגוֹלֶת','דָּג','צִפּוֹר','אַרְיֵה','דֹּב','פִּיל','קוֹף','נָחָש','עַכְבָּר','אַרְנָב','פַּרְפַּר','דְּבוֹרָה','חָתוּלָה','גּוּר','נָמֵר','זְאֵב','צָב','צְפַרְדֵּעַ','דּוֹלְפִין','בַּרְוָז','יוֹנָה']},
+  food:{label:'אוכל ושתייה',emoji:'🍎',words:['לֶחֶם','חָלָב','בֵּיצָה','גְּבִינָה','תַּפּוּחַ','בָּנָנָה','תַּפּוּז','עֲנָבִים','אֲבַטִּיחַ','עוּגָה','גְּלִידָה','מַיִם','מִיץ','מָרָק','תַּפּוּד','גֶּזֶר','מְלָפְפוֹן','עַגְבָנִיָּה','תִּירָס','אֹרֶז','פִּיצָה','דְּבַשׁ','שׁוֹקוֹלָד','תָּמָר','תּוּת','לִימוֹן','בָּצָל']},
+  body:{label:'הגוף',emoji:'🙂',words:['יָד','רֶגֶל','רֹאש','עַיִן','אֹזֶן','אַף','פֶּה','שֵׁן','שֵׂעָר','בֶּטֶן','גַּב','אֶצְבַּע']},
+  colors:{label:'צבעים ותיאורים',emoji:'🎨',words:['אָדֹם','כָּחֹל','יָרֹק','צָהֹב','לָבָן','שָׁחוֹר','וָרֹד','כָּתֹם','סָגֹל','גָּדוֹל','קָטָן','גָּבוֹהַ','נָמוּך','חַם','קַר','יָפֶה','שָׂמֵחַ','עָצוּב','שָׁלֵו']},
+  actions:{label:'פעולות ומספרים',emoji:'🏃',words:['אֶחָד','שְׁתַּיִם','שָׁלוֹש','אַרְבַּע','חָמֵש','שֵׁש','שֶׁבַע','שְׁמוֹנֶה','תֵּשַׁע','עֶשֶׂר','הוֹלֵך','רָץ','קוֹפֵץ','יוֹשֵׁב','יָשֵׁן','אוֹכֵל','שׁוֹתֶה','קוֹרֵא','כּוֹתֵב','מְשַׂחֵק','שָׁר','רוֹקֵד','צוֹחֵק','בּוֹכֶה','לָרוּץ','לָלֶכֶת','לִקְפֹּץ','לִר��קֹד','לָשִׁיר','לֶאֱכֹל','לִשְׁתּוֹת','לִכְתֹּב','לִצְחֹק','לִישֹׁן','לְשַׂחֵק','לְצַיֵּר','לִקְרֹא','לְסַדֵּר']},
+  transport:{label:'תחבורה ובילוי',emoji:'🚗',words:['מְכוֹנִית','אוֹפַנַּיִם','רַכֶּבֶת','מָטוֹס','סְפִינָה','אוֹטוֹבּוּס','כַּדּוּר','צַעֲצוּעַ','בֻּבָּה','כֶּתֶר','כּוֹבַע','חוּלְצָה','מִכְנָסַיִם','שִׂמְלָה','נַעַל','גֶּרֶב','כֶּסֶף','מַתָּנָה','חַג','בֹּקֶר','עֶרֶב','לַיְלָה','הַיּוֹם','מָחָר','עַכְשָׁו']}
+};
+const AVATARS=[{id:'fox',emoji:'🦊',name:'שועל'},{id:'cat',emoji:'🐱',name:'חתול'},{id:'unicorn',emoji:'🦄',name:'חד-קרן'},{id:'robot',emoji:'🤖',name:'רובוט'},{id:'dino',emoji:'🦖',name:'דינוזאור'},{id:'rabbit',emoji:'🐰',name:'ארנב'}];
+const PRAISE={boy:['אתה אלוף העולם! 🌟','כל הכבוד, אלוף! 🏆','איזה יופי, הצלחת! 🎉','אתה מצליח נהדר! 🚀','תשובה מצוינת! 👏','איזה מוח חריף יש לך! 🧠','אתה פשוט תותח! 💪','כל פעם אתה משתפר! ✨','איזה כיף, צדקת! 😄','המסלול מתקדם בזכותך! 🗺️'],girl:['את אלופת העולם! 🌟','כל הכבוד, אלופה! 🏆','איזה יופי, הצלחת! 🎉','את מצליחה נהדר! 🚀','תשובה מצוינת! 👏','איזה מוח חריף יש לך! 🧠','את פשוט תותחית! 💪','כל פעם את משתפרת! ✨','איזה כיף, צדקת! 😄','המסלול מתקדם בזכותך! 🗺️']};
+const TRY_AGAIN={boy:['לא נורא, אתה מסוגל! נסה שוב 💛','כמעט! תקשיב שוב ונסה 😊','טעות עוזרת לנו ללמוד. נסה שוב! 🌱'],girl:['לא נורא, את מסוגלת! נסי שוב 💛','כמעט! הקשיבי שוב ונסי 😊','טעות עוזרת לנו ללמוד. נסי שוב! 🌱']};
+const state={gender:'boy',avatar:AVATARS[0].id,categories:[]};
 let stats={start:Date.now(),attempts:0,totalAns:0,totalCorrect:0,totalWrong:0,mistakeMap:{},logs:[]};
-let st={};
-const app=document.getElementById('app');
-
+let st={};const app=document.getElementById('app');
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-
-let hebrewVoice=null;
-function loadVoices(){
-  const voices=window.speechSynthesis.getVoices();
-  hebrewVoice=voices.find(v=>v.lang==='he-IL')||voices.find(v=>v.lang && v.lang.startsWith('he'));
-}
-if('speechSynthesis' in window){ window.speechSynthesis.onvoiceschanged=loadVoices; loadVoices(); }
-
-function speak(word){
-  if(!('speechSynthesis' in window)){ alert('הדפדפן שלך לא תומך בהשמעת קול'); return; }
-  window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(word);
-  u.lang='he-IL'; u.rate=0.7;
-  if(hebrewVoice) u.voice=hebrewVoice;
-  window.speechSynthesis.speak(u);
-}
-
-function startScreen(){
-  app.innerHTML=`<p style="font-size:1.1rem">לוחצים על הכפתור, שומעים מילה, ובוחרים אותה מבין ארבע אפשרויות.<br>מותר לטעות עד 5 פעמים. בהצלחה!</p>
-  <button class="big-btn" onclick="newGame()">בואו נתחיל! 🚀</button>`;
-}
-
-function newGame(){
-  stats.attempts++;
-  st={pool:shuffle(WORDS).slice(0,15),idx:0,mistakes:0,firstTry:0,curOptions:[],attemptStart:Date.now(),answeredThisQOK:true};
-  renderQuestion();
-}
-
-function renderQuestion(){
-  const word=st.pool[st.idx];
-  const distractors=shuffle(WORDS.filter(w=>w!==word)).slice(0,3);
-  st.curOptions=shuffle([word,...distractors]);
-  st.answeredThisQOK=true;
-  const hearts='❤️'.repeat(5-st.mistakes)+'🖤'.repeat(st.mistakes);
-  app.innerHTML=`
-  <div class="topbar"><span>שאלה ${st.idx+1} מתוך 15</span><span class="hearts">${hearts}</span></div>
-  <div class="progress"><div style="width:${(st.idx/15)*100}%"></div></div>
-  <button class="word-btn" onclick="speak('${word}')" title="השמע שוב">🔊</button>
-  <div class="options">${st.curOptions.map(o=>`<button class="opt" data-w="${o}" onclick="choose(this,'${word}')">${o}</button>`).join('')}</div>
-  <div class="msg" id="msg"></div>
-  <div id="nextArea"></div>`;
-  speak(word);
-}
-
-function choose(btn,correctWord){
-  const msg=document.getElementById('msg');
-  const chosen=btn.getAttribute('data-w');
-  stats.totalAns++;
-  if(chosen===correctWord){
-    stats.totalCorrect++;
-    btn.classList.add('correct');
-    document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
-    if(st.answeredThisQOK)st.firstTry++;
-    msg.className='msg good';
-    msg.textContent=pick(['כל הכבוד! 🌟','מעולה!! 🎉','נכון מאוד!! 👏','איזה כיף, צדקת! 😄']);
-    st.idx++;
-    const isLast=st.idx>=15;
-    document.getElementById('nextArea').innerHTML=
-      `<button class="big-btn" onclick="${isLast?'finishSuccess()':'renderQuestion()'}">${isLast?'לתוצאות 🏁':'למילה הבאה ➡️'}</button>`;
-  }else{
-    stats.totalWrong++;
-    stats.mistakeMap[correctWord]=(stats.mistakeMap[correctWord]||0)+1;
-    st.answeredThisQOK=false;
-    st.mistakes++;
-    btn.classList.add('wrong');
-    document.querySelectorAll('.hearts').forEach(h=>h.textContent='❤️'.repeat(5-st.mistakes)+'🖤'.repeat(st.mistakes));
-    if(st.mistakes>=5){
-      msg.className='msg bad';
-      msg.textContent='זה בסדר גמור, כולם טועים! 💪';
-      stats.logs.push({completed:false,mistakes:st.mistakes,firstTry:st.firstTry,q:st.idx+1,dur:Date.now()-st.attemptStart});
-      document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
-      document.getElementById('nextArea').innerHTML=`<button class="big-btn" onclick="newGame()">מתחילים מחדש 🔄</button>`;
-    }else{
-      msg.className='msg bad';
-      msg.textContent=pick(['לא נורא, נסה שוב! 💛','כמעט! תקשיב שוב ותנסה 😊','אתה מסוגל, נסה עוד פעם! 🙂']);
-      btn.disabled=true;
-    }
-  }
-}
 function pick(a){return a[Math.floor(Math.random()*a.length)];}
-
-function finishSuccess(){
-  stats.logs.push({completed:true,mistakes:st.mistakes,firstTry:st.firstTry,q:15,dur:Date.now()-st.attemptStart});
-  renderReport();
+function startScreen(){
+ app.innerHTML=`<h2>בוחרים איך יוצאים להרפתקה! 🗺️</h2><p>בחרו דמות, לשון פנייה ושלושה נושאי מילים.</p>
+ <h3 class="group-title">מי יוצא/ת למסע?</h3><div class="choices">${AVATARS.map(a=>`<button type="button" class="choice avatar-choice ${state.avatar===a.id?'selected':''}" aria-pressed="${state.avatar===a.id}" onclick="setAvatar('${a.id}')" title="${a.name}">${a.emoji}<small>${a.name}</small></button>`).join('')}</div>
+ <h3 class="group-title">איך לפנות אליך?</h3><div class="choices"><button type="button" class="choice ${state.gender==='boy'?'selected':''}" aria-pressed="${state.gender==='boy'}" onclick="setGender('boy')">👦 תלמיד</button><button type="button" class="choice ${state.gender==='girl'?'selected':''}" aria-pressed="${state.gender==='girl'}" onclick="setGender('girl')">👧 תלמידה</button></div>
+ <h3 class="group-title">בחרו בדיוק 3 קבוצות מילים <span>(${state.categories.length}/3)</span></h3><div class="category-grid">${Object.entries(WORD_GROUPS).map(([key,g])=>`<button type="button" class="category ${state.categories.includes(key)?'selected':''}" aria-pressed="${state.categories.includes(key)}" onclick="toggleCategory('${key}')">${g.emoji} ${g.label}<small>${g.words.length} מילים</small></button>`).join('')}</div>
+ <p class="hint" id="setupHint" aria-live="polite">בחרו שלוש קבוצות כדי להתחיל.</p><button class="big-btn" id="startBtn" onclick="newGame()" ${state.categories.length!==3?'disabled':''}>יוצאים לדרך! 🚀</button>`;
 }
-
+function setAvatar(id){state.avatar=id;startScreen();}
+function setGender(gender){state.gender=gender;startScreen();}
+function toggleCategory(key){if(state.categories.includes(key)){state.categories=state.categories.filter(x=>x!==key);}else if(state.categories.length<3){state.categories.push(key);}startScreen();}
+function selectedWords(){return [...new Set(state.categories.flatMap(key=>WORD_GROUPS[key].words))];}
+function newGame(){
+ const words=selectedWords();if(state.categories.length!==3||words.length<15){startScreen();return;}
+ stats.attempts++;st={pool:shuffle(words).slice(0,15),idx:0,mistakes:0,firstTry:0,curOptions:[],attemptStart:Date.now(),answeredThisQOK:true,locked:false,ended:false};renderQuestion();
+}
+function renderTrail(){const avatar=AVATARS.find(a=>a.id===state.avatar)||AVATARS[0];return `<div class="trail" role="img" aria-label="מסלול: ${st.idx} מתוך 15 צעדים הושלמו">${Array.from({length:15},(_,i)=>`<div class="stop ${i<st.idx?'done':''} ${i===st.idx?'here':''}" aria-label="תחנה ${i+1}${i===st.idx?', הדמות כאן':''}">${i===st.idx?avatar.emoji:i<st.idx?'⭐':String(i+1)}</div>`).join('')}</div>`;}
+function renderQuestion(){
+ const word=st.pool[st.idx];if(!word||st.ended)return;st.curOptions=shuffle([word,...shuffle(selectedWords().filter(w=>w!==word)).slice(0,3)]);st.answeredThisQOK=true;st.locked=false;
+ const hearts='❤️'.repeat(Math.max(0,5-st.mistakes))+'🖤'.repeat(st.mistakes);const avatar=AVATARS.find(a=>a.id===state.avatar)||AVATARS[0];
+ app.innerHTML=`<div class="topbar"><span>${avatar.emoji} שאלה ${st.idx+1} מתוך 15</span><span class="hearts" aria-label="נותרו ${5-st.mistakes} ניסיונות">${hearts}</span></div><div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="15" aria-valuenow="${st.idx}"><div style="width:${(st.idx/15)*100}%"></div></div>${renderTrail()}<button type="button" class="word-btn" onclick="speakCurrent()" aria-label="השמעת המילה שוב">🔊</button><div class="options">${st.curOptions.map((o,i)=>`<button type="button" class="opt" data-index="${i}" onclick="choose(this)">${o}</button>`).join('')}</div><div class="msg" id="msg" aria-live="assertive"></div><div id="nextArea"></div>`;speak(word);
+}
+let hebrewVoice=null;
+function loadVoices(){if(!('speechSynthesis'in window))return;const voices=window.speechSynthesis.getVoices();hebrewVoice=voices.find(v=>v.lang==='he-IL')||voices.find(v=>v.lang&&v.lang.toLowerCase().startsWith('he'))||null;}
+if('speechSynthesis'in window){window.speechSynthesis.onvoiceschanged=loadVoices;loadVoices();}
+function speak(word){if(!('speechSynthesis'in window))return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(word);u.lang='he-IL';u.rate=.7;if(hebrewVoice)u.voice=hebrewVoice;window.speechSynthesis.speak(u);}
+function speakCurrent(){if(st.pool[st.idx])speak(st.pool[st.idx]);}
+function choose(btn){if(st.locked||st.ended)return;const chosen=st.curOptions[Number(btn.dataset.index)],correctWord=st.pool[st.idx],msg=document.getElementById('msg');if(!msg)return;stats.totalAns++;
+ if(chosen===correctWord){st.locked=true;stats.totalCorrect++;btn.classList.add('correct');document.querySelectorAll('.opt').forEach(b=>b.disabled=true);if(st.answeredThisQOK)st.firstTry++;msg.className='msg good';msg.textContent=pick(PRAISE[state.gender]);st.idx++;const isLast=st.idx>=15;document.getElementById('nextArea').innerHTML=`<button type="button" class="big-btn" onclick="${isLast?'finishSuccess()':'renderQuestion()'}">${isLast?'לקו הסיום! 🏁':'ממשיכים במסלול ➡️'}</button>`;
+ }else{stats.totalWrong++;stats.mistakeMap[correctWord]=(stats.mistakeMap[correctWord]||0)+1;st.answeredThisQOK=false;st.mistakes++;btn.classList.add('wrong');btn.disabled=true;document.querySelector('.hearts').textContent='❤️'.repeat(Math.max(0,5-st.mistakes))+'🖤'.repeat(st.mistakes);if(st.mistakes>=5){st.locked=true;st.ended=true;msg.className='msg bad';msg.textContent='המסע נעצר כאן, אבל אפשר לנסות שוב! 💪';stats.logs.push({completed:false,mistakes:st.mistakes,firstTry:st.firstTry,q:st.idx+1,dur:Date.now()-st.attemptStart});document.querySelectorAll('.opt').forEach(b=>b.disabled=true);document.getElementById('nextArea').innerHTML=`<button type="button" class="big-btn" onclick="newGame()">יוצאים למסע חדש 🔄</button>`;}else{msg.className='msg bad';msg.textContent=pick(TRY_AGAIN[state.gender]);}}
+}
+function finishSuccess(){if(st.ended)return;st.ended=true;stats.logs.push({completed:true,mistakes:st.mistakes,firstTry:st.firstTry,q:15,dur:Date.now()-st.attemptStart});renderReport();}
 function fmtDur(ms){const s=Math.round(ms/1000);return s<60?s+' שנ׳':Math.floor(s/60)+' דק׳ '+(s%60)+' שנ׳';}
-
-function renderReport(){
-  const totalDur=Date.now()-stats.start;
-  const acc=stats.totalAns? Math.round(100*stats.totalCorrect/stats.totalAns):0;
-  const hardWords=Object.entries(stats.mistakeMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const rows=stats.logs.map((l,i)=>`<tr><td>${i+1}</td><td>${l.completed?'הושלם ✅':'הופסק ⏹'}</td><td>${l.q}</td><td>${l.mistakes}</td><td>${l.firstTry}</td><td>${fmtDur(l.dur)}</td></tr>`).join('');
-  app.innerHTML=`
-  <div class="emoji">🏆</div>
-  <h2>סיימת את המשחק בהצלחה!</h2>
-  <p class="sub">דו"ח סיכום להורה</p>
-  <div class="stat-row"><span>זמן משחק כולל</span><b>${fmtDur(totalDur)}</b></div>
-  <div class="stat-row"><span>מספר ניסיונות (כולל התחלות מחדש)</span><b>${stats.attempts}</b></div>
-  <div class="stat-row"><span>סה"כ שאלות שנענו</span><b>${stats.totalAns}</b></div>
-  <div class="stat-row"><span>תשובות נכונות</span><b>${stats.totalCorrect}</b></div>
-  <div class="stat-row"><span>תשובות שגויות</span><b>${stats.totalWrong}</b></div>
-  <div class="stat-row"><span>אחוז הצלחה כולל</span><b>${acc}%</b></div>
-  <div class="stat-row"><span>ניחוש נכון בפעם הראשונה (בסבב המנצח)</span><b>${stats.logs[stats.logs.length-1].firstTry}/15</b></div>
-  ${hardWords.length?`<p class="sub" style="margin-top:14px">מילים שדרשו יותר תרגול:</p>
-  <table><tr><th>מילה</th><th>פעמים שטעה</th></tr>${hardWords.map(([w,c])=>`<tr><td>${w}</td><td>${c}</td></tr>`).join('')}</table>`:'<p style="margin-top:10px">🎉 ללא מילים קשות!</p>'}
-  <p class="sub" style="margin-top:14px">פירוט לפי ניסיון:</p>
-  <table><tr><th>#</th><th>סטטוס</th><th>שאלות</th><th>טעויות</th><th>נכון-ראשון</th><th>משך</th></tr>${rows}</table>
-  <button class="big-btn" onclick="location.reload()">שחקו שוב מההתחלה 🔄</button>`;
-}
-
+function renderReport(){const totalDur=Date.now()-stats.start,acc=stats.totalAns?Math.round(100*stats.totalCorrect/stats.totalAns):0,hardWords=Object.entries(stats.mistakeMap).sort((a,b)=>b[1]-a[1]).slice(0,8),rows=stats.logs.map((l,i)=>`<tr><td>${i+1}</td><td>${l.completed?'הושלם ✅':'הופסק ⏹'}</td><td>${l.q}</td><td>${l.mistakes}</td><td>${l.firstTry}</td><td>${fmtDur(l.dur)}</td></tr>`).join(''),avatar=AVATARS.find(a=>a.id===state.avatar)||AVATARS[0];app.innerHTML=`<div class="emoji">🏆</div><h2>הגעת לקו הסיום! ${avatar.emoji}</h2><p class="sub">איזה מסע נהדר עשית!</p><div class="stat-row"><span>זמן משחק כולל</span><b>${fmtDur(totalDur)}</b></div><div class="stat-row"><span>מספר ניסיונות</span><b>${stats.attempts}</b></div><div class="stat-row"><span>שאלות שנענו</span><b>${stats.totalAns}</b></div><div class="stat-row"><span>תשובות נכונות</span><b>${stats.totalCorrect}</b></div><div class="stat-row"><span>תשובות שגויות</span><b>${stats.totalWrong}</b></div><div class="stat-row"><span>אחוז הצלחה</span><b>${acc}%</b></div><div class="stat-row"><span>נכון בפעם הראשונה במסע האחרון</span><b>${st.firstTry}/15</b></div>${hardWords.length?`<p class="sub">מילים שכדאי לתרגל שוב:</p><table><tr><th>מילה</th><th>טעויות</th></tr>${hardWords.map(([w,c])=>`<tr><td>${w}</td><td>${c}</td></tr>`).join('')}</table>`:'<p>🎉 לא היו מילים שדרשו ניחוש נוסף!</p>'}<p class="sub">פירוט לפי מסע:</p><table><tr><th>#</th><th>סטטוס</th><th>שאלות</th><th>טעויות</th><th>נכון ראשון</th><th>משך</th></tr>${rows}</table><button type="button" class="big-btn" onclick="startScreen()">בוחרים מסלול חדש 🔄</button>`;}
 startScreen();
 </script>
 </body>
