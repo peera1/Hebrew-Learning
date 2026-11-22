@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>סֵפֶר הַקְּרִיאָה שֶׁלִּי - כִּתָּה א׳</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts with crisp Hebrew & Nikud support -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Varela+Round&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Base typography optimized for 1st-grade Hebrew Nikud legibility */
+    body {
+      font-family: 'Rubik', 'Varela Round', sans-serif;
+      background: linear-gradient(135deg, #e0f2fe 0%, #fef9c3 50%, #fce7f3 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Generous line-height & rendering so Nikud marks (Kamatz, Chirik, Cholam, Dagesh) NEVER clip */
+    .nikud-text {
+      font-family: 'Rubik', 'Varela Round', sans-serif;
+      line-height: 2.35;
+      letter-spacing: 0.015em;
+      font-feature-settings: "kern" 1, "mark" 1, "mkmk" 1;
+    }
+
+    /* Interactive word pill styling */
+    .story-word {
+      display: inline-block;
+      padding: 0.08em 0.24em;
+      margin: 0.05em 0.06em;
+      border-radius: 0.65rem;
+      cursor: pointer;
+      transition: transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  background-color 0.2s ease,
+                  box-shadow 0.2s ease,
+                  color 0.2s ease;
+    }
+
+    .story-word:hover {
+      background-color: #fef08a;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 4px 10px rgba(234, 179, 8, 0.22);
+    }
+
+    .story-word:active {
+      transform: scale(0.97);
+    }
+
+    /* Highlighted word while spoken aloud */
+    .story-word.speaking {
+      background-color: #fde047;
+      color: #1e3a8a;
+      transform: translateY(-3px) scale(1.08);
+      box-shadow: 0 6px 16px rgba(250, 204, 21, 0.55);
+      font-weight: 700;
+    }
+
+    /* Tactile 3D-style kid-friendly buttons */
+    .btn-3d {
+      transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.15s ease;
+    }
+    .btn-3d:active {
+      transform: translateY(4px);
+    }
+
+    /* Floating star & celebration animations */
+    @keyframes popIn {
+      0% { transform: scale(0.4) rotate(-12deg); opacity: 0; }
+      70% { transform: scale(1.15) rotate(6deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    .animate-pop-in {
+      animation: popIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes pulseSound {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.14); }
+    }
+    .animate-sound {
+      animation: pulseSound 0.85s infinite ease-in-out;
+    }
+
+    /* Storybook paper subtle lines */
+    .storybook-card {
+      background-color: #ffffff;
+      background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+      background-size: 24px 24px;
+      box-shadow: 0 18px 40px -12px rgba(30, 58, 138, 0.16),
+                  0 0 0 4px #ffffff,
+                  0 0 0 8px #bae6fd;
+    }
+
+    /* Custom scrollbar for story tabs */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Confetti canvas overlay */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 60;
+    }
+  </style>
+</head>
+<body class="text-slate-800 flex flex-col justify-between">
+
+  <!-- Confetti Overlay for Celebrations -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Toast / Status Message Banner (Replaces alert) -->
+  <div id="toast-banner" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden transition-all duration-300">
+    <div id="toast-content" class="bg-slate-900/95 text-white px-6 py-3 rounded-full shadow-2xl text-base sm:text-lg font-medium flex items-center gap-2 border-2 border-amber-300">
+      <span id="toast-icon">✨</span>
+      <span id="toast-text">הודעה</span>
+    </div>
+  </div>
+
+  <!-- Top Header: Playful Title, Star Counter & Parent Button -->
+  <header class="w-full max-w-4xl mx-auto px-4 pt-4 pb-2">
+    <div class="bg-white/90 backdrop-blur-md rounded-3xl px-4 py-3 sm:px-6 sm:py-4 shadow-md border-2 border-sky-200 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand / App Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-amber-300 to-orange-400 flex items-center justify-center text-2xl sm:text-3xl shadow-inner border-2 border-white">
+          🦉
+        </div>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-extrabold text-sky-900 leading-tight">
+            סֵפֶר הַקְּרִיאָה שֶׁלִּי
+          </h1>
+          <p class="text-xs sm:text-sm text-sky-700 font-medium">
+            קוֹרְאִים בְּעַצְמֵנוּ • כִּתָּה א׳ 🌟
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Controls: Star Reward Badge & Parent Add Story Button -->
+      <div class="flex items-center gap-2 sm:gap-3 mr-auto sm:mr-0">
+        <!-- Star Counter -->
+        <div id="star-badge" class="flex items-center gap-2 bg-amber-100 border-2 border-amber-300 px-3.5 py-2 rounded-2xl shadow-sm" title="הַכּוֹכָבִים שֶׁצָּבַרְתָּ">
+          <span class="text-xl sm:text-2xl">⭐</span>
+          <div class="flex flex-col leading-none">
+            <span id="star-count" class="text-lg sm:text-xl font-extrabold text-amber-800">0</span>
+            <span class="text-[11px] font-bold text-amber-700">כּוֹכָבִים</span>
+          </div>
+        </div>
+
+        <!-- Parent Mode Toggle Button -->
+        <button
+          id="open-parent-modal-btn"
+          type="button"
+          class="btn-3d bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3.5 py-2.5 sm:px-4 sm:py-3 rounded-2xl shadow-[0_4px_0_#312e81] flex items-center gap-2 text-sm sm:text-base cursor-pointer"
+        >
+          <span class="text-lg">➕</span>
+          <span>הוֹסֵף סִפּוּר</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="w-full max-w-4xl mx-auto px-4 py-3 flex-1 flex flex-col gap-4">
+
+    <!-- Story Selector Strip -->
+    <section aria-label="בחירת סיפור" class="w-full">
+      <div id="story-tabs" class="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1 px-1">
+        <!-- Story pills injected dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- Main Storybook Card -->
+    <section class="storybook-card rounded-[2rem] p-5 sm:p-8 md:p-10 flex-1 flex flex-col justify-between relative transition-all">
+      
+      <!-- Story Header Bar -->
+      <div class="flex flex-wrap items-center justify-between gap-2 pb-4 mb-4 border-b-2 border-dashed border-sky-200">
+        <div class="flex items-center gap-2.5">
+          <span id="story-emoji" class="text-3xl sm:text-4xl">📖</span>
+          <div>
+            <h2 id="story-title" class="text-xl sm:text-2xl font-extrabold text-sky-950">
+              סִפּוּר 1: תָּמָר וּבָרָק
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium">
+              💡 לַחַץ עַל כָּל מִלָּה כְּדֵי לִשְׁמֹעַ אוֹתָהּ בְּנִפְרָד
+            </p>
+          </div>
+        </div>
+
+        <!-- Completed Checkmark Pill (shown if child already completed this story) -->
+        <div id="story-completed-badge" class="hidden items-center gap-1.5 bg-emerald-100 text-emerald-800 border-2 border-emerald-300 px-3.5 py-1.5 rounded-full text-sm font-bold animate-pop-in">
+          <span>🏆</span>
+          <span>קָרָאתִי אֶת הַסִּפּוּר הַזֶּה!</span>
+        </div>
+      </div>
+
+      <!-- The Vocalized Story Paragraph Stage -->
+      <div class="my-auto py-3 sm:py-6 flex items-center justify-center">
+        <div
+          id="story-content"
+          class="nikud-text w-full text-right text-3xl sm:text-4xl md:text-[2.65rem] font-semibold text-slate-900 tracking-wide"
+        >
+          <!-- Interactive words and lines rendered here -->
+        </div>
+      </div>
+
+      <!-- Bottom Helper Tip & Font Size Controls -->
+      <div class="pt-4 mt-4 border-t-2 border-dashed border-sky-100 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500">
+        <div class="flex items-center gap-2">
+          <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+          <span class="font-medium">קֹדֶם קוֹרְאִים בְּעַצְמֵנוּ, וְאִם צָרִיךְ עֶזְרָה – לוֹחֲצִים לְמַטָּה!</span>
+        </div>
+
+        <!-- Font size adjuster for comfortable reading -->
+        <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <button
+            id="font-smaller-btn"
+            type="button"
+            aria-label="הקטן כתב"
+            class="px-2.5 py-1 rounded-lg hover:bg-white font-bold text-slate-700 text-sm transition cursor-pointer"
+          >
+            א-
+          </button>
+          <span class="text-xs text-slate-400 font-bold px-1">גֹּדֶל</span>
+          <button
+            id="font-larger-btn"
+            type="button"
+            aria-label="הגדל כתב"
+            class="px-2.5 py-1 rounded-lg hover:bg-white font-bold text-slate-700 text-base transition cursor-pointer"
+          >
+            א+
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Primary Action Bar (Bottom Reading & Audio Controls) -->
+    <section aria-label="כפתורי קריאה והקראה" class="w-full pb-4">
+      <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-stretch">
+        
+        <!-- 1. Primary Goal Button: "I Read It Myself!" -->
+        <button
+          id="i-read-myself-btn"
+          type="button"
+          class="sm:col-span-6 btn-3d bg-gradient-to-b from-emerald-400 to-emerald-600 hover:from-emerald-500 hover:to-emerald-700 text-white rounded-3xl p-4 sm:p-5 shadow-[0_6px_0_#065f46] border-2 border-emerald-300 flex items-center justify-center gap-3 cursor-pointer"
+        >
+          <span class="text-3xl sm:text-4xl">🌟</span>
+          <div class="text-right">
+            <div class="text-xl sm:text-2xl font-extrabold leading-tight">קָרָאתִי בְּעַצְמִי!</div>
+            <div class="text-xs sm:text-sm text-emerald-100 font-medium">קַבֵּל כּוֹכָב וַעֲבֹר לַסִּפּוּר הַבָּא</div>
+          </div>
+        </button>
+
+        <!-- 2. Audio Assistance Button: "Read To Me" -->
+        <button
+          id="read-aloud-btn"
+          type="button"
+          class="sm:col-span-4 btn-3d bg-gradient-to-b from-sky-400 to-blue-600 hover:from-sky-500 hover:to-blue-700 text-white rounded-3xl p-4 sm:p-5 shadow-[0_6px_0_#1e3a8a] border-2 border-sky-300 flex items-center justify-center gap-3 cursor-pointer"
+        >
+          <span id="speaker-icon" class="text-3xl sm:text-4xl">🔊</span>
+          <div class="text-right">
+            <div id="read-aloud-label" class="text-xl sm:text-2xl font-extrabold leading-tight">הַקְרֵא לִי</div>
+            <div id="read-aloud-sub" class="text-xs sm:text-sm text-sky-100 font-medium">הַקְשֵׁב לַסִּפּוּר</div>
+          </div>
+        </button>
+
+        <!-- 3. Speed Toggle Button (Normal vs Slow for 1st Graders) -->
+        <button
+          id="speed-toggle-btn"
+          type="button"
+          class="sm:col-span-2 btn-3d bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-3xl p-3 sm:p-4 shadow-[0_6px_0_#d97706] border-2 border-amber-300 flex sm:flex-col items-center justify-center gap-1.5 cursor-pointer"
+          title="שנה מהירות הקראה"
+        >
+          <span id="speed-icon" class="text-2xl sm:text-3xl">🐢</span>
+          <span id="speed-label" class="text-sm sm:text-base font-extrabold">קֶצֶב אִטִּי</span>
+        </button>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Celebration Modal when child clicks "קָרָאתִי בְּעַצְמִי!" -->
+  <div id="celebration-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-[2.2rem] max-w-md w-full p-7 text-center shadow-2xl border-4 border-amber-300 animate-pop-in relative">
+      <div class="text-6xl sm:text-7xl mb-3">🏆🌟🎉</div>
+      <h3 class="text-3xl font-extrabold text-sky-900 mb-2">
+        כָּל הַכָּבוֹד, גָּאוֹן!
+      </h3>
+      <p id="celebration-message" class="text-lg text-slate-600 font-medium mb-6 leading-relaxed">
+        קָרָאתָ אֶת הַסִּפּוּר בְּעַצְמְךָ וְזָכִיתָ בְּכוֹכָב חָדָשׁ!
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <button
+          id="next-story-modal-btn"
+          type="button"
+          class="btn-3d flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-lg py-3.5 px-6 rounded-2xl shadow-[0_5px_0_#065f46] cursor-pointer"
+        >
+          לַסִּפּוּר הַבָּא ⬅️
+        </button>
+        <button
+          id="close-celebration-btn"
+          type="button"
+          class="btn-3d bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-base py-3.5 px-5 rounded-2xl shadow-[0_5px_0_#cbd5e1] cursor-pointer"
+        >
+          הִשָּׁאֵר כָּאן
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parent Panel Modal: Add New Story -->
+  <div id="parent-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/65 backdrop-blur-sm p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border-2 border-indigo-200 animate-pop-in my-auto">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-200">
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl">👨‍👩‍👦</span>
+          <h3 class="text-xl sm:text-2xl font-extrabold text-indigo-950">
+            הוֹסָפַת סִפּוּר חָדָשׁ לְתִרְגּוּל
+          </h3>
+        </div>
+        <button
+          id="close-parent-modal-btn"
+          type="button"
+          class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center cursor-pointer"
+          aria-label="סגור"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form id="add-story-form" class="flex flex-col gap-4">
+        <!-- Story Title Input -->
+        <div>
+          <label for="new-story-title" class="block text-sm font-bold text-slate-700 mb-1">
+            כּוֹתֶרֶת הַסִּפּוּר (אופציונלי):
+          </label>
+          <input
+            id="new-story-title"
+            type="text"
+            dir="rtl"
+            placeholder="לְמָשָׁל: סִפּוּר 4: הַכֶּלֶב שֶׁל דָּנִי"
+            class="w-full rounded-2xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none px-4 py-2.5 text-lg font-medium"
+          />
+        </div>
+
+        <!-- Emoji Picker for Story -->
+        <div>
+          <label class="block text-sm font-bold text-slate-700 mb-1">
+            בְּחַר אִימוֹגִ׳י לַסִּפּוּר:
+          </label>
+          <div id="emoji-choices" class="flex flex-wrap gap-2">
+            <button type="button" data-emoji="📖" class="emoji-btn w-11 h-11 rounded-xl bg-indigo-100 border-2 border-indigo-500 text-2xl flex items-center justify-center cursor-pointer">📖</button>
+            <button type="button" data-emoji="🦁" class="emoji-btn w-11 h-11 rounded-xl bg-slate-100 border-2 border-transparent text-2xl flex items-center justify-center cursor-pointer">🦁</button>
+            <button type="button" data-emoji="🚀" class="emoji-btn w-11 h-11 rounded-xl bg-slate-100 border-2 border-transparent text-2xl flex items-center justify-center cursor-pointer">🚀</button>
+            <button type="button" data-emoji="🐶" class="emoji-btn w-11 h-11 rounded-xl bg-slate-100 border-2 border-transparent text-2xl flex items-center justify-center cursor-pointer">🐶</button>
+            <button type="button" data-emoji="🌈" class="emoji-btn w-11 h-11 rounded-xl bg-slate-100 border-2 border-transparent text-2xl flex items-center justify-center cursor-pointer">🌈</button>
+            <button type="button" data-emoji="⚽" class="emoji-btn w-11 h-11 rounded-xl bg-slate-100 border-2 border-transparent text-2xl flex items-center justify-center cursor-pointer">⚽</button>
+            <button type="button" data-emoji="🍦" class="emoji-btn w-11 h-11 rounded-xl bg-slate-100 border-2 border-transparent text-2xl flex items-center justify-center cursor-pointer">🍦</button>
+          </div>
+        </div>
+
+        <!-- Story Textarea -->
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label for="new-story-text" class="block text-sm font-bold text-slate-700">
+              תֹּכֶן הַסִּפּוּר (3–4 מִשְׁפָּטִים מְנֻקָּדִים):
+            </label>
+            <span class="text-xs text-indigo-600 font-semibold">תּוֹמֵךְ בְּנִקּוּד מָלֵא ✨</span>
+          </div>
+          <textarea
+            id="new-story-text"
+            rows="4"
+            dir="rtl"
+            required
+            placeholder="הַדְבֵּק אוֹ כְּתֹב כָּאן אֶת הַמִּשְׁפָּטִים...&#10;לְמָשָׁל:&#10;דָּנִי הָלַךְ לַגַּן.&#10;הוּא רָאָה כַּדּוּר גָּדוֹל."
+            class="nikud-text w-full rounded-2xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none p-4 text-2xl font-medium leading-relaxed"
+          ></textarea>
+          <p class="text-xs text-slate-500 mt-1">
+            טיפ להורים: אפשר להדביק לכאן טקסט מנוקד (למשל מ״נקדן״ או מהצ׳אט), וכל מילה תהפוך אוטומטית ללחיצה ומדברת עבור הילד!
+          </p>
+        </div>
+
+        <!-- Submit & Manage Stories Actions -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <button
+            type="submit"
+            class="btn-3d flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-lg py-3 px-6 rounded-2xl shadow-[0_5px_0_#312e81] cursor-pointer"
+          >
+            שְׁמֹר וְהַצֵּג לַיֶּלֶד ✨
+          </button>
+          <button
+            id="reset-stories-btn"
+            type="button"
+            class="text-xs text-rose-600 hover:text-rose-800 underline font-semibold px-2 py-2 cursor-pointer"
+          >
+            אִפּוּס לְסִפּוּרֵי הַבְּרִירָה
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * =========================================================================
+     * 1. INITIAL DATA: 100% Vocalized (מְנֻקָּד) 1st-Grade Stories
+     * =========================================================================
+     */
+    const DEFAULT_STORIES = [
+      {
+        id: 'story-1',
+        title: 'סִפּוּר 1: תָּמָר וּבָרָק',
+        emoji: '🎵',
+        lines: [
+          'תָּמָר שָׁרָה.',
+          'בָּרָק לֹא שָׁר. בָּרָק שָׁתַק.',
+          'תָּמָר שָׁאֲלָה:',
+          '"בָּרָק, לָמָּה אַתָּה לֹא שָׁר?"'
+        ],
+        isCustom: false
+      },
+      {
+        id: 'story-2',
+        title: 'סִפּוּר 2: דָּנָה שָׁרָה',
+        emoji: '🌸',
+        lines: [
+          'דָּנָה קָמָה.',
+          'דָּנָה נָמָה.',
+          'דָּנָה בָּאָה.',
+          'דָּנָה שָׁרָה.'
+        ],
+        isCustom: false
+      },
+      {
+        id: 'story-3',
+        title: 'סִפּוּר 3: מַמְתָּק לְתָמָר',
+        emoji: '🍬',
+        lines: [
+          'אַבָּא שָׁר.',
+          'אִמָּא שָׁרָה.',
+          'תָּמָר אָכְלָה מַמְתָּק.'
+        ],
+        isCustom: false
+      }
+    ];
+
+    const STORAGE_KEYS = {
+      STORIES: 'grade1_hebrew_stories_v1',
+      STARS: 'grade1_hebrew_stars_v1',
+      COMPLETED: 'grade1_hebrew_completed_v1'
+    };
+
+    /**
+     * =========================================================================
+     * 2. APPLICATION STATE
+     * =========================================================================
+     */
+    let stories = [];
+    let currentStoryIndex = 0;
+    let starCount = 0;
+    let completedStoryIds = new Set();
+    let isSlowRate = true; // Default to gentle slower speed for 1st graders
+    let isSpeaking = false;
+    let selectedEmoji = '📖';
+    let fontScale = 1; // 0.85 to 1.3
+    let activeTimers = [];
+
+    /**
+     * =========================================================================
+     * 3. DOM ELEMENTS
+     * =========================================================================
+     */
+    const storyTabsEl = document.getElementById('story-tabs');
+    const storyTitleEl = document.getElementById('story-title');
+    const storyEmojiEl = document.getElementById('story-emoji');
+    const storyContentEl = document.getElementById('story-content');
+    const storyCompletedBadgeEl = document.getElementById('story-completed-badge');
+    const starCountEl = document.getElementById('star-count');
+
+    const iReadMyselfBtn = document.getElementById('i-read-myself-btn');
+    const readAloudBtn = document.getElementById('read-aloud-btn');
+    const readAloudLabel = document.getElementById('read-aloud-label');
+    const readAloudSub = document.getElementById('read-aloud-sub');
+    const speakerIcon = document.getElementById('speaker-icon');
+
+    const speedToggleBtn = document.getElementById('speed-toggle-btn');
+    const speedIcon = document.getElementById('speed-icon');
+    const speedLabel = document.getElementById('speed-label');
+
+    const fontSmallerBtn = document.getElementById('font-smaller-btn');
+    const fontLargerBtn = document.getElementById('font-larger-btn');
+
+    const celebrationModal = document.getElementById('celebration-modal');
+    const celebrationMessage = document.getElementById('celebration-message');
+    const nextStoryModalBtn = document.getElementById('next-story-modal-btn');
+    const closeCelebrationBtn = document.getElementById('close-celebration-btn');
+
+    const openParentModalBtn = document.getElementById('open-parent-modal-btn');
+    const parentModal = document.getElementById('parent-modal');
+    const closeParentModalBtn = document.getElementById('close-parent-modal-btn');
+    const addStoryForm = document.getElementById('add-story-form');
+    const newStoryTitleInput = document.getElementById('new-story-title');
+    const newStoryTextInput = document.getElementById('new-story-text');
+    const resetStoriesBtn = document.getElementById('reset-stories-btn');
+    const emojiButtons = document.querySelectorAll('.emoji-btn');
+
+    const toastBanner = document.getElementById('toast-banner');
+    const toastIcon = document.getElementById('toast-icon');
+    const toastText = document.getElementById('toast-text');
+
+    /**
+     * =========================================================================
+     * 4. STORAGE & INITIALIZATION
+     * =========================================================================
+     */
+    function loadState() {
+      try {
+        const savedStories = localStorage.getItem(STORAGE_KEYS.STORIES);
+        stories = savedStories ? JSON.parse(savedStories) : [...DEFAULT_STORIES];
+        if (!Array.isArray(stories) || stories.length === 0) {
+          stories = [...DEFAULT_STORIES];
+        }
+
+        const savedStars = localStorage.getItem(STORAGE_KEYS.STARS);
+        starCount = savedStars ? parseInt(savedStars, 10) || 0 : 0;
+
+        const savedCompleted = localStorage.getItem(STORAGE_KEYS.COMPLETED);
+        completedStoryIds = savedCompleted ? new Set(JSON.parse(savedCompleted)) : new Set();
+      } catch (err) {
+        console.warn('LocalStorage unavailable, using session defaults:', err);
+        stories = [...DEFAULT_STORIES];
+        starCount = 0;
+        completedStoryIds = new Set();
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEYS.STORIES, JSON.stringify(stories));
+        localStorage.setItem(STORAGE_KEYS.STARS, String(starCount));
+        localStorage.setItem(STORAGE_KEYS.COMPLETED, JSON.stringify([...completedStoryIds]));
+      } catch (err) {
+        console.warn('Could not save state:', err);
+      }
+    }
+
+    /**
+     * =========================================================================
+     * 5. WEB AUDIO SOUND EFFECTS (Gentle Chimes & Celebration Fanfare)
+     * =========================================================================
+     */
+    function playChime(type = 'pop') {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+
+        if (type === 'pop') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.12); // E5
+          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.19);
+        } else if (type === 'success') {
+          // Cheerful ascending C-E-G-C arpeggio
+          const notes = [523.25, 659.25, 783.99, 1046.50];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'triangle';
+            const start = now + idx * 0.11;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.18, start);
+            gain.gain.exponentialRampToValueAtTime(0.001, start + 0.45);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + 0.46);
+          });
+        }
+      } catch (e) {
+        // Ignore audio context restrictions if blocked
+      }
+    }
+
+    /**
+     * =========================================================================
+     * 6. TOAST NOTIFICATION HELPER
+     * =========================================================================
+     */
+    let toastTimeout = null;
+    function showToast(text, icon = '✨') {
+      toastText.textContent = text;
+      toastIcon.textContent = icon;
+      toastBanner.classList.remove('hidden');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toastBanner.classList.add('hidden');
+      }, 3000);
+    }
+
+    /**
+     * =========================================================================
+     * 7. RENDERING UI (Tabs & Interactive Nikud Story Stage)
+     * =========================================================================
+     */
+    function renderStoryTabs() {
+      storyTabsEl.innerHTML = '';
+
+      stories.forEach((story, index) => {
+        const isActive = index === currentStoryIndex;
+        const isDone = completedStoryIds.has(story.id);
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flex items-center shrink-0';
+
+        const tabBtn = document.createElement('button');
+        tabBtn.type = 'button';
+        tabBtn.className = isActive
+          ? 'btn-3d bg-sky-600 text-white font-extrabold px-4 py-2.5 rounded-2xl shadow-[0_4px_0_#075985] border-2 border-sky-300 flex items-center gap-2 text-base sm:text-lg cursor-pointer'
+          : 'btn-3d bg-white/90 hover:bg-white text-slate-700 font-bold px-4 py-2.5 rounded-2xl shadow-[0_3px_0_#cbd5e1] border-2 border-slate-200 flex items-center gap-2 text-base sm:text-lg cursor-pointer';
+
+        const shortLabel = `סִפּוּר ${index + 1}`;
+        tabBtn.innerHTML = `
+          <span>${story.emoji || '📖'}</span>
+          <span>${shortLabel}</span>
+          ${isDone ? '<span class="text-amber-300 text-sm">⭐</span>' : ''}
+        `;
+
+        tabBtn.addEventListener('click', () => {
+          stopSpeech();
+          playChime('pop');
+          currentStoryIndex = index;
+          renderAll();
+        });
+
+        wrapper.appendChild(tabBtn);
+
+        // Allow deleting custom stories added by parent
+        if (story.isCustom) {
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.title = 'מחק סיפור זה';
+          delBtn.className = 'mr-1 w-7 h-7 rounded-full bg-rose-100 hover:bg-rose-500 hover:text-white text-rose-600 text-xs font-bold flex items-center justify-center transition cursor-pointer';
+          delBtn.textContent = '✕';
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            deleteCustomStory(story.id);
+          });
+          wrapper.appendChild(delBtn);
+        }
+
+        storyTabsEl.appendChild(wrapper);
+      });
+    }
+
+    function renderCurrentStory() {
+      const story = stories[currentStoryIndex] || stories[0];
+      if (!story) return;
+
+      storyTitleEl.textContent = story.title;
+      storyEmojiEl.textContent = story.emoji || '📖';
+
+      if (completedStoryIds.has(story.id)) {
+        storyCompletedBadgeEl.classList.remove('hidden');
+        storyCompletedBadgeEl.classList.add('flex');
+      } else {
+        storyCompletedBadgeEl.classList.add('hidden');
+        storyCompletedBadgeEl.classList.remove('flex');
+      }
+
+      // Build line-by-line, word-by-word interactive DOM so every word can be tapped & highlighted
+      storyContentEl.innerHTML = '';
+      let globalWordIdx = 0;
+
+      story.lines.forEach((lineText) => {
+        const lineDiv = document.createElement('div');
+        lineDiv.className = 'mb-3 sm:mb-4 last:mb-0';
+
+        // Split by whitespace while preserving punctuation attached to words
+        const tokens = lineText.trim().split(/\s+/);
+        tokens.forEach((token) => {
+          if (!token) return;
+          const wordSpan = document.createElement('span');
+          wordSpan.className = 'story-word';
+          wordSpan.textContent = token;
+          wordSpan.dataset.wordIndex = String(globalWordIdx++);
+          wordSpan.setAttribute('role', 'button');
+          wordSpan.setAttribute('tabindex', '0');
+          wordSpan.setAttribute('aria-label', `הקרא מילה: ${token}`);
+
+          // Tap/click single word to pronounce it aloud!
+          wordSpan.addEventListener('click', () => {
+            speakSingleWord(token, wordSpan);
+          });
+
+          lineDiv.appendChild(wordSpan);
+          lineDiv.appendChild(document.createTextNode(' '));
+        });
+
+        storyContentEl.appendChild(lineDiv);
+      });
+
+      applyFontScale();
+    }
+
+    function applyFontScale() {
+      // Responsive clamp scaled smoothly by user preference
+      const baseRem = 2.25 * fontScale;
+      storyContentEl.style.fontSize = `clamp(${(1.65 * fontScale).toFixed(2)}rem, ${(4.6 * fontScale).toFixed(2)}vw, ${baseRem.toFixed(2)}rem)`;
+    }
+
+    function renderStars() {
+      starCountEl.textContent = String(starCount);
+    }
+
+    function renderAll() {
+      renderStars();
+      renderStoryTabs();
+      renderCurrentStory();
+    }
+
+    /**
+     * =========================================================================
+     * 8. TEXT-TO-SPEECH (Hebrew Web Speech API + Word Highlighting)
+     * =========================================================================
+     */
+    function getHebrewVoice() {
+      if (!('speechSynthesis' in window)) return null;
+      const voices = window.speechSynthesis.getVoices();
+      // Prefer native Hebrew voice (e.g., Carmit, Asaf, Google עברית)
+      return (
+        voices.find((v) => v.lang && v.lang.toLowerCase().includes('he')) ||
+        voices.find((v) => v.lang && v.lang.toLowerCase().includes('iw')) ||
+        null
+      );
+    }
+
+    // Ensure voices load asynchronously in Chrome/Safari
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        getHebrewVoice();
+      };
+    }
+
+    function clearWordHighlights() {
+      activeTimers.forEach((t) => clearTimeout(t));
+      activeTimers = [];
+      document.querySelectorAll('.story-word.speaking').forEach((el) => {
+        el.classList.remove('speaking');
+      });
+    }
+
+    function stopSpeech() {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      clearWordHighlights();
+      isSpeaking = false;
+      updateReadAloudButtonUI(false);
+    }
+
+    function updateReadAloudButtonUI(speaking) {
+      if (speaking) {
+        readAloudLabel.textContent = 'עֲצֹר הַקְרָאָה';
+        readAloudSub.textContent = 'לוֹחֲצִים לַעֲצִירָה';
+        speakerIcon.textContent = '⏹️';
+        speakerIcon.classList.add('animate-sound');
+        readAloudBtn.classList.remove('from-sky-400', 'to-blue-600');
+        readAloudBtn.classList.add('from-amber-500', 'to-orange-600');
+      } else {
+        readAloudLabel.textContent = 'הַקְרֵא לִי';
+        readAloudSub.textContent = 'הַקְשֵׁב לַסִּפּוּר';
+        speakerIcon.textContent = '🔊';
+        speakerIcon.classList.remove('animate-sound');
+        readAloudBtn.classList.remove('from-amber-500', 'to-orange-600');
+        readAloudBtn.classList.add('from-sky-400', 'to-blue-600');
+      }
+    }
+
+    /**
+     * Pronounce a single tapped word so a 1st grader can get unstuck on one word
+     */
+    function speakSingleWord(rawWord, wordEl) {
+      if (!('speechSynthesis' in window)) {
+        showToast('הַדַּפְדְּפָן לֹא תּוֹמֵךְ בְּהַקְרָאָה קוֹלִית', '🔇');
+        return;
+      }
+
+      stopSpeech();
+      wordEl.classList.add('speaking');
+
+      // Strip surrounding quotes/punctuation for cleaner single-word pronunciation
+      const cleanWord = rawWord.replace(/[.,!?"״׳:;()\-]/g, '').trim() || rawWord;
+      const utterance = new SpeechSynthesisUtterance(cleanWord);
+      utterance.lang = 'he-IL';
+      const heVoice = getHebrewVoice();
+      if (heVoice) utterance.voice = heVoice;
+      utterance.rate = isSlowRate ? 0.72 : 0.92;
+      utterance.pitch = 1.05;
+
+      utterance.onend = () => {
+        wordEl.classList.remove('speaking');
+      };
+      utterance.onerror = () => {
+        wordEl.classList.remove('speaking');
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    /**
+     * Read the entire story line-by-line with synchronized word highlighting
+     */
+    function speakFullStory() {
+      if (!('speechSynthesis' in window)) {
+        showToast('הַדַּפְדְּפָן שֶׁלְּךָ לֹא תּוֹמֵךְ בְּהַקְרָאָה קוֹלִית', '🔇');
+        return;
+      }
+
+      if (isSpeaking) {
+        stopSpeech();
+        return;
+      }
+
+      const story = stories[currentStoryIndex];
+      if (!story) return;
+
+      stopSpeech();
+      isSpeaking = true;
+      updateReadAloudButtonUI(true);
+
+      const allWordEls = Array.from(document.querySelectorAll('.story-word'));
+      const rate = isSlowRate ? 0.72 : 0.95;
+      const heVoice = getHebrewVoice();
+
+      // Queue each line sequentially for natural pauses between sentences
+      let wordCursor = 0;
+
+      story.lines.forEach((lineText, lineIdx) => {
+        const lineWords = lineText.trim().split(/\s+/).filter(Boolean);
+        const startIdx = wordCursor;
+        wordCursor += lineWords.length;
+
+        const utterance = new SpeechSynthesisUtterance(lineText);
+        utterance.lang = 'he-IL';
+        if (heVoice) utterance.voice = heVoice;
+        utterance.rate = rate;
+        utterance.pitch = 1.04;
+
+        utterance.onstart = () => {
+          if (!isSpeaking) return;
+          clearWordHighlights();
+
+          // Estimate per-word timing across this sentence
+          const msPerWord = isSlowRate ? 680 : 460;
+          lineWords.forEach((_, offset) => {
+            const targetEl = allWordEls[startIdx + offset];
+            if (!targetEl) return;
+            const timer = setTimeout(() => {
+              if (!isSpeaking) return;
+              document.querySelectorAll('.story-word.speaking').forEach((el) => el.classList.remove('speaking'));
+              targetEl.classList.add('speaking');
+            }, offset * msPerWord);
+            activeTimers.push(timer);
+          });
+        };
+
+        if (lineIdx === story.lines.length - 1) {
+          utterance.onend = () => {
+            isSpeaking = false;
+            clearWordHighlights();
+            updateReadAloudButtonUI(false);
+          };
+          utterance.onerror = () => {
+            isSpeaking = false;
+            clearWordHighlights();
+            updateReadAloudButtonUI(false);
+          };
+        }
+
+        window.speechSynthesis.speak(utterance);
+      });
+    }
+
+    /**
+     * =========================================================================
+     * 9. CELEBRATION CONFETTI & "I READ IT MYSELF" REWARD FLOW
+     * =========================================================================
+     */
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const colors = ['#facc15', '#34d399', '#38bdf8', '#f472b6', '#a78bfa', '#fb923c'];
+      const particles = Array.from({ length: 95 }, () => ({
+        x: Math.random() * canvas.width,
+        y: -20 - Math.random() * canvas.height * 0.4,
+        w: 8 + Math.random() * 8,
+        h: 6 + Math.random() * 6,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 5,
+        vy: 3 + Math.random() * 5,
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.2
+      }));
+
+      let frame = 0;
+      function animate() {
+        frame++;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.angle += p.spin;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        });
+
+        if (frame < 130) {
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+
+    function handleIndependentReadSuccess() {
+      stopSpeech();
+      playChime('success');
+      launchConfetti();
+
+      const story = stories[currentStoryIndex];
+      const alreadyCompleted = completedStoryIds.has(story.id);
+
+      starCount += 1;
+      completedStoryIds.add(story.id);
+      saveState();
+      renderAll();
+
+      celebrationMessage.textContent = alreadyCompleted
+        ? `קָרָאתָ שׁוּב אֶת הַסִּפּוּר בְּעַצְמְךָ! יֵשׁ לְךָ כְּבָר ${starCount} כּוֹכָבִים! ⭐`
+        : `מַדְהִים! קָרָאתָ אֶת הַסִּפּוּר בְּעַצְמְךָ וְזָכִיתָ בְּכוֹכָב חָדָשׁ (סַךְ הַכֹּל ${starCount} כּוֹכָבִים)! ⭐`;
+
+      celebrationModal.classList.remove('hidden');
+      celebrationModal.classList.add('flex');
+    }
+
+    /**
+     * =========================================================================
+     * 10. PARENT MODE: ADDING & MANAGING NEW STORIES
+     * =========================================================================
+     */
+    function deleteCustomStory(storyId) {
+      stories = stories.filter((s) => s.id !== storyId);
+      if (stories.length === 0) {
+        stories = [...DEFAULT_STORIES];
+      }
+      if (currentStoryIndex >= stories.length) {
+        currentStoryIndex = stories.length - 1;
+      }
+      saveState();
+      renderAll();
+      showToast('הַסִּפּוּר הוּסַר', '🗑️');
+    }
+
+    addStoryForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const rawText = newStoryTextInput.value.trim();
+      if (!rawText) return;
+
+      // Split into clean non-empty lines
+      const lines = rawText
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0);
+
+      if (lines.length === 0) return;
+
+      const nextNum = stories.length + 1;
+      const customTitle = newStoryTitleInput.value.trim() || `סִפּוּר ${nextNum}: סִפּוּר חָדָשׁ`;
+
+      const newStory = {
+        id: 'custom-' + Date.now(),
+        title: customTitle,
+        emoji: selectedEmoji,
+        lines,
+        isCustom: true
+      };
+
+      stories.push(newStory);
+      currentStoryIndex = stories.length - 1;
+      saveState();
+      renderAll();
+
+      // Reset form & close modal
+      newStoryTitleInput.value = '';
+      newStoryTextInput.value = '';
+      parentModal.classList.add('hidden');
+      parentModal.classList.remove('flex');
+
+      playChime('pop');
+      showToast('הַסִּפּוּר הֶחָדָשׁ נוֹסַף בְּהַצְלָחָה! 🎉', '📖');
+    });
+
+    resetStoriesBtn.addEventListener('click', () => {
+      stories = [...DEFAULT_STORIES];
+      currentStoryIndex = 0;
+      saveState();
+      renderAll();
+      parentModal.classList.add('hidden');
+      parentModal.classList.remove('flex');
+      showToast('סִפּוּרֵי הַבְּרִירָה שֻׁחְזְרוּ', '🔄');
+    });
+
+    emojiButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        selectedEmoji = btn.dataset.emoji || '📖';
+        emojiButtons.forEach((b) => {
+          b.classList.remove('bg-indigo-100', 'border-indigo-500');
+          b.classList.add('bg-slate-100', 'border-transparent');
+        });
+        btn.classList.remove('bg-slate-100', 'border-transparent');
+        btn.classList.add('bg-indigo-100', 'border-indigo-500');
+      });
+    });
+
+    /**
+     * =========================================================================
+     * 11. EVENT LISTENERS
+     * =========================================================================
+     */
+    iReadMyselfBtn.addEventListener('click', handleIndependentReadSuccess);
+    readAloudBtn.addEventListener('click', speakFullStory);
+
+    speedToggleBtn.addEventListener('click', () => {
+      isSlowRate = !isSlowRate;
+      playChime('pop');
+      if (isSlowRate) {
+        speedIcon.textContent = '🐢';
+        speedLabel.textContent = 'קֶצֶב אִטִּי';
+        showToast('הַקְרָאָה אִטִּית וּבְרוּרָה לְכִתָּה א׳ 🐢', '🐢');
+      } else {
+        speedIcon.textContent = '🐇';
+        speedLabel.textContent = 'קֶצֶב רָגִיל';
+        showToast('הַקְרָאָה בְּקֶצֶב רָגִיל 🐇', '🐇');
+      }
+      if (isSpeaking) {
+        stopSpeech();
+        speakFullStory();
+      }
+    });
+
+    fontSmallerBtn.addEventListener('click', () => {
+      fontScale = Math.max(0.8, +(fontScale - 0.08).toFixed(2));
+      applyFontScale();
+    });
+
+    fontLargerBtn.addEventListener('click', () => {
+      fontScale = Math.min(1.35, +(fontScale + 0.08).toFixed(2));
+      applyFontScale();
+    });
+
+    nextStoryModalBtn.addEventListener('click', () => {
+      celebrationModal.classList.add('hidden');
+      celebrationModal.classList.remove('flex');
+      currentStoryIndex = (currentStoryIndex + 1) % stories.length;
+      renderAll();
+    });
+
+    closeCelebrationBtn.addEventListener('click', () => {
+      celebrationModal.classList.add('hidden');
+      celebrationModal.classList.remove('flex');
+    });
+
+    openParentModalBtn.addEventListener('click', () => {
+      stopSpeech();
+      parentModal.classList.remove('hidden');
+      parentModal.classList.add('flex');
+    });
+
+    closeParentModalBtn.addEventListener('click', () => {
+      parentModal.classList.add('hidden');
+      parentModal.classList.remove('flex');
+    });
+
+    // Close modals when clicking backdrop
+    parentModal.addEventListener('click', (e) => {
+      if (e.target === parentModal) {
+        parentModal.classList.add('hidden');
+        parentModal.classList.remove('flex');
+      }
+    });
+
+    celebrationModal.addEventListener('click', (e) => {
+      if (e.target === celebrationModal) {
+        celebrationModal.classList.add('hidden');
+        celebrationModal.classList.remove('flex');
+      }
+    });
+
+    // Boot application on load
+    window.addEventListener('load', () => {
+      loadState();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
