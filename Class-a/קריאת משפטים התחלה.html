@@ -102,6 +102,18 @@
           'סַבָּא צָחַק.'
         ],
         isCustom: false
+      },
+      {
+        id: 'story-9',
+        title: 'סִפּוּר 9: בָּר רָאָה',
+        emoji: '👀',
+        lines: [
+          'בר ראה את שחר.',
+          'בר ראה את תמר.',
+          'בר ראה את ברק.',
+          'בר לא ראה את אילה.'
+        ],
+        isCustom: false
       }
     ];
 
@@ -115,7 +127,14 @@
         let updatedHtml = html.replace('    const STORAGE_KEYS = {', `${storyData}    const STORAGE_KEYS = {`);
         updatedHtml = updatedHtml.replace(
           '        stories = savedStories ? JSON.parse(savedStories) : [...DEFAULT_STORIES];',
-          `        const storedStories = savedStories ? JSON.parse(savedStories) : [...DEFAULT_STORIES];\n        stories = [...storedStories, ...EXTRA_STORIES.filter((extra) => !storedStories.some((story) => story.id === extra.id))];\n        stories = stories.map((story) => ({ ...story, lines: story.lines.flatMap((line) => (line.match(/[^.!?]+[.!?]?/g) || []).map((sentence) => sentence.trim()).filter(Boolean)) }));`
+          `        const storedStories = savedStories ? JSON.parse(savedStories) : [...DEFAULT_STORIES];
+        const firstStory = EXTRA_STORIES.find((extra) => extra.id === 'story-9');
+        const storedStoriesWithoutFirst = storedStories.filter((story) => story.id !== 'story-9');
+        stories = [
+          ...(firstStory ? [firstStory] : []),
+          ...storedStoriesWithoutFirst,
+          ...EXTRA_STORIES.filter((extra) => extra.id !== 'story-9' && !storedStoriesWithoutFirst.some((story) => story.id === extra.id))
+        ];`
         );
         document.open();
         document.write(updatedHtml);
