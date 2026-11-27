@@ -29,7 +29,7 @@
       color:#222c30;
     }
     main{
-      width:min(100%,840px);
+      width:min(100%,860px);
       background:var(--card);
       border-radius:24px;
       padding:28px;
@@ -158,7 +158,7 @@
     .board{
       margin-top:20px;
       display:grid;
-      grid-template-columns:1fr 350px;
+      grid-template-columns:1fr 380px;
       gap:20px;
       align-items:start;
     }
@@ -171,7 +171,7 @@
       border-radius:18px;
       background:linear-gradient(180deg,#ffffff,#fffcf7);
       border:2px solid var(--border);
-      min-height:275px;
+      min-height:285px;
     }
     .hint-pill{
       font-size:.88rem;
@@ -182,7 +182,7 @@
       margin-bottom:8px;
     }
     .letter{
-      font-size:7.5rem;
+      font-size:7.6rem;
       font-weight:800;
       line-height:1.15;
       color:#1f292d;
@@ -260,10 +260,10 @@
       align-items:center;
       justify-content:space-between;
       gap:14px;
-      padding:14px 18px;
-      border-radius:14px;
+      padding:14px 16px;
+      border-radius:16px;
       background:#fff;
-      border:2px solid #efe4d6;
+      border:2px solid #eadbc8;
       cursor:pointer;
       transition:transform .14s, box-shadow .14s, border-color .14s, background .14s;
     }
@@ -272,33 +272,55 @@
       border-color:var(--accent);
       box-shadow:0 8px 18px rgba(255,123,71,.14);
     }
+    .opt-name{
+      font-size:1.18rem;
+      font-weight:800;
+      color:#222c30;
+      white-space:nowrap;
+    }
     .opt-glyphs{
       display:flex;
       align-items:center;
-      gap:12px;
-      font-size:2.4rem;
-      font-weight:800;
-      line-height:1.15;
+      gap:8px;
+      line-height:1.1;
+    }
+    .marked-letter{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:64px;
+      min-height:74px;
+      padding:6px 10px 18px;
+      border-radius:12px;
+      background:#fff7eb;
+      border:2px solid #f2cfa6;
+      font-size:3rem;
+      font-weight:900;
+      color:#151d21;
+      text-shadow:0 1px 0 rgba(255,255,255,.9);
     }
     .opt-sep{
-      font-size:1.1rem;
-      color:#b8a794;
-      font-weight:600;
-    }
-    .opt-name{
-      font-size:1.15rem;
+      font-size:1.25rem;
+      color:#9a856c;
       font-weight:800;
-      color:#28343a;
     }
     .opt.correct{
       border-color:var(--good);
       background:var(--good-bg);
       box-shadow:0 8px 18px rgba(39,174,96,.15);
     }
+    .opt.correct .marked-letter{
+      background:#dcf7e7;
+      border-color:#58c786;
+    }
     .opt.wrong{
       border-color:var(--bad);
       background:var(--bad-bg);
       box-shadow:0 8px 18px rgba(231,76,60,.15);
+    }
+    .opt.wrong .marked-letter{
+      background:#fadbd8;
+      border-color:#ec7063;
     }
     .stats{
       margin-top:14px;
@@ -354,6 +376,7 @@
     @media (max-width:780px){
       .board{grid-template-columns:1fr;}
       .letter{font-size:5.8rem}
+      .marked-letter{min-width:58px;min-height:68px;font-size:2.7rem}
     }
   </style>
 </head>
@@ -410,7 +433,7 @@
               <option value="15">15</option>
             </select>
           </div>
-          <span style="color:var(--muted);font-size:.88rem">כל תשובה נכונה מקדמת צעד אחד</span>
+          <span style="color:var(--muted);font-size:.88rem">שאלות אקראיות · כל תשובה נכונה מקדמת צעד</span>
         </div>
       </div>
 
@@ -452,7 +475,7 @@
   <script>
     const letters = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','כ','ל','מ','נ','ס','ע','פ','צ','ק','ר','ש','ת'];
 
-    // Individual vowel sounds used for generating questions
+    // Individual vowel sounds used for random question generation
     const soundVowels = [
       { id: 'kamatz', name: 'קמץ', mark: '\u05B8', groupId: 'kamatz_patach' },
       { id: 'patach', name: 'פתח', mark: '\u05B7', groupId: 'kamatz_patach' },
@@ -562,7 +585,6 @@
       trackFillEl.style.width = `${pct}%`;
       questPercentEl.textContent = `${pct}% ליעד`;
 
-      // Calculate horizontal translation in RTL (moving leftward from right start toward left goal)
       const trackWidth = trackEl.clientWidth || 500;
       const charWidth = characterEl.offsetWidth || 36;
       const goalReserve = 96;
@@ -672,6 +694,7 @@
       const currentRoundEl = document.getElementById('round');
       if (currentRoundEl) currentRoundEl.textContent = currentRound;
 
+      // Fully random letter and random vowel sound each round
       const base = pickRandom(letters);
       const vowel = pickRandom(soundVowels);
       current = { letter: base, vowel };
@@ -717,6 +740,7 @@
             glyphsWrap.appendChild(sep);
           }
           const g = document.createElement('span');
+          g.className = 'marked-letter';
           g.textContent = makeLetterWithMark(letter, mark);
           glyphsWrap.appendChild(g);
         });
