@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>משחק ניקוד: פתח, קמץ, חיריק ושווא</title>
+  <title>משחק ניקוד: קמץ פתח, חיריק ושווא</title>
   <style>
     :root{
       --bg:#fff9f2;
@@ -29,7 +29,7 @@
       color:#222c30;
     }
     main{
-      width:min(100%,820px);
+      width:min(100%,840px);
       background:var(--card);
       border-radius:24px;
       padding:28px;
@@ -81,24 +81,84 @@
       border-radius:14px;
       font-weight:700;
     }
-    .progress-wrap{
-      width:100%;
-      height:10px;
-      background:#f3ece2;
-      border-radius:999px;
-      overflow:hidden;
+
+    /* Gamified Character Track */
+    .quest-box{
       margin-top:16px;
+      padding:14px 18px;
+      border-radius:18px;
+      background:linear-gradient(180deg,#f8fdff,#eef8ff);
+      border:2px solid #d7ecfa;
     }
-    .progress-bar{
-      height:100%;
+    .quest-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      font-size:.95rem;
+      color:#244766;
+      margin-bottom:10px;
+      flex-wrap:wrap;
+    }
+    .track{
+      position:relative;
+      height:54px;
+      background:#ffffff;
+      border:2px dashed #b8dcf5;
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      padding:0 14px;
+      overflow:hidden;
+    }
+    .track-fill{
+      position:absolute;
+      top:0;
+      bottom:0;
+      right:0;
       width:0%;
-      background:linear-gradient(90deg,#ff9a62,#ff6b3d);
-      transition:width .35s ease;
+      background:linear-gradient(90deg,#bce6ff,#78c9ff);
+      opacity:.45;
+      transition:width .45s cubic-bezier(.22,.8,.36,1);
     }
+    .character{
+      position:relative;
+      z-index:2;
+      font-size:2rem;
+      line-height:1;
+      transform:translateX(0);
+      transition:transform .45s cubic-bezier(.22,.8,.36,1);
+      filter:drop-shadow(0 3px 4px rgba(0,0,0,.12));
+    }
+    .character.hop{
+      animation:hopAnim .45s ease;
+    }
+    @keyframes hopAnim{
+      0%{transform:translateY(0) scale(1)}
+      45%{transform:translateY(-10px) scale(1.15)}
+      100%{transform:translateY(0) scale(1)}
+    }
+    .goal-flag{
+      margin-right:auto;
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-weight:800;
+      font-size:.9rem;
+      color:#1f4e78;
+      background:#fff7e0;
+      border:1.5px solid #f7d683;
+      padding:4px 10px;
+      border-radius:999px;
+    }
+
     .board{
       margin-top:20px;
       display:grid;
-      grid-template-columns:1fr 340px;
+      grid-template-columns:1fr 350px;
       gap:20px;
       align-items:start;
     }
@@ -107,14 +167,14 @@
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      padding:28px 20px;
+      padding:26px 20px;
       border-radius:18px;
       background:linear-gradient(180deg,#ffffff,#fffcf7);
       border:2px solid var(--border);
-      min-height:280px;
+      min-height:275px;
     }
     .hint-pill{
-      font-size:.9rem;
+      font-size:.88rem;
       color:var(--muted);
       background:#f8f4ee;
       padding:5px 12px;
@@ -132,7 +192,7 @@
       min-height:28px;
       margin-top:8px;
       font-weight:700;
-      font-size:1.05rem;
+      font-size:1.03rem;
       text-align:center;
     }
     .feedback.good{color:var(--good)}
@@ -188,7 +248,7 @@
     }
     .options{
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr;
       gap:12px;
       padding:14px;
       border-radius:18px;
@@ -197,11 +257,10 @@
     }
     .opt{
       display:flex;
-      flex-direction:column;
       align-items:center;
-      justify-content:center;
-      gap:4px;
-      padding:14px 10px;
+      justify-content:space-between;
+      gap:14px;
+      padding:14px 18px;
       border-radius:14px;
       background:#fff;
       border:2px solid #efe4d6;
@@ -209,19 +268,27 @@
       transition:transform .14s, box-shadow .14s, border-color .14s, background .14s;
     }
     .opt:hover:not(:disabled){
-      transform:translateY(-3px);
+      transform:translateY(-2px);
       border-color:var(--accent);
       box-shadow:0 8px 18px rgba(255,123,71,.14);
     }
-    .opt-glyph{
-      font-size:2.6rem;
+    .opt-glyphs{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:2.4rem;
       font-weight:800;
-      line-height:1.2;
+      line-height:1.15;
+    }
+    .opt-sep{
+      font-size:1.1rem;
+      color:#b8a794;
+      font-weight:600;
     }
     .opt-name{
-      font-size:.95rem;
-      font-weight:700;
-      color:var(--muted);
+      font-size:1.15rem;
+      font-weight:800;
+      color:#28343a;
     }
     .opt.correct{
       border-color:var(--good);
@@ -294,13 +361,13 @@
   <main>
     <div class="top-bar">
       <a class="back" href="index.html">← חזרה לאינדקס</a>
-      <span class="badge">הניקוד במשחק: פתח · קמץ · חיריק · שווא</span>
+      <span class="badge">האופציות: קמץ פתח · חיריק · שווא</span>
     </div>
 
     <header>
       <div>
         <h1>משחק: לימוד ניקוד</h1>
-        <p class="lead">האזינו לצליל האות ובחרו את הניקוד הנכון מתוך 4 האפשרויות: פתח, קמץ, חיריק או שווא.</p>
+        <p class="lead">עזרו לשועל להגיע אל הגביע! האזינו לאות ובחרו את הניקוד הנכון כדי לקדם אותו במסלול.</p>
       </div>
       <div class="hud">
         <div id="roundInfo">שאלה <strong id="round">0</strong> / <strong id="totalRounds">10</strong></div>
@@ -309,14 +376,22 @@
       </div>
     </header>
 
-    <div class="progress-wrap" aria-hidden="true">
-      <div class="progress-bar" id="progressBar"></div>
-    </div>
+    <section class="quest-box" aria-label="התקדמות הדמות ליעד">
+      <div class="quest-header">
+        <span id="questStatus">השועל מוכן ליציאה לדרך!</span>
+        <span id="questPercent">0% ליעד</span>
+      </div>
+      <div class="track" id="track">
+        <div class="track-fill" id="trackFill"></div>
+        <div class="character" id="character" aria-label="הדמות המתקדמת">🦊</div>
+        <div class="goal-flag">🏆 היעד</div>
+      </div>
+    </section>
 
     <section class="board" aria-live="polite">
       <div>
         <div class="letter-card" role="region" aria-label="אות לשמיעה">
-          <div class="hint-pill">מקשי קיצור: 1–4 לבחירה · R להשמעה</div>
+          <div class="hint-pill">מקשי קיצור: 1–3 לבחירה · R להשמעה</div>
           <div id="letter" class="letter" aria-hidden="true">א</div>
           <div id="feedback" class="feedback"></div>
           <div class="controls">
@@ -328,23 +403,20 @@
 
         <div class="settings-bar">
           <div>
-            <label for="rounds">מספר שאלות:</label>
+            <label for="rounds">מספר שאלות (צעדים ליעד):</label>
             <select id="rounds">
               <option value="5">5</option>
               <option value="10" selected>10</option>
               <option value="15">15</option>
             </select>
           </div>
-          <label style="display:flex;align-items:center;gap:6px;cursor:pointer">
-            <input type="checkbox" id="showVowelNames" checked>
-            הצג שמות ניקוד על הכפתורים
-          </label>
+          <span style="color:var(--muted);font-size:.88rem">כל תשובה נכונה מקדמת צעד אחד</span>
         </div>
       </div>
 
       <aside>
         <div class="options" id="options" role="list">
-          <!-- 4 vowel options injected here -->
+          <!-- 3 option cards injected here -->
         </div>
 
         <div class="stats">
@@ -366,7 +438,7 @@
 
     <section class="summary hidden" id="summary">
       <h2>דוח סיכום</h2>
-      <p>כל הכבוד על התרגול! הנה סיכום הביצועים שלך:</p>
+      <p id="goalOutcome"></p>
       <div id="report"></div>
       <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
         <button id="retry" class="btn" type="button">נסה שוב</button>
@@ -374,18 +446,37 @@
       </div>
     </section>
 
-    <footer class="meta">תרגול ממוקד: פתח (ַ), קמץ (ָ), חיריק (ִ) ושווא (ְ) · מותאם ללמידה חווייתית.</footer>
+    <footer class="meta">תרגול ממוקד: קמץ פתח (ָ / ַ), חיריק (ִ) ושווא (ְ) · התקדמות ליעד בכל תשובה נכונה.</footer>
   </main>
 
   <script>
     const letters = ['א','ב','ג','ד','ה','ו','ז','ח','ט','י','כ','ל','מ','נ','ס','ע','פ','צ','ק','ר','ש','ת'];
 
-    // Only the 4 requested nikud marks
-    const vowels = [
-      { id: 'patach', name: 'פתח', mark: '\u05B7' },
-      { id: 'kamatz', name: 'קמץ', mark: '\u05B8' },
-      { id: 'hiriq',  name: 'חיריק', mark: '\u05B4' },
-      { id: 'shva',   name: 'שווא', mark: '\u05B0' }
+    // Individual vowel sounds used for generating questions
+    const soundVowels = [
+      { id: 'kamatz', name: 'קמץ', mark: '\u05B8', groupId: 'kamatz_patach' },
+      { id: 'patach', name: 'פתח', mark: '\u05B7', groupId: 'kamatz_patach' },
+      { id: 'hiriq',  name: 'חיריק', mark: '\u05B4', groupId: 'hiriq' },
+      { id: 'shva',   name: 'שווא', mark: '\u05B0', groupId: 'shva' }
+    ];
+
+    // Grouped choice cards ("קמץ פתח" together in one box)
+    const choiceGroups = [
+      {
+        id: 'kamatz_patach',
+        name: 'קמץ פתח',
+        marks: ['\u05B8', '\u05B7']
+      },
+      {
+        id: 'hiriq',
+        name: 'חיריק',
+        marks: ['\u05B4']
+      },
+      {
+        id: 'shva',
+        name: 'שווא',
+        marks: ['\u05B0']
+      }
     ];
 
     // DOM refs
@@ -395,20 +486,24 @@
     const repeatBtn = document.getElementById('repeatBtn');
     const skipBtn = document.getElementById('skipBtn');
     const optionsEl = document.getElementById('options');
-    const roundEl = document.getElementById('round');
     const totalRoundsEl = document.getElementById('totalRounds');
-    const progressBar = document.getElementById('progressBar');
     const scoreEl = document.getElementById('score');
     const correctCountEl = document.getElementById('correctCount');
     const wrongCountEl = document.getElementById('wrongCount');
     const avgTimeEl = document.getElementById('avgTime');
     const roundsSelect = document.getElementById('rounds');
-    const showVowelNamesCheckbox = document.getElementById('showVowelNames');
     const summarySection = document.getElementById('summary');
+    const goalOutcomeEl = document.getElementById('goalOutcome');
     const reportEl = document.getElementById('report');
     const retryBtn = document.getElementById('retry');
     const backIndexBtn = document.getElementById('backIndex');
     const roundInfoEl = document.getElementById('roundInfo');
+
+    const trackEl = document.getElementById('track');
+    const trackFillEl = document.getElementById('trackFill');
+    const characterEl = document.getElementById('character');
+    const questStatusEl = document.getElementById('questStatus');
+    const questPercentEl = document.getElementById('questPercent');
 
     // State
     let totalRounds = 10;
@@ -420,7 +515,7 @@
     let times = [];
     let current = null; // { letter, vowel }
     let mistakes = [];
-    let vowelStats = {};
+    let groupStats = {};
     let locked = false;
 
     function init() {
@@ -428,10 +523,10 @@
       reset();
     }
 
-    function resetStatsByVowel() {
-      vowelStats = {};
-      vowels.forEach(v => {
-        vowelStats[v.id] = { name: v.name, correct: 0, wrong: 0 };
+    function resetStatsByGroup() {
+      groupStats = {};
+      choiceGroups.forEach(g => {
+        groupStats[g.id] = { name: g.name, correct: 0, wrong: 0 };
       });
     }
 
@@ -445,20 +540,49 @@
       times = [];
       mistakes = [];
       locked = false;
-      resetStatsByVowel();
+      resetStatsByGroup();
 
       roundInfoEl.innerHTML = `שאלה <strong id="round">0</strong> / <strong id="totalRounds">${totalRounds}</strong>`;
       scoreEl.textContent = '0';
       correctCountEl.textContent = '0';
       wrongCountEl.textContent = '0';
       avgTimeEl.textContent = '0';
-      progressBar.style.width = '0%';
       feedbackEl.textContent = '';
       feedbackEl.className = 'feedback';
       summarySection.classList.add('hidden');
       setControlsDisabled(false);
+      updateCharacterProgress(false);
 
       nextRound();
+    }
+
+    function updateCharacterProgress(shouldHop = true) {
+      const ratio = totalRounds > 0 ? Math.min(1, correctCount / totalRounds) : 0;
+      const pct = Math.round(ratio * 100);
+      trackFillEl.style.width = `${pct}%`;
+      questPercentEl.textContent = `${pct}% ליעד`;
+
+      // Calculate horizontal translation in RTL (moving leftward from right start toward left goal)
+      const trackWidth = trackEl.clientWidth || 500;
+      const charWidth = characterEl.offsetWidth || 36;
+      const goalReserve = 96;
+      const usableTravel = Math.max(0, trackWidth - charWidth - goalReserve - 24);
+      const offsetPx = -(usableTravel * ratio);
+
+      characterEl.style.transform = `translateX(${offsetPx}px)`;
+      if (shouldHop) {
+        characterEl.classList.remove('hop');
+        void characterEl.offsetWidth;
+        characterEl.classList.add('hop');
+      }
+
+      if (correctCount === 0) {
+        questStatusEl.textContent = 'השועל מוכן ליציאה לדרך!';
+      } else if (correctCount >= totalRounds) {
+        questStatusEl.textContent = 'יש! השועל הגיע ליעד ולגביע 🏆';
+      } else {
+        questStatusEl.textContent = `השועל התקדם ${correctCount} מתוך ${totalRounds} צעדים לעבר היעד`;
+      }
     }
 
     function setControlsDisabled(disabled) {
@@ -472,18 +596,16 @@
       repeatBtn.addEventListener('click', () => { if (current) speakCurrent(); });
       skipBtn.addEventListener('click', () => { if (!locked && current) skipQuestion(); });
       roundsSelect.addEventListener('change', reset);
-      showVowelNamesCheckbox.addEventListener('change', () => {
-        if (current) renderOptions(current.letter, current.vowel);
-      });
       retryBtn.addEventListener('click', reset);
       backIndexBtn.addEventListener('click', () => { location.href = 'index.html'; });
+      window.addEventListener('resize', () => updateCharacterProgress(false));
 
       document.addEventListener('keydown', (e) => {
-        if (locked || !current || summarySection && !summarySection.classList.contains('hidden')) return;
+        if (locked || !current || !summarySection.classList.contains('hidden')) return;
         if (e.key === 'r' || e.key === 'R' || e.key === ' ') {
           e.preventDefault();
           speakCurrent();
-        } else if (['1', '2', '3', '4'].includes(e.key)) {
+        } else if (['1', '2', '3'].includes(e.key)) {
           const idx = parseInt(e.key, 10) - 1;
           const buttons = Array.from(optionsEl.querySelectorAll('button.opt'));
           if (buttons[idx] && !buttons[idx].disabled) {
@@ -497,8 +619,8 @@
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
-    function makeLetterWithVowel(letter, vowel) {
-      return letter + vowel.mark;
+    function makeLetterWithMark(letter, mark) {
+      return letter + mark;
     }
 
     function speak(text) {
@@ -514,7 +636,7 @@
 
     function speakCurrent() {
       if (!current) return;
-      const txt = makeLetterWithVowel(current.letter, current.vowel);
+      const txt = makeLetterWithMark(current.letter, current.vowel.mark);
       beep(140, 0.025, 520);
       setTimeout(() => speak(txt), 130);
     }
@@ -536,7 +658,7 @@
           ctx.close();
         }, duration);
       } catch (e) {
-        // Ignore audio context errors on restricted devices
+        // Ignore audio context errors
       }
     }
 
@@ -549,58 +671,66 @@
       currentRound++;
       const currentRoundEl = document.getElementById('round');
       if (currentRoundEl) currentRoundEl.textContent = currentRound;
-      progressBar.style.width = `${((currentRound - 1) / totalRounds) * 100}%`;
 
       const base = pickRandom(letters);
-      const vowel = pickRandom(vowels);
+      const vowel = pickRandom(soundVowels);
       current = { letter: base, vowel };
 
       letterEl.textContent = base;
       feedbackEl.textContent = '';
       feedbackEl.className = 'feedback';
 
-      renderOptions(base, vowel);
+      renderOptions(base);
       startTime = performance.now();
       setTimeout(() => {
         if (current) speakCurrent();
       }, 200);
     }
 
-    function renderOptions(letter, correctVowel) {
-      const shuffled = [...vowels];
+    function renderOptions(letter) {
+      const shuffled = [...choiceGroups];
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
 
       optionsEl.innerHTML = '';
-      shuffled.forEach((opt, index) => {
+      shuffled.forEach((group, index) => {
         const btn = document.createElement('button');
         btn.className = 'opt';
         btn.type = 'button';
-        btn.dataset.vowelId = opt.id;
-        btn.setAttribute('aria-label', `${opt.name} (${index + 1})`);
+        btn.dataset.groupId = group.id;
+        btn.setAttribute('aria-label', `${group.name} (${index + 1})`);
 
-        const glyph = document.createElement('span');
-        glyph.className = 'opt-glyph';
-        glyph.textContent = makeLetterWithVowel(letter, opt);
-        btn.appendChild(glyph);
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'opt-name';
+        nameSpan.textContent = group.name;
 
-        if (showVowelNamesCheckbox.checked) {
-          const nameSpan = document.createElement('span');
-          nameSpan.className = 'opt-name';
-          nameSpan.textContent = opt.name;
-          btn.appendChild(nameSpan);
-        }
+        const glyphsWrap = document.createElement('span');
+        glyphsWrap.className = 'opt-glyphs';
 
-        btn.addEventListener('click', () => chooseOption(opt, btn));
+        group.marks.forEach((mark, mIdx) => {
+          if (mIdx > 0) {
+            const sep = document.createElement('span');
+            sep.className = 'opt-sep';
+            sep.textContent = '/';
+            glyphsWrap.appendChild(sep);
+          }
+          const g = document.createElement('span');
+          g.textContent = makeLetterWithMark(letter, mark);
+          glyphsWrap.appendChild(g);
+        });
+
+        btn.appendChild(nameSpan);
+        btn.appendChild(glyphsWrap);
+        btn.addEventListener('click', () => chooseOption(group, btn));
         optionsEl.appendChild(btn);
       });
     }
 
     function highlightCorrectOption() {
       Array.from(optionsEl.children).forEach(b => {
-        if (b.dataset.vowelId === current.vowel.id) {
+        if (b.dataset.groupId === current.vowel.groupId) {
           b.classList.add('correct');
         }
       });
@@ -612,7 +742,7 @@
       });
     }
 
-    function chooseOption(chosenVowel, btn) {
+    function chooseOption(chosenGroup, btn) {
       if (locked || !current) return;
       locked = true;
       disableAllOptions();
@@ -621,38 +751,46 @@
       times.push(elapsed);
       updateAvgTime();
 
-      const isCorrect = chosenVowel.id === current.vowel.id;
+      const correctGroup = choiceGroups.find(g => g.id === current.vowel.groupId);
+      const isCorrect = chosenGroup.id === current.vowel.groupId;
+
       if (isCorrect) {
         score += 10;
         correctCount++;
-        vowelStats[current.vowel.id].correct++;
+        groupStats[current.vowel.groupId].correct++;
         scoreEl.textContent = score;
         correctCountEl.textContent = correctCount;
         btn.classList.add('correct');
-        feedbackEl.textContent = `מעולה! זהו ${current.vowel.name} (${makeLetterWithVowel(current.letter, current.vowel)})`;
+        updateCharacterProgress(true);
+
+        const exactGlyph = makeLetterWithMark(current.letter, current.vowel.mark);
+        feedbackEl.textContent = `מעולה! השועל התקדם צעד (${exactGlyph} — ${current.vowel.name})`;
         feedbackEl.className = 'feedback good';
         beep(200, 0.06, 880);
       } else {
         score = Math.max(0, score - 5);
         wrongCount++;
-        vowelStats[current.vowel.id].wrong++;
+        groupStats[current.vowel.groupId].wrong++;
         scoreEl.textContent = score;
         wrongCountEl.textContent = wrongCount;
         btn.classList.add('wrong');
         highlightCorrectOption();
-        feedbackEl.textContent = `לא בדיוק — הניקוד הנכון הוא ${current.vowel.name} (${makeLetterWithVowel(current.letter, current.vowel)})`;
+
+        const exactGlyph = makeLetterWithMark(current.letter, current.vowel.mark);
+        feedbackEl.textContent = `לא בדיוק — זהו ${current.vowel.name} (${exactGlyph}), שייך לקוביית "${correctGroup.name}"`;
         feedbackEl.className = 'feedback bad';
         beep(220, 0.06, 230);
+
         mistakes.push({
           round: currentRound,
           letter: current.letter,
-          expected: current.vowel.name,
-          chosen: chosenVowel.name,
-          time: elapsed.toFixed(1)
+          expectedGroup: correctGroup.name,
+          expectedSound: current.vowel.name,
+          chosenGroup: chosenGroup.name
         });
       }
 
-      setTimeout(nextRound, 1100);
+      setTimeout(nextRound, 1150);
     }
 
     function skipQuestion() {
@@ -664,22 +802,25 @@
       times.push(elapsed);
       updateAvgTime();
 
+      const correctGroup = choiceGroups.find(g => g.id === current.vowel.groupId);
       wrongCount++;
-      vowelStats[current.vowel.id].wrong++;
+      groupStats[current.vowel.groupId].wrong++;
       wrongCountEl.textContent = wrongCount;
       highlightCorrectOption();
-      feedbackEl.textContent = `דילגנו — הניקוד הנכון הוא ${current.vowel.name} (${makeLetterWithVowel(current.letter, current.vowel)})`;
+
+      const exactGlyph = makeLetterWithMark(current.letter, current.vowel.mark);
+      feedbackEl.textContent = `דילגנו — הניקוד הנכון הוא ${current.vowel.name} (${exactGlyph})`;
       feedbackEl.className = 'feedback bad';
 
       mistakes.push({
         round: currentRound,
         letter: current.letter,
-        expected: current.vowel.name,
-        chosen: 'דלג',
-        time: elapsed.toFixed(1)
+        expectedGroup: correctGroup.name,
+        expectedSound: current.vowel.name,
+        chosenGroup: 'דלג'
       });
 
-      setTimeout(nextRound, 1100);
+      setTimeout(nextRound, 1150);
     }
 
     function updateAvgTime() {
@@ -695,9 +836,15 @@
       current = null;
       locked = true;
       setControlsDisabled(true);
-      progressBar.style.width = '100%';
       roundInfoEl.textContent = 'המשחק הסתיים!';
       summarySection.classList.remove('hidden');
+
+      const goalPct = Math.round((correctCount / (totalRounds || 1)) * 100);
+      if (correctCount === totalRounds) {
+        goalOutcomeEl.innerHTML = `<strong style="color:var(--good)">🏆 הישג מדהים! השועל הגיע ליעד ב-100% הצלחה!</strong>`;
+      } else {
+        goalOutcomeEl.innerHTML = `השועל הגיע ל-<strong>${goalPct}%</strong> מהדרך ליעד (${correctCount} מתוך ${totalRounds} צעדים).`;
+      }
 
       const answered = correctCount + wrongCount;
       const percent = answered ? Math.round((correctCount / answered) * 100) : 0;
@@ -705,24 +852,24 @@
 
       let html = `
         <div class="summary-grid">
+          <div class="summary-card"><span>התקדמות ליעד</span><strong>${goalPct}%</strong></div>
           <div class="summary-card"><span>דיוק</span><strong>${percent}%</strong></div>
-          <div class="summary-card"><span>תשובות נכונות</span><strong>${correctCount}/${totalRounds}</strong></div>
           <div class="summary-card"><span>ציון סופי</span><strong>${score}</strong></div>
           <div class="summary-card"><span>זמן כולל</span><strong>${totalTime} ש'</strong></div>
         </div>
       `;
 
-      html += '<h3 style="margin:12px 0 6px">פירוט לפי סוג ניקוד</h3><ul>';
-      vowels.forEach(v => {
-        const st = vowelStats[v.id];
-        html += `<li><strong>${v.name}</strong>: ${st.correct} נכונות, ${st.wrong} שגויות/דילוגים</li>`;
+      html += '<h3 style="margin:12px 0 6px">פירוט לפי קוביית ניקוד</h3><ul>';
+      choiceGroups.forEach(g => {
+        const st = groupStats[g.id];
+        html += `<li><strong>${st.name}</strong>: ${st.correct} נכונות, ${st.wrong} שגויות/דילוגים</li>`;
       });
       html += '</ul>';
 
       if (mistakes.length) {
         html += '<h4 style="margin:12px 0 6px">שאלות לחיזוק</h4><ol>';
         mistakes.forEach(m => {
-          html += `<li>שאלה ${m.round} (האות <strong>${m.letter}</strong>): הניקוד הנכון הוא <strong>${m.expected}</strong> (בחרת: ${m.chosen})</li>`;
+          html += `<li>שאלה ${m.round} (האות <strong>${m.letter}</strong>): היה <strong>${m.expectedSound}</strong> (קוביית <strong>${m.expectedGroup}</strong>) — בחרת: ${m.chosenGroup}</li>`;
         });
         html += '</ol>';
       } else {
@@ -735,7 +882,8 @@
         const storage = JSON.parse(localStorage.getItem('nikud_history') || '[]');
         storage.unshift({
           date: new Date().toISOString(),
-          vowels: vowels.map(v => v.name),
+          groups: choiceGroups.map(g => g.name),
+          goalPercent: goalPct,
           score,
           totalRounds,
           correctCount,
